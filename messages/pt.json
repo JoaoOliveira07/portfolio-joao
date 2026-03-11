@@ -13,6 +13,11 @@
       "cv": "Download CV"
     }
   },
+  "competencies": {
+    "title": "Principais Competências",
+    "subtitle": "Combinando conhecimento técnico profundo com práticas modernas de desenvolvimento",
+    "locale": "pt"
+  },
   "projects": {
     "title": "Projetos em Destaque",
     "viewAll": "Ver todos os projetos",
@@ -25,14 +30,34 @@
   },
   "about": {
     "title": "Sobre Mim",
+    "intro": "Sou apaixonado por construir sistemas que realmente funcionam — estáveis, performáticos e projetados para escalar. Trabalho diariamente com Java e Spring Boot, desenvolvendo soluções robustas que suportam necessidades de negócio e entregam valor real.",
+    "expertise": "Minha maior expertise está em integrações e arquitetura orientada a eventos. Gosto de transformar sistemas complexos em fluxos simples, confiáveis e observáveis.",
+    "focus": "Nos últimos meses, venho expandindo minha expertise em Cloud e Infrastructure as Code, focando em AWS, Terraform e observabilidade.",
+    "mindset": "Sou motivado por desafios, aprendizado contínuo e o desejo de entregar soluções que realmente fazem diferença — tanto para os usuários quanto para a equipe.",
     "experience": "Experiência Profissional",
-    "competencies": "Principais Competências"
+    "competencies": "Principais Competências",
+    "recommendations": "Recomendações"
   },
   "techStack": {
-    "title": "Stack Técnica",
+    "title": "Stack Técnica Completa",
+    "subtitle": "Ferramentas e tecnologias que domino para entregar soluções de qualidade",
     "core": "Core Backend",
     "eventDriven": "Event-Driven & Integration",
     "cloud": "Cloud & Infrastructure",
     "quality": "Quality & Practices"
+  },
+  "stats": {
+    "title": "Números que Contam",
+    "experience": "Anos de Experiência",
+    "projects": "Projetos Públicos",
+    "followers": "Seguidores no GitHub",
+    "subtitle": "Comprometido em entregar código limpo, testável e escalável"
+  },
+  "projectModal": {
+    "description": "Descrição",
+    "architecture": "Arquitetura",
+    "challenges": "Desafios Técnicos",
+    "results": "Resultados",
+    "completeStack": "Stack Completo"
   }
 }

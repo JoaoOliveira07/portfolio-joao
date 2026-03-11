@@ -21,23 +21,30 @@ export function Navigation() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4">
+    <nav className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+      <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href={`/${lang}`} className="text-xl font-bold text-text hover:text-primary transition-colors">
-            JP
+          <Link href={`/${lang}`} className="flex items-center gap-3 group">
+            <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
+              <span className="text-lg font-bold text-white">JP</span>
+            </div>
+            <div className="hidden sm:flex flex-col">
+              <span className="text-sm font-bold text-neutral-900 leading-none">João Paulo</span>
+              <span className="text-xs text-neutral-500 leading-none">Backend Developer</span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-textMuted hover:text-text transition-colors"
+                className="text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors relative group"
               >
                 {item.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 transition-all group-hover:w-full"></span>
               </Link>
             ))}
             <LanguageToggle />
@@ -59,13 +66,13 @@ export function Navigation() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-border py-4">
+          <div className="md:hidden border-t border-neutral-200 py-4 bg-white">
             <div className="flex flex-col gap-4">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-sm font-medium text-textMuted hover:text-text transition-colors"
+                  className="text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors px-2 py-1"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.label}

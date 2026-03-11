@@ -4,11 +4,11 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-neutral-200;
   }
   
   body {
-    @apply bg-background text-text antialiased;
+    @apply bg-white text-neutral-900 antialiased;
   }
   
   html {
@@ -16,8 +16,52 @@
   }
 }
 
+@layer components {
+  /* Garantir que ícones dentro de botões não quebrem */
+  button svg,
+  a svg {
+    @apply flex-shrink-0;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Animação de marquee infinita */
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 60s linear infinite;
+    display: flex;
+    width: fit-content;
+  }
+
+  .pause-marquee:hover {
+    animation-play-state: paused;
+  }
+
+  /* Animação de fade in para skills */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.4s ease-out;
   }
 }

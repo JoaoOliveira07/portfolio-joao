@@ -21,99 +21,96 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="w-full py-16 md:py-24">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-12 items-center">
-          {/* Left Column - Content */}
-          <Stagger className="flex flex-col gap-6">
-            <StaggerItem>
-              <div className="flex flex-col gap-2">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-text">
-                  João Paulo Oliveira
-                </h1>
-                <p className="text-xl md:text-2xl text-primary font-semibold">
-                  {t('role')}
-                </p>
-                <p className="text-sm text-textMuted">
-                  Gaspar, SC - Brasil
-                </p>
-              </div>
-            </StaggerItem>
+    <section className="w-full py-20 md:py-32 bg-gradient-to-b from-neutral-50 to-white">
+      <div className="container mx-auto px-6 max-w-7xl">
+        <div className="flex flex-col items-center text-center gap-8 max-w-4xl mx-auto">
+          {/* Avatar with glow effect */}
+          <FadeIn delay={0.1} className="relative">
+            <div className="absolute -inset-2 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full blur-xl opacity-30 animate-pulse"></div>
+            <div className="relative w-24 h-24 rounded-full border-4 border-white shadow-xl overflow-hidden bg-neutral-100">
+              {avatarUrl ? (
+                <Image
+                  src={avatarUrl}
+                  alt="João Paulo Oliveira"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-3xl font-bold text-primary-500">
+                  JP
+                </div>
+              )}
+            </div>
+          </FadeIn>
 
+          {/* Main heading */}
+          <Stagger className="flex flex-col gap-5 items-center">
             <StaggerItem>
-              <p className="text-lg md:text-xl text-text font-medium leading-relaxed">
+              <h1 className="text-4xl md:text-6xl font-bold text-neutral-900 leading-tight tracking-tight">
                 {t('tagline')}
-              </p>
+              </h1>
             </StaggerItem>
 
             <StaggerItem>
-              <p className="text-base text-textMuted leading-relaxed">
+              <p className="text-lg md:text-xl text-neutral-500 max-w-2xl leading-relaxed">
                 {t('description')}
               </p>
             </StaggerItem>
-
-            {/* CTAs */}
-            <StaggerItem>
-              <div className="flex flex-wrap gap-4 mt-4">
-                <Button asChild size="lg">
-                  <Link href={`/${locale}/projects`}>
-                    {t('cta.projects')}
-                    <ArrowRight className="h-5 w-5" />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="lg">
-                  <a href={`/cv/cv-${locale}.pdf`} download>
-                    <Download className="h-5 w-5" />
-                    {t('cta.cv')}
-                  </a>
-                </Button>
-              </div>
-            </StaggerItem>
-
-            {/* Social Links */}
-            <StaggerItem>
-              <div className="flex items-center gap-4 mt-2">
-                <Link
-                  href="https://github.com/JoaoOliveira07"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-textMuted hover:text-text transition-colors"
-                >
-                  <Github className="h-6 w-6" />
-                </Link>
-                <Link
-                  href="https://www.linkedin.com/in/joão-paulo-oliveira07/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-textMuted hover:text-text transition-colors"
-                >
-                  <Linkedin className="h-6 w-6" />
-                </Link>
-              </div>
-            </StaggerItem>
           </Stagger>
 
-          {/* Right Column - Avatar */}
-          <FadeIn delay={0.3} direction="left" className="flex justify-center lg:justify-end">
-            <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-full blur opacity-25"></div>
-              <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-primary overflow-hidden bg-surface">
-                {avatarUrl ? (
-                  <Image
-                    src={avatarUrl}
-                    alt="João Paulo Oliveira"
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-primary">
-                    JP
-                  </div>
-                )}
-              </div>
+          {/* CTAs */}
+          <StaggerItem>
+            <div className="flex flex-wrap gap-4 mt-6 justify-center">
+              <Button asChild size="lg">
+                <Link href={`/${locale}/projects`} className="flex items-center gap-2">
+                  <span>{t('cta.projects')}</span>
+                  <ArrowRight className="h-5 w-5 flex-shrink-0" />
+                </Link>
+              </Button>
+              <Button asChild variant="secondary" size="lg">
+                <a href={`/cv/cv-${locale}.pdf`} download className="flex items-center gap-2">
+                  <Download className="h-5 w-5 flex-shrink-0" />
+                  <span>{t('cta.cv')}</span>
+                </a>
+              </Button>
             </div>
-          </FadeIn>
+          </StaggerItem>
+
+          {/* Social Links */}
+          <StaggerItem>
+            <div className="flex items-center gap-6 mt-4">
+              <Link
+                href="https://github.com/JoaoOliveira07"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-neutral-500 hover:text-primary-500 transition-colors"
+              >
+                <Github className="h-6 w-6" />
+              </Link>
+              <Link
+                href="https://www.linkedin.com/in/joão-paulo-oliveira07/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-neutral-500 hover:text-primary-500 transition-colors"
+              >
+                <Linkedin className="h-6 w-6" />
+              </Link>
+            </div>
+          </StaggerItem>
+
+          {/* Subtitle badge */}
+          <StaggerItem>
+            <div className="flex items-center gap-2 px-4 py-2 bg-primary-50 rounded-full">
+              <span className="text-sm font-semibold text-neutral-900">
+                {t('role')}
+              </span>
+              <span className="text-neutral-400">•</span>
+              <span className="text-sm text-neutral-600">
+                Gaspar, SC - Brasil
+              </span>
+            </div>
+          </StaggerItem>
         </div>
       </div>
     </section>

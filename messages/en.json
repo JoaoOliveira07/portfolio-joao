@@ -13,6 +13,11 @@
       "cv": "Download Resume"
     }
   },
+  "competencies": {
+    "title": "Core Competencies",
+    "subtitle": "Combining deep technical knowledge with modern development practices",
+    "locale": "en"
+  },
   "projects": {
     "title": "Featured Projects",
     "viewAll": "View all projects",
@@ -25,14 +30,34 @@
   },
   "about": {
     "title": "About Me",
+    "intro": "I'm passionate about building systems that truly work — stable, high-performing, and designed to scale. I work daily with Java and Spring Boot, developing robust solutions that support business needs and deliver real value.",
+    "expertise": "My strongest expertise lies in integrations and event-driven architecture. I enjoy transforming complex systems into simple, reliable, and observable flows.",
+    "focus": "In recent months, I've been expanding my expertise into Cloud and Infrastructure as Code, focusing on AWS, Terraform, and observability.",
+    "mindset": "I'm driven by challenges, continuous learning, and the desire to deliver solutions that truly make a difference — both for users and for the team.",
     "experience": "Professional Experience",
-    "competencies": "Core Competencies"
+    "competencies": "Core Competencies",
+    "recommendations": "Recommendations"
   },
   "techStack": {
-    "title": "Tech Stack",
+    "title": "Complete Tech Stack",
+    "subtitle": "Tools and technologies I master to deliver quality solutions",
     "core": "Core Backend",
     "eventDriven": "Event-Driven & Integration",
     "cloud": "Cloud & Infrastructure",
     "quality": "Quality & Practices"
+  },
+  "stats": {
+    "title": "Numbers that Matter",
+    "experience": "Years of Experience",
+    "projects": "Public Projects",
+    "followers": "GitHub Followers",
+    "subtitle": "Committed to delivering clean, testable, and scalable code"
+  },
+  "projectModal": {
+    "description": "Description",
+    "architecture": "Architecture",
+    "challenges": "Technical Challenges",
+    "results": "Results",
+    "completeStack": "Complete Stack"
   }
 }

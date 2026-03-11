@@ -69,7 +69,7 @@ export const skillCategories: SkillCategory[] = [
 ];
 
 export interface Competency {
-  icon: string;
+  icon: string; // Nome do ícone Lucide
   title: {
     pt: string;
     en: string;
@@ -82,7 +82,7 @@ export interface Competency {
 
 export const competencies: Competency[] = [
   {
-    icon: '📐',
+    icon: 'Workflow',
     title: {
       pt: 'Event-Driven Architecture',
       en: 'Event-Driven Architecture'
@@ -93,7 +93,7 @@ export const competencies: Competency[] = [
     }
   },
   {
-    icon: '🧪',
+    icon: 'FlaskConical',
     title: {
       pt: 'Quality & Testing',
       en: 'Quality & Testing'
@@ -104,7 +104,7 @@ export const competencies: Competency[] = [
     }
   },
   {
-    icon: '☁️',
+    icon: 'Cloud',
     title: {
       pt: 'Cloud & IaC',
       en: 'Cloud & IaC'
@@ -115,7 +115,7 @@ export const competencies: Competency[] = [
     }
   },
   {
-    icon: '🔍',
+    icon: 'ShieldCheck',
     title: {
       pt: 'Code Quality',
       en: 'Code Quality'
