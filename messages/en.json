@@ -1,0 +1,38 @@
+{
+  "nav": {
+    "home": "Home",
+    "projects": "Projects",
+    "about": "About"
+  },
+  "hero": {
+    "role": "Mid-Level Backend Developer",
+    "tagline": "Building systems that truly work — stable, high-performing, and designed to scale.",
+    "description": "Specialized in Java and Spring Boot, with strong expertise in event-driven architecture, complex integrations, and Infrastructure as Code.",
+    "cta": {
+      "projects": "View Projects",
+      "cv": "Download Resume"
+    }
+  },
+  "projects": {
+    "title": "Featured Projects",
+    "viewAll": "View all projects",
+    "viewDetails": "View details",
+    "problem": "The Problem",
+    "solution": "The Solution",
+    "highlights": "Technical Highlights",
+    "techStack": "Tech Stack",
+    "role": "My Role"
+  },
+  "about": {
+    "title": "About Me",
+    "experience": "Professional Experience",
+    "competencies": "Core Competencies"
+  },
+  "techStack": {
+    "title": "Tech Stack",
+    "core": "Core Backend",
+    "eventDriven": "Event-Driven & Integration",
+    "cloud": "Cloud & Infrastructure",
+    "quality": "Quality & Practices"
+  }
+}
