@@ -12,7 +12,7 @@ const iconContainerVariants = cva(
         neutral: "bg-neutral-100 text-neutral-600",
         info: "bg-blue-50 text-blue-600",
         warning: "bg-amber-50 text-amber-600",
-        success: "bg-emerald-50 text-emerald-600",
+        success: "bg-primary-50 text-primary-600",
       },
       size: {
         sm: "w-12 h-12",

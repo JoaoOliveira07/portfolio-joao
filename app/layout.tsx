@@ -55,6 +55,8 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
+  icons: {
+  },
 };
 
 export default function RootLayout({

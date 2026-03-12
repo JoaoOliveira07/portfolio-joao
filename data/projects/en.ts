@@ -35,9 +35,9 @@ export const projects: Project[] = [
     
     CI[CI/CD Pipeline] -->|auto deploy| TF
     
-    style Lambda fill:#00E68A
-    style SQS fill:#00E68A
-    style S3 fill:#00E68A`,
+    style Lambda fill:#01926D
+    style SQS fill:#01926D
+    style S3 fill:#01926D`,
     challenges: [
       'Manage shared state between multiple developers without conflicts',
       'Implement IAM policies following least privilege principle',
@@ -93,8 +93,8 @@ export const projects: Project[] = [
     
     Consumer -->|retry on fail| DLQ[Dead Letter Queue]
     
-    style Outbox fill:#00E68A
-    style SQS fill:#00E68A
+    style Outbox fill:#01926D
+    style SQS fill:#01926D
     style Relay fill:#A855F7`,
     challenges: [
       'Ensure exactly-once delivery in distributed system',
@@ -146,9 +146,9 @@ export const projects: Project[] = [
     Mid -->|validate| Valid[Data Validator]
     Client -->|retry| Queue[Retry Queue]
     
-    style Orch fill:#00E68A
+    style Orch fill:#01926D
     style Mid fill:#A855F7
-    style Client fill:#00E68A`,
+    style Client fill:#01926D`,
     challenges: [
       'Handle network intermittency between cloud and on-premise',
       'Transform data between legacy and modern formats',
@@ -202,7 +202,7 @@ export const projects: Project[] = [
     Gen -->|compress| Cache[Versioned Cache]
     Cache -->|serve| App
     
-    style Sync fill:#00E68A
+    style Sync fill:#01926D
     style Gen fill:#A855F7`,
     challenges: [
       'Detect offline changes without server connection',
@@ -256,8 +256,8 @@ export const projects: Project[] = [
     Lambda -->|logs| CW[CloudWatch]
     Queue -->|fail| DLQ[Dead Letter Queue]
     
-    style Lambda fill:#00E68A
-    style S3 fill:#00E68A
+    style Lambda fill:#01926D
+    style S3 fill:#01926D
     style Queue fill:#A855F7`,
     challenges: [
       'Ensure OCR extraction quality on varied documents',
@@ -315,7 +315,7 @@ export const projects: Project[] = [
     
     API --> Cache[Redis Cache]
     
-    style API fill:#00E68A
+    style API fill:#01926D
     style DB fill:#A855F7`,
     challenges: [
       'Maintain clear modularization in growing monolith',

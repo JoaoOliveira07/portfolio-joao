@@ -29,9 +29,9 @@ export function MermaidDiagram({ chart, className }: MermaidDiagramProps) {
           securityLevel: 'loose',
           fontFamily: 'inherit',
           themeVariables: {
-            primaryColor: '#00E68A',
+            primaryColor: '#01926D',
             primaryTextColor: '#fff',
-            primaryBorderColor: '#00D17A',
+            primaryBorderColor: '#017A5C',
             lineColor: '#525252',
             secondaryColor: '#A855F7',
             tertiaryColor: '#f5f5f5',

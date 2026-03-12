@@ -6,11 +6,11 @@ import { experience as experiencePt } from '@/data/experience/pt';
 import { experience as experienceEn } from '@/data/experience/en';
 import { Lock, Unlock } from 'lucide-react';
 
-const GREEN = '#4ade80';
-const GREEN_DARK = '#16a34a';
-const GREEN_LIGHT = '#f0fdf4';
-const GREEN_BORDER = '#bbf7d0';
-const GREEN_SOFT = '#dcfce7';
+const GREEN = '#5CE1A7';
+const GREEN_DARK = '#01926D';
+const GREEN_LIGHT = '#E6FFF5';
+const GREEN_BORDER = '#C2F5E2';
+const GREEN_SOFT = '#C2F5E2';
 const TEXT_MAIN = '#111827';
 const TEXT_MUTED = '#6b7280';
 const TEXT_LIGHT = '#9ca3af';
@@ -287,7 +287,7 @@ export function Timeline() {
                 </h3>
               </div>
               {activeExp.isCurrent && !activeExp.isLocked && (
-                <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full" style={{ background: GREEN_SOFT, color: '#15803d' }}>
+                <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full" style={{ background: GREEN_SOFT, color: '#017A5C' }}>
                   ● Atual
                 </span>
               )}
@@ -309,7 +309,7 @@ export function Timeline() {
               <div className="space-y-1.5">
                 {activeExp.details.slice(0, 3).map((d, i) => (
                   <div key={i} className="flex gap-2 items-start text-xs" style={{ color: activeExp.isLocked ? '#6b7280' : TEXT_MAIN }}>
-                    <span className={activeExp.isLocked ? 'text-[#9ca3af] mt-0.5' : 'text-[#4ade80] mt-0.5'}>•</span>
+                    <span className={activeExp.isLocked ? 'text-[#9ca3af] mt-0.5' : 'text-[#5CE1A7] mt-0.5'}>•</span>
                     <span>{d}</span>
                   </div>
                 ))}
