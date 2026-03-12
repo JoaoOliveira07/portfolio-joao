@@ -3,7 +3,7 @@
 import { Modal } from '@/components/ui/Modal';
 import { MermaidDiagram } from '@/components/ui/MermaidDiagram';
 import { Badge } from '@/components/ui/Badge';
-import { Target, Lightbulb, TrendingUp, Code } from 'lucide-react';
+import { Target, Lightbulb, TrendingUp, Code, Sparkles } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 interface ProjectModalProps {
@@ -15,6 +15,7 @@ interface ProjectModalProps {
     description: string;
     techStack: string[];
     diagram?: string;
+    technicalDecisions?: string[];
     challenges?: string[];
     results?: string[];
   };
@@ -48,6 +49,26 @@ export function ProjectModal({ isOpen, onClose, project }: ProjectModalProps) {
             <div className="bg-white rounded-lg p-4 overflow-x-auto border border-neutral-200">
               <MermaidDiagram chart={project.diagram} />
             </div>
+          </div>
+        )}
+
+        {/* Technical Decisions */}
+        {project.technicalDecisions && project.technicalDecisions.length > 0 && (
+          <div className="bg-gradient-to-br from-primary-50 to-secondary-50 rounded-lg p-5 border border-primary-200">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="w-5 h-5 text-primary-600" />
+              <h3 className="text-base font-semibold text-neutral-900">{t('technicalDecisions')}</h3>
+            </div>
+            <ul className="flex flex-col gap-3">
+              {project.technicalDecisions.map((decision, idx) => (
+                <li key={idx} className="flex items-start gap-3 text-sm text-neutral-700">
+                  <span className="w-6 h-6 rounded-full bg-primary-500 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">
+                    {idx + 1}
+                  </span>
+                  <span className="leading-relaxed font-medium">{decision}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 

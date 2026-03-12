@@ -11,6 +11,7 @@ import { ArrowRight, Boxes, Workflow, Link2, RefreshCw, Bot, Building2, Star } f
 import { projects as projectsPt } from '@/data/projects/pt';
 import { projects as projectsEn } from '@/data/projects/en';
 import type { Project } from '@/data/projects/pt';
+import { Stagger, StaggerItem } from '@/components/ui/Animations';
 
 const categoryIcons = {
   iac: Boxes,
@@ -45,15 +46,15 @@ export function FeaturedProjects() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((project) => {
               const Icon = categoryIcons[project.category];
               
               return (
-                <Card
-                  key={project.slug}
-                  className="flex flex-col hover:border-primary/30 transition-all hover:shadow-md p-5"
-                >
+                <StaggerItem key={project.slug}>
+                  <Card
+                    className="flex flex-col hover:border-primary/30 transition-all hover:shadow-md p-5 h-full"
+                  >
                   <CardHeader className="p-0 pb-3">
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <IconContainer size="sm" variant="primary">
@@ -96,17 +97,20 @@ export function FeaturedProjects() {
                   <CardFooter className="p-0 pt-3">
                     <Button 
                       variant="ghost" 
-                      className="w-full group"
+                      className="w-full group text-success-600 hover:text-success-700"
                       onClick={() => setSelectedProject(project)}
                     >
                       <span>{t('viewDetails')}</span>
-                      <ArrowRight className="w-4 h-4 flex-shrink-0 group-hover:translate-x-1 transition-transform" />
+                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
                     </Button>
                   </CardFooter>
-                </Card>
+                  </Card>
+                </StaggerItem>
               );
             })}
-          </div>
+          </Stagger>
         </div>
       </div>
 

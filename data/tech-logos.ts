@@ -14,7 +14,7 @@ export interface TechLogo {
 export const techLogos: TechLogo[] = [
   // Core Backend
   {
-    name: 'Java 17+',
+    name: 'Java',
     type: 'svg',
     path: '/logos/java.svg',
     displayName: 'Java'
@@ -24,12 +24,6 @@ export const techLogos: TechLogo[] = [
     type: 'svg',
     path: '/logos/spring.svg',
     displayName: 'Spring Boot'
-  },
-  {
-    name: 'Hibernate',
-    type: 'lucide',
-    icon: 'Database',
-    displayName: 'Hibernate'
   },
   {
     name: 'PostgreSQL',
@@ -46,72 +40,24 @@ export const techLogos: TechLogo[] = [
 
   // Event-Driven & Integration
   {
-    name: 'Event-Driven Architecture',
+    name: 'Apache Kafka',
+    type: 'svg',
+    path: '/logos/kafka.svg',
+    displayName: 'Kafka'
+  },
+  {
+    name: 'Event-Driven',
     type: 'lucide',
     icon: 'Workflow',
     displayName: 'Event-Driven'
   },
-  {
-    name: 'Event Subscription',
-    type: 'lucide',
-    icon: 'Bell',
-    displayName: 'Event Subscription'
-  },
-  {
-    name: 'Outbox Pattern',
-    type: 'lucide',
-    icon: 'Inbox',
-    displayName: 'Outbox Pattern'
-  },
-  {
-    name: 'Event Relay',
-    type: 'lucide',
-    icon: 'Repeat',
-    displayName: 'Event Relay'
-  },
-  {
-    name: 'Publisher/Consumer',
-    type: 'lucide',
-    icon: 'Network',
-    displayName: 'Pub/Sub'
-  },
-  {
-    name: 'AWS SQS',
-    type: 'svg',
-    path: '/logos/aws-sqs.svg',
-    displayName: 'AWS SQS'
-  },
-  {
-    name: 'Asynchronous Integration',
-    type: 'lucide',
-    icon: 'GitBranch',
-    displayName: 'Async Integration'
-  },
 
   // Cloud & Infrastructure
   {
-    name: 'AWS S3',
+    name: 'AWS',
     type: 'svg',
-    path: '/logos/aws-s3.svg',
-    displayName: 'AWS S3'
-  },
-  {
-    name: 'AWS Lambda',
-    type: 'svg',
-    path: '/logos/aws-lambda.svg',
-    displayName: 'AWS Lambda'
-  },
-  {
-    name: 'AWS ECS',
-    type: 'svg',
-    path: '/logos/aws-ecs.svg',
-    displayName: 'AWS ECS'
-  },
-  {
-    name: 'AWS CloudWatch',
-    type: 'svg',
-    path: '/logos/aws-cloudwatch.svg',
-    displayName: 'CloudWatch'
+    path: '/logos/aws.svg',
+    displayName: 'AWS'
   },
   {
     name: 'Terraform',
@@ -125,20 +71,8 @@ export const techLogos: TechLogo[] = [
     path: '/logos/docker.svg',
     displayName: 'Docker'
   },
-  {
-    name: 'Infrastructure as Code',
-    type: 'lucide',
-    icon: 'FileCode',
-    displayName: 'IaC'
-  },
 
   // Quality & Practices
-  {
-    name: 'GitHub',
-    type: 'lucide',
-    icon: 'Github',
-    displayName: 'GitHub'
-  },
   {
     name: 'TDD',
     type: 'lucide',
@@ -146,46 +80,48 @@ export const techLogos: TechLogo[] = [
     displayName: 'TDD'
   },
   {
-    name: 'JUnit',
-    type: 'lucide',
-    icon: 'TestTube',
-    displayName: 'JUnit'
-  },
-  {
-    name: 'Mockito',
-    type: 'lucide',
-    icon: 'Component',
-    displayName: 'Mockito'
-  },
-  {
-    name: 'Integration Tests',
-    type: 'lucide',
-    icon: 'Puzzle',
-    displayName: 'Integration Tests'
-  },
-  {
-    name: 'Code Review',
-    type: 'lucide',
-    icon: 'FileSearch',
-    displayName: 'Code Review'
-  },
-  {
     name: 'Clean Code',
     type: 'lucide',
     icon: 'Sparkles',
     displayName: 'Clean Code'
   },
+
+  // Observability & Monitoring
   {
-    name: 'SOLID Principles',
-    type: 'lucide',
-    icon: 'Boxes',
-    displayName: 'SOLID'
+    name: 'Prometheus',
+    type: 'svg',
+    path: '/logos/prometheus.svg',
+    displayName: 'Prometheus'
   },
   {
-    name: 'Design Patterns',
-    type: 'lucide',
-    icon: 'Shapes',
-    displayName: 'Design Patterns'
+    name: 'Grafana',
+    type: 'svg',
+    path: '/logos/grafana.svg',
+    displayName: 'Grafana'
+  },
+  {
+    name: 'Datadog',
+    type: 'svg',
+    path: '/logos/datadog.svg',
+    displayName: 'Datadog'
+  },
+  {
+    name: 'New Relic',
+    type: 'svg',
+    path: '/logos/newrelic.svg',
+    displayName: 'New Relic'
+  },
+  {
+    name: 'ELK Stack',
+    type: 'svg',
+    path: '/logos/elastic.svg',
+    displayName: 'ELK'
+  },
+  {
+    name: 'OpenTelemetry',
+    type: 'svg',
+    path: '/logos/opentelemetry.svg',
+    displayName: 'OpenTelemetry'
   }
 ];
 

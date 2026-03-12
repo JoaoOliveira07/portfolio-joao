@@ -44,7 +44,8 @@
     "core": "Core Backend",
     "eventDriven": "Event-Driven & Integration",
     "cloud": "Cloud & Infrastructure",
-    "quality": "Quality & Practices"
+    "quality": "Quality & Practices",
+    "observability": "Observability & Monitoring"
   },
   "stats": {
     "title": "Numbers that Matter",
@@ -56,8 +57,33 @@
   "projectModal": {
     "description": "Description",
     "architecture": "Architecture",
+    "technicalDecisions": "Technical Decisions",
     "challenges": "Technical Challenges",
     "results": "Results",
     "completeStack": "Complete Stack"
+  },
+  "engineeringPractices": {
+    "title": "Engineering Practices",
+    "subtitle": "Principles and methodologies we apply daily to deliver quality code",
+    "overview": "Overview",
+    "howIApply": "How I Apply in Practice",
+    "relatedProjects": "Related Projects",
+    "learnMore": "Learn more"
+  },
+  "systemDesign": {
+    "title": "System Design Studies",
+    "subtitle": "Real system architecture analyses and diagrams covering technical decisions and scalability",
+    "viewDetails": "View details",
+    "architecture": "System Architecture",
+    "keyDecisions": "Key Technical Decisions",
+    "components": "Main Components",
+    "scalability": "Scalability Notes",
+    "estimatedScale": "Estimated Scale"
+  },
+  "currentlyLearning": {
+    "title": "Currently Learning",
+    "subtitle": "Areas of focus in my continuous development and technical learning",
+    "progress": "Progress",
+    "learnMore": "Learn more"
   }
 }

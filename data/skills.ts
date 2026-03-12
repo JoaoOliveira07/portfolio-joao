@@ -24,11 +24,10 @@ export const skillCategories: SkillCategory[] = [
     },
     skills: [
       'Event-Driven Architecture',
-      'Event Subscription',
       'Outbox Pattern',
       'Event Relay',
       'Publisher/Consumer',
-      'AWS SQS',
+      'Apache Kafka',
       'Asynchronous Integration'
     ]
   },
@@ -39,11 +38,7 @@ export const skillCategories: SkillCategory[] = [
       en: 'Cloud & Infrastructure'
     },
     skills: [
-      'AWS S3',
-      'AWS Lambda',
-      'AWS ECS',
-      'AWS SQS',
-      'AWS CloudWatch',
+      'AWS (S3, Lambda, ECS, SQS, CloudWatch)',
       'Terraform',
       'Docker',
       'Infrastructure as Code'
@@ -64,6 +59,37 @@ export const skillCategories: SkillCategory[] = [
       'Clean Code',
       'SOLID Principles',
       'Design Patterns'
+    ]
+  },
+  {
+    id: 'observability',
+    title: {
+      pt: 'Observability & Monitoring',
+      en: 'Observability & Monitoring'
+    },
+    skills: [
+      'Prometheus',
+      'Grafana',
+      'Datadog',
+      'New Relic',
+      'ELK Stack',
+      'OpenTelemetry',
+      'Distributed Tracing'
+    ]
+  },
+  {
+    id: 'aiTools',
+    title: {
+      pt: 'AI & Developer Tools',
+      en: 'AI & Developer Tools'
+    },
+    skills: [
+      'GitHub Copilot',
+      'OpenCode (Custom Agents)',
+      'AI-Assisted Development',
+      'AI Code Reviews',
+      'Cloud Copilot (AWS)',
+      'AI Documentation'
     ]
   }
 ];

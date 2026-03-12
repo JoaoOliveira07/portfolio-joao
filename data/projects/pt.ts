@@ -14,6 +14,7 @@ export interface Project {
   diagram?: string;
   challenges?: string[];
   results?: string[];
+  technicalDecisions?: string[];
 }
 
 export const projects: Project[] = [
@@ -65,6 +66,13 @@ export const projects: Project[] = [
       'Zero configurações manuais na AWS Console',
       'Infraestrutura versionada e auditável via Git',
       'Deploys automatizados com rollback rápido em caso de falha'
+    ],
+    technicalDecisions: [
+      'Remote State com S3 + DynamoDB Lock: Estado compartilhado entre desenvolvedores com lock distribuído para prevenir conflitos',
+      'Least Privilege IAM: Policies mínimas necessárias por recurso, seguindo princípio do menor privilégio',
+      'Dead Letter Queues: SQS DLQ com retention de 14 dias para debug e reprocessamento de mensagens falhas',
+      'Módulos Reutilizáveis: Componentes Terraform parametrizados para Lambda, SQS, S3 garantindo consistência',
+      'Lifecycle Policies: Automated data lifecycle em S3 (Standard → IA → Glacier) para otimização de custos'
     ]
   },
   {
@@ -116,6 +124,13 @@ export const projects: Project[] = [
       'Redução de 60% no tempo de extração com balanceamento inteligente',
       'Recovery automático em cenários de falha sem intervenção manual',
       'Rastreabilidade completa de eventos do início ao fim'
+    ],
+    technicalDecisions: [
+      'Outbox Pattern: Garantia de exactly-once delivery persistindo eventos na mesma transação antes de publicar',
+      'Exponential Backoff: Retry policies com tempo crescente entre tentativas (2s → 4s → 8s → 16s) para evitar sobrecarga',
+      'Idempotency Keys: Consumers processam eventos múltiplas vezes sem duplicação usando identificadores únicos',
+      'Circuit Breaker: Proteção contra cascading failures em sistemas downstream com fallback automático',
+      'Event Versioning: Schema evolution permitindo compatibilidade entre versões de eventos'
     ]
   },
   {
@@ -162,6 +177,13 @@ export const projects: Project[] = [
       'Redução de 80% em falhas por problemas de rede',
       'Tempo de sincronização reduzido de horas para minutos',
       'Zero perda de dados em cenários de falha de rede'
+    ],
+    technicalDecisions: [
+      'Circuit Breaker Pattern: Evita sobrecarga em sistemas legados com timeout configurável e fallback',
+      'Data Transformation Layer: Middleware dedicado para converter formatos legados em JSON moderno',
+      'Retry Queue: Fila separada para reprocessamento de mensagens falhas sem bloquear fluxo principal',
+      'Health Check Proativo: Monitoring contínuo de conectividade antes de tentar comunicação',
+      'Dual Write Strategy: Sincronização bidirecional com conflict resolution baseado em timestamp'
     ]
   },
   {
@@ -210,6 +232,13 @@ export const projects: Project[] = [
       'Sincronização incremental reduz tráfego em 70%',
       'Conflitos resolvidos automaticamente em 95% dos casos',
       'Cache versionado permite rollback instantâneo'
+    ],
+    technicalDecisions: [
+      'Change Data Capture: Tracking de modificações offline com delta calculation para sync incremental',
+      'Conflict Resolution Strategy: Last-Write-Wins com timestamp + manual resolution para casos críticos',
+      'JSON Compression: Gzip compression em payloads reduzindo tamanho em 60-70%',
+      'Versioned Cache: Cada sincronização gera nova versão permitindo rollback sem perda de dados',
+      'Optimistic Locking: Version field em entidades previne overwrites acidentais'
     ]
   },
   {
@@ -258,6 +287,13 @@ export const projects: Project[] = [
       'Acurácia de 95% na extração de dados',
       'Processamento totalmente serverless com custo 70% menor',
       'Zero cadastros perdidos com retry automático'
+    ],
+    technicalDecisions: [
+      'S3 Event Trigger: Lambda invocada automaticamente no upload eliminando polling',
+      'Image Preprocessing: Resize e normalização antes do OCR aumentando acurácia em 15%',
+      'Validation Pipeline: Múltiplas camadas de validação (format, checksum, business rules)',
+      'Async Processing: SQS entre Lambda e API desacoplando processamento da persistência',
+      'Cost Optimization: Lambda configurada com memory/timeout mínimos baseado em profiling'
     ]
   },
   {
@@ -309,6 +345,13 @@ export const projects: Project[] = [
       'Redução de 70% em queries através de otimizações',
       'Módulos bem definidos facilitam manutenção',
       'Tempo de resposta médio < 200ms em 95% das requisições'
+    ],
+    technicalDecisions: [
+      'Bounded Contexts: Separação clara de domínios (Sales, Products, Orders) seguindo DDD',
+      'N+1 Query Elimination: Uso de JOIN FETCH e EntityGraph evitando lazy loading problems',
+      'Transaction Management: @Transactional com isolation REPEATABLE_READ para consistência',
+      'Redis Caching: Cache de segundo nível em queries frequentes com TTL configurável',
+      'Connection Pooling: HikariCP otimizado (pool size, timeout) baseado em load testing'
     ]
   }
 ];

@@ -49,6 +49,13 @@ export const projects: Project[] = [
       'Zero manual configurations in AWS Console',
       'Versioned and auditable infrastructure via Git',
       'Automated deploys with quick rollback on failure'
+    ],
+    technicalDecisions: [
+      'Remote State with S3 + DynamoDB Lock: Shared state between developers with distributed locking to prevent conflicts',
+      'Least Privilege IAM: Minimal necessary policies per resource, following principle of least privilege',
+      'Dead Letter Queues: SQS DLQ with 14-day retention for debugging and reprocessing failed messages',
+      'Reusable Modules: Parameterized Terraform components for Lambda, SQS, S3 ensuring consistency',
+      'Lifecycle Policies: Automated data lifecycle in S3 (Standard → IA → Glacier) for cost optimization'
     ]
   },
   {
@@ -100,6 +107,13 @@ export const projects: Project[] = [
       '60% reduction in extraction time with smart balancing',
       'Automatic recovery in failure scenarios without manual intervention',
       'Complete event traceability from start to finish'
+    ],
+    technicalDecisions: [
+      'Outbox Pattern: Exactly-once delivery guarantee by persisting events in same transaction before publishing',
+      'Exponential Backoff: Retry policies with increasing time between attempts (2s → 4s → 8s → 16s) to avoid overload',
+      'Idempotency Keys: Consumers process events multiple times without duplication using unique identifiers',
+      'Circuit Breaker: Protection against cascading failures in downstream systems with automatic fallback',
+      'Event Versioning: Schema evolution allowing compatibility between event versions'
     ]
   },
   {
@@ -146,6 +160,13 @@ export const projects: Project[] = [
       '80% reduction in network-related failures',
       'Synchronization time reduced from hours to minutes',
       'Zero data loss in network failure scenarios'
+    ],
+    technicalDecisions: [
+      'Circuit Breaker Pattern: Prevents legacy system overload with configurable timeout and fallback',
+      'Data Transformation Layer: Dedicated middleware to convert legacy formats to modern JSON',
+      'Retry Queue: Separate queue for reprocessing failed messages without blocking main flow',
+      'Proactive Health Check: Continuous connectivity monitoring before attempting communication',
+      'Dual Write Strategy: Bidirectional sync with timestamp-based conflict resolution'
     ]
   },
   {
@@ -194,6 +215,13 @@ export const projects: Project[] = [
       'Incremental sync reduces traffic by 70%',
       'Conflicts automatically resolved in 95% of cases',
       'Versioned cache allows instant rollback'
+    ],
+    technicalDecisions: [
+      'Change Data Capture: Offline modification tracking with delta calculation for incremental sync',
+      'Conflict Resolution Strategy: Last-Write-Wins with timestamp + manual resolution for critical cases',
+      'JSON Compression: Gzip compression on payloads reducing size by 60-70%',
+      'Versioned Cache: Each sync generates new version allowing rollback without data loss',
+      'Optimistic Locking: Version field in entities prevents accidental overwrites'
     ]
   },
   {
@@ -242,6 +270,13 @@ export const projects: Project[] = [
       '95% accuracy in data extraction',
       'Fully serverless processing with 70% lower cost',
       'Zero lost registrations with automatic retry'
+    ],
+    technicalDecisions: [
+      'S3 Event Trigger: Lambda automatically invoked on upload eliminating polling',
+      'Image Preprocessing: Resize and normalization before OCR increasing accuracy by 15%',
+      'Validation Pipeline: Multiple validation layers (format, checksum, business rules)',
+      'Async Processing: SQS between Lambda and API decoupling processing from persistence',
+      'Cost Optimization: Lambda configured with minimal memory/timeout based on profiling'
     ]
   },
   {
@@ -293,6 +328,13 @@ export const projects: Project[] = [
       '70% reduction in queries through optimizations',
       'Well-defined modules facilitate maintenance',
       'Average response time < 200ms in 95% of requests'
+    ],
+    technicalDecisions: [
+      'Bounded Contexts: Clear domain separation (Sales, Products, Orders) following DDD',
+      'N+1 Query Elimination: Use of JOIN FETCH and EntityGraph avoiding lazy loading problems',
+      'Transaction Management: @Transactional with REPEATABLE_READ isolation for consistency',
+      'Redis Caching: Second-level cache on frequent queries with configurable TTL',
+      'Connection Pooling: HikariCP optimized (pool size, timeout) based on load testing'
     ]
   }
 ];

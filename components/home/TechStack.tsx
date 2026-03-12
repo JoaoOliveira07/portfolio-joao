@@ -76,14 +76,14 @@ export function TechStack() {
           </p>
         </div>
 
-        {/* Tech Marquee */}
+        {/* Tech Marquee - Full Width with Gradient Overlays */}
         <div className="relative mb-16 overflow-hidden">
           {/* Gradient Overlays */}
           <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
           
           {/* Scrolling Container */}
-          <div className="flex items-center marquee-container">
+          <div className="flex items-center justify-center w-full">
             <div className="flex animate-marquee">
               {duplicatedLogos.map((tech, index) => (
                 <TechItem
@@ -96,7 +96,7 @@ export function TechStack() {
         </div>
 
         {/* Skills Categories - Minimalist Grid */}
-        <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {skillCategories.map((category) => (
             <StaggerItem key={category.id}>
               <div className="bg-white rounded-lg border border-neutral-200 hover:border-primary/30 hover:shadow-md transition-all duration-300 p-6 h-full">

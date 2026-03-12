@@ -1,11 +1,12 @@
 'use client';
 
+import React from 'react';
 import { useLocale } from 'next-intl';
 import { Badge } from '@/components/ui/Badge';
 import { experience as experiencePt } from '@/data/experience/pt';
 import { experience as experienceEn } from '@/data/experience/en';
 import { competencies } from '@/data/skills';
-import { Briefcase, MapPin, Workflow, FlaskConical, Cloud, ShieldCheck, LucideIcon } from 'lucide-react';
+import { Briefcase, MapPin, Workflow, FlaskConical, Cloud, ShieldCheck, LucideIcon, Rocket, Code, Star, Award, CheckCircle } from 'lucide-react';
 import { IconContainer } from '@/components/ui/IconContainer';
 
 export function Timeline() {
@@ -41,10 +42,26 @@ export function Timeline() {
               {/* Content */}
               <div className="flex flex-col gap-4 p-5 bg-white rounded-2xl border border-neutral-200 hover:border-primary/30 hover:shadow-md transition-all">
                 <div className="flex flex-col gap-2">
-                  <h4 className="text-lg font-bold text-neutral-900">{position.title}</h4>
+                  <div className="flex items-center gap-3">
+                    {/* Icon based on title */}
+                    {getLevelIcon(position.title)}
+                    <h4 className="text-lg font-bold text-neutral-900">{position.title}</h4>
+                  </div>
                   <p className="text-xs text-neutral-500">{position.period}</p>
                   <p className="text-sm text-neutral-600 leading-relaxed">{position.description}</p>
                 </div>
+
+                {/* Achievements Badges */}
+                {getAchievements(position.title).length > 0 && (
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    {getAchievements(position.title).map((achievement, idx) => (
+                      <Badge key={idx} variant="outline" className="text-xs bg-yellow-50 border-yellow-200 text-yellow-700">
+                        <Star className="w-3 h-3 mr-1" />
+                        {achievement}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
 
                 {/* Responsibilities */}
                 <div className="flex flex-col gap-2">
@@ -73,6 +90,31 @@ export function Timeline() {
       </div>
     </div>
   );
+}
+
+// Helper function to get level icon
+function getLevelIcon(title: string): React.ReactElement {
+  const iconClasses = "w-5 h-5 text-primary-600";
+  if (title.includes("Mid-Level")) return <Rocket className={iconClasses} />;
+  if (title.includes("Junior")) return <Code className={iconClasses} />;
+  if (title.includes("Trainee")) return <FlaskConical className={iconClasses} />;
+  if (title.includes("IT Assistant")) return <CheckCircle className={iconClasses} />;
+  return <Briefcase className={iconClasses} />;
+}
+
+// Helper function to get achievements
+function getAchievements(title: string): string[] {
+  const achievements: Record<string, string[]> = {
+    "Mid-Level": ["AWS Champion", "Lead Dev", "TDD Master"],
+    "Junior": ["First Deploy", "Code Quality"],
+    "Trainee": ["Fast Learner"],
+    "IT Assistant": ["Foundation"]
+  };
+  
+  for (const key in achievements) {
+    if (title.includes(key)) return achievements[key];
+  }
+  return [];
 }
 
 // Icon mapping
