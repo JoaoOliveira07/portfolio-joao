@@ -4,6 +4,7 @@ export interface Position {
   description: string;
   responsibilities: string[];
   techStack: string[];
+  isLocked?: boolean;
 }
 
 export interface Experience {
@@ -17,22 +18,33 @@ export const experience: Experience = {
   location: "Gaspar, SC - Brasil",
   positions: [
     {
+      title: "Senior Software Developer",
+      period: "2027 - Em breve",
+      description: "Próxima etapa da carreira - construção de arquiteturas complexas e liderança técnica.",
+      responsibilities: [
+        "Arquitetura de sistemas distribuídos e escaláveis",
+        "Liderança técnica e mentoring de equipe",
+        "Tomada de decisões técnicas estratégicas"
+      ],
+      techStack: [],
+      isLocked: true
+    },
+    {
       title: "Mid-Level Software Developer",
       period: "Set 2025 - Atual (7 meses)",
-      description: "Desenvolvo soluções robustas e escaláveis, focando em qualidade, performance e boas práticas de engenharia de software.",
+      description: "Desenvolvo soluções robustas e escaláveis, focando em qualidade e performance.",
       responsibilities: [
         "Entrega de features críticas garantindo código sustentável e manutenível",
-        "Contribuição em decisões técnicas de arquitetura, performance e design de sistemas",
+        "Contribuição em decisões técnicas de arquitetura e design de sistemas",
         "Code reviews para manter qualidade e padronização do código",
-        "Colaboração em infraestrutura e automação usando AWS (Lambda, SQS, ECS, S3) e Terraform",
-        "Mentoria técnica e compartilhamento de conhecimento com o time"
+        "Colaboração em infraestrutura e automação usando AWS (Lambda, SQS, ECS, S3) e Terraform"
       ],
       techStack: ["Java 17", "Spring Boot", "AWS", "Terraform", "Docker", "PostgreSQL", "Event-Driven Architecture"]
     },
     {
       title: "Junior Software Developer",
       period: "Ago 2024 - Ago 2025 (1 ano 1 mês)",
-      description: "Trabalhei em features e projetos mais complexos com maior autonomia. Expandindo expertise em cloud computing.",
+      description: "Desenvolvimento de features mais complexas com maior autonomia.",
       responsibilities: [
         "Desenvolvimento de soluções end-to-end, da análise à entrega final",
         "Code reviews e descrição técnica de tarefas",

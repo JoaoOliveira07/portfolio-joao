@@ -1,8 +1,12 @@
 {
   "nav": {
     "home": "Home",
-    "projects": "Projects",
-    "about": "About"
+    "about": "About",
+    "experience": "Experience",
+    "engineering": "Engineering",
+    "learning": "Learning",
+    "techStack": "Tech Stack",
+    "projects": "Projects"
   },
   "hero": {
     "role": "Mid-Level Backend Developer",

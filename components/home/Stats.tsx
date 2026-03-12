@@ -120,23 +120,23 @@ export function Stats() {
   ];
 
   return (
-    <section className="w-full py-20 md:py-32 bg-white border-t border-dashed border-neutral-200">
+    <div className="w-full">
       <div className="container mx-auto px-6 max-w-7xl">
         {/* Section Header */}
-        <div className="mb-12 md:mb-16">
-          <div className="flex items-start gap-3 mb-3">
-            <div className="w-1 h-6 bg-primary-500 rounded-full flex-shrink-0 mt-1" />
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-900">
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-1 h-5 bg-primary-500 rounded-full flex-shrink-0" />
+            <h2 className="text-2xl font-bold text-neutral-900">
               {t('title')}
             </h2>
           </div>
-          <p className="text-base text-neutral-500 ml-7">
+          <p className="text-sm text-neutral-500 ml-6">
             {t('subtitle')}
           </p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12 md:mb-16">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {stats.map((stat, index) => {
             const IconComponent = stat.icon;
             
@@ -261,12 +261,12 @@ export function Stats() {
         </FadeIn>
 
         {/* Footer Note */}
-        <div className="text-center mt-10">
+        <div className="text-center mt-8">
           <p className="text-xs text-neutral-400">
             Data refreshed every hour • Powered by GitHub API
           </p>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

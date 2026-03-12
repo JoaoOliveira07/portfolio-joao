@@ -57,42 +57,55 @@ export function TechStack() {
   const t = useTranslations('techStack');
   const locale = useLocale();
   
-  // Duplicate logos for infinite scroll effect
-  const duplicatedLogos = [...techLogos, ...techLogos];
-
   return (
-    <section className="w-full py-20 md:py-32 bg-white border-t border-dashed border-neutral-200">
+    <section className="w-full">
       <div className="container mx-auto px-6 max-w-7xl">
         {/* Section Header */}
-        <div className="mb-12 md:mb-16">
-          <div className="flex items-start gap-3 mb-3">
-            <div className="w-1 h-6 bg-primary-500 rounded-full flex-shrink-0 mt-1" />
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-900">
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-1 h-5 bg-primary-500 rounded-full flex-shrink-0" />
+            <h2 className="text-2xl font-bold text-neutral-900">
               {t('title')}
             </h2>
           </div>
-          <p className="text-base text-neutral-500 ml-7">
+          <p className="text-sm text-neutral-500 ml-6">
             {t('subtitle')}
           </p>
         </div>
 
         {/* Tech Marquee - Full Width with Gradient Overlays */}
-        <div className="relative mb-16 overflow-hidden">
-          {/* Gradient Overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+        <div className="relative mb-8 -mx-6 px-6 md:-mx-12 md:px-12">
+          {/* Gradient Overlays - fade to white on left and right edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
           
           {/* Scrolling Container */}
-          <div className="flex items-center justify-center w-full">
+          <div className="overflow-hidden">
+            {/* Duplicate the marquee content for seamless infinite scroll */}
             <div className="flex animate-marquee">
-              {duplicatedLogos.map((tech, index) => (
+              {[...techLogos, ...techLogos].map((tech, index) => (
                 <TechItem
-                  key={`${tech.name}-${index}`}
+                  key={`tech-${tech.name}-${index}`}
                   {...tech}
                 />
               ))}
             </div>
           </div>
+          
+          {/* CSS for infinite marquee animation */}
+          <style>{`
+            @keyframes marquee {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-50%); }
+            }
+            .animate-marquee {
+              display: flex;
+              animation: marquee 40s linear infinite;
+            }
+            .animate-marquee:hover {
+              animation-play-state: paused;
+            }
+          `}</style>
         </div>
 
         {/* Skills Categories - Minimalist Grid */}

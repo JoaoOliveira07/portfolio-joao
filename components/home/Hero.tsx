@@ -21,7 +21,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="w-full py-20 md:py-32 bg-gradient-to-b from-neutral-50 to-white">
+    <section className="w-full py-16 md:py-24 bg-gradient-to-b from-neutral-50 to-white">
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex flex-col items-center text-center gap-8 max-w-4xl mx-auto">
           <Stagger className="flex flex-col items-center gap-8">
@@ -64,7 +64,7 @@ export function Hero() {
             <StaggerItem>
               <div className="flex flex-wrap gap-4 mt-6 justify-center">
                 <Button asChild variant="success" size="lg">
-                  <Link href={`/${locale}/projects`} className="flex items-center gap-2">
+                  <Link href="#projects" className="flex items-center gap-2 scroll-smooth" scroll={false}>
                     <span>{t('cta.projects')}</span>
                     <ArrowRight className="h-5 w-5 flex-shrink-0" />
                   </Link>
@@ -106,7 +106,7 @@ export function Hero() {
                 <span className="text-sm font-semibold text-neutral-900">
                   {t('role')}
                 </span>
-                <span className="text-neutral-400">•</span>
+                <div className="w-4 border-t border-dashed border-neutral-300"></div>
                 <span className="text-sm text-neutral-600">
                   Gaspar, SC - Brasil
                 </span>

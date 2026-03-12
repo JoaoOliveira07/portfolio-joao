@@ -20,21 +20,8 @@ export function Competencies() {
   const t = useTranslations('competencies');
 
   return (
-    <section className="w-full py-20 md:py-32 bg-white border-t border-dashed border-neutral-200">
+    <section className="w-full">
       <div className="container mx-auto px-6 max-w-7xl">
-        {/* Section Header */}
-        <div className="mb-12 md:mb-16">
-          <div className="flex items-start gap-3 mb-3">
-            <div className="w-1 h-6 bg-primary-500 rounded-full flex-shrink-0 mt-1" />
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-900">
-              {t('title')}
-            </h2>
-          </div>
-          <p className="text-base text-neutral-500 ml-7">
-            {t('subtitle')}
-          </p>
-        </div>
-
         {/* Competency Grid */}
         <Stagger className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {competencies.map((competency, index) => {
