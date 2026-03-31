@@ -2,7 +2,7 @@
 
 import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/Button';
-import { Github, Linkedin, Download, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 
@@ -70,7 +70,7 @@ export function Hero() {
               {t('description')}
             </p>
             
-            <div 
+              <div 
               className="flex flex-wrap gap-4"
               style={{
                 opacity: mounted ? 1 : 0,
@@ -86,28 +86,10 @@ export function Hero() {
                 </a>
               </Button>
               <Button asChild variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 bg-transparent">
-                <a href={`/cv/cv-${locale}.pdf`} download className="flex items-center gap-2">
-                  <Download className="h-5 w-5" />
-                  <span>{t('cta.cv')}</span>
+                <a href="#contact" onClick={(e) => handleScroll(e, '#contact')} className="flex items-center gap-2">
+                  <span>{t('cta.contact')}</span>
                 </a>
               </Button>
-            </div>
-
-            <div 
-              className="flex items-center gap-6 mt-8 md:mt-10"
-              style={{
-                opacity: mounted ? 1 : 0,
-                transform: mounted ? 'translateY(0)' : 'translateY(20px)',
-                transition: 'opacity 600ms ease-out, transform 600ms ease-out',
-                transitionDelay: '450ms',
-              }}
-            >
-              <a href="https://github.com/JoaoOliveira07" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-emerald-400 transition-colors">
-                <Github className="h-6 w-6" />
-              </a>
-              <a href="https://www.linkedin.com/in/joão-paulo-oliveira07/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-emerald-400 transition-colors">
-                <Linkedin className="h-6 w-6" />
-              </a>
             </div>
           </div>
 

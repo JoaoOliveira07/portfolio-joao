@@ -13,14 +13,13 @@ export function Navigation() {
 
   const navItems = [
     { href: '#hero', label: t('home') },
+    { href: '#projects', label: t('projects') },
+    { href: '#engineering', label: t('engineering') },
+    { href: '#techstack', label: t('techstack') },
     { href: '#philosophy', label: t('philosophy') },
     { href: '#experience', label: t('experience') },
-    { href: '#techstack', label: t('techstack') },
-    { href: '#engineering', label: t('engineering') },
-    { href: '#system-design', label: t('systemDesign') },
-    { href: '#projects', label: t('projects') },
-    { href: '#stats', label: t('stats') },
     { href: '#testimonials', label: t('testimonials') },
+    { href: '#contact', label: t('contact') },
   ];
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {

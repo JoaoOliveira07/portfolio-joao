@@ -25,7 +25,7 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
     };
   }, [isOpen, onClose]);
 
@@ -45,6 +45,17 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
           "relative bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col border border-white/10",
           className
         )}
+        onWheel={(e) => {
+          e.stopPropagation();
+          const target = e.currentTarget as HTMLElement;
+          const { scrollTop, scrollHeight, clientHeight } = target;
+          const isAtTop = scrollTop === 0;
+          const isAtBottom = scrollTop + clientHeight >= scrollHeight;
+          if ((e.deltaY < 0 && isAtTop) || (e.deltaY > 0 && isAtBottom)) {
+            e.preventDefault();
+          }
+        }}
+        onTouchMove={(e) => e.stopPropagation()}
       >
         {/* Header */}
         {title && (

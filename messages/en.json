@@ -1,22 +1,21 @@
 {
   "nav": {
     "home": "Home",
+    "projects": "Projects",
+    "engineering": "What I Solve",
+    "techstack": "Stack",
     "philosophy": "About",
     "experience": "Experience",
-    "techstack": "Stack",
-    "engineering": "Engineering",
-    "systemDesign": "Architecture",
-    "projects": "Projects",
-    "stats": "Stats",
-    "testimonials": "Testimonials"
+    "testimonials": "Testimonials",
+    "contact": "Contact"
   },
   "hero": {
-    "role": "Java Backend Developer",
-    "tagline": "Java developer building back-end solutions with Spring Boot.",
-    "description": "I work with Java, Spring Boot, AWS, JPA and Hibernate. Focused on clean code, development best practices and continuous learning.",
+    "role": "Backend Engineer",
+    "tagline": "Backend Engineer focused on scalable systems and complex integrations.",
+    "description": "+4 years | Java / Spring Boot | AWS | Distributed Architecture",
     "cta": {
       "projects": "View Projects",
-      "cv": "Download Resume"
+      "contact": "Contact"
     }
   },
   "competencies": {
@@ -36,7 +35,7 @@
   },
   "about": {
     "title": "About Me",
-    "intro": "Backend Developer with 4+ years of experience building robust and scalable APIs. Specialized in Java and Spring Boot, focused on distributed systems architecture, microservices, and development best practices. Passionate about clean code, elegant solutions, and continuous learning.",
+    "intro": "Software engineer focused on backend and architecture. I build resilient systems and critical integrations.",
     "experience": "Work Experience",
     "competencies": "Competencies",
     "recommendations": "Recommendations"
@@ -65,8 +64,8 @@
     "completeStack": "Complete Stack"
   },
   "engineeringPractices": {
-    "title": "Engineering Practices",
-    "subtitle": "Principles and methodologies we apply daily to deliver quality code",
+    "title": "What I Solve",
+    "subtitle": "Real problems I master and solve with engineering precision",
     "overview": "Overview",
     "howIApply": "How I Apply in Practice",
     "relatedProjects": "Related Projects",

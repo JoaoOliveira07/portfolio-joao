@@ -10,139 +10,123 @@ export interface EngineeringPractice {
 
 export const engineeringPractices: EngineeringPractice[] = [
   {
-    id: 'tdd',
-    icon: 'FlaskConical',
-    title: 'Test-Driven Development (TDD)',
-    shortDescription: 'Testes unitários e de integração como parte do processo de desenvolvimento, não apenas validação',
-    longDescription: 'Test-Driven Development é minha abordagem padrão para desenvolvimento. Escrevo testes antes do código de produção, garantindo que cada feature tenha cobertura desde o início. Isso não apenas valida o comportamento, mas também dirige o design do código para ser testável e desacoplado.',
+    id: 'distributed-systems',
+    icon: 'Network',
+    title: 'Sistemas Distribuídos',
+    shortDescription: 'Arquiteturas que funcionam em múltiplas instâncias sem perda de dados',
+    longDescription: 'Sistemas distribuídos são minha especialidade. Desenvolvo arquiteturas que escalam horizontalmente, mantêm consistência eventual, e resistem a falhas de instância.',
     howIApply: [
-      'Red-Green-Refactor: escrevo teste falhando → implemento mínimo necessário → refatoro',
-      'Testes de integração com Testcontainers para PostgreSQL, Redis e messaging',
-      'Mocks com Mockito apenas quando necessário, prefiro testes de integração sempre que possível',
-      'Cobertura de testes focada em cenários críticos e edge cases, não apenas em números',
-      'Testes como documentação viva do comportamento esperado do sistema'
+      'Coordenação com Redis/RabbitMQ para sincronização entre instâncias',
+      'Pattern Outbox para garantir exactly-once em transações distribuídas',
+      'Circuit Breaker para evitar falhas em cascata',
+      'Partitionamento de dados por chave de negócio',
+      'Consistência eventual com Event Sourcing'
     ],
-    relatedProjects: ['pipeline-event-driven', 'sistema-rca-monolito']
+    relatedProjects: ['pipeline-event-driven', 'integradora-offline-online']
   },
   {
-    id: 'clean-architecture',
-    icon: 'Layers',
-    title: 'Clean Architecture',
-    shortDescription: 'Separação clara de responsabilidades em camadas, mantendo regras de negócio isoladas de frameworks',
-    longDescription: 'Aplico princípios de Clean Architecture para manter o código organizado, testável e independente de frameworks. A lógica de negócio fica no núcleo, enquanto detalhes de infraestrutura (banco de dados, APIs externas) ficam nas bordas.',
+    id: 'complex-integrations',
+    icon: 'Plug',
+    title: 'Integrações Complexas',
+    shortDescription: 'Conexões com ERPs, APIs externas e sistemas legados sem dor de cabeça',
+    longDescription: 'Integrações são onde maioria dos sistemas falha. Desenvolvo conectores resilientes que lidam com timeouts, retries, transformações de dados e falhas parciais.',
     howIApply: [
-      'Separação em camadas: Domain (entities, use cases) → Application (services) → Infrastructure (repositories, APIs)',
-      'Dependency Inversion: módulos internos não dependem de detalhes externos',
-      'Use Cases explícitos representando ações de negócio',
-      'Entities ricas com regras de negócio encapsuladas',
-      'Adapters para isolar comunicação com sistemas externos'
+      'Padrão Adapter para isolar contratos de APIs externas',
+      'Dead Letter Queue para investigar falhas assincronamente',
+      'Idempotência garantir processamento único',
+      'MapStruct para transformação eficiente entre domínios',
+      'Circuit Breaker para proteger de APIs instáveis'
     ],
-    relatedProjects: ['sistema-rca-monolito', 'arquitetura-integracao-hibrida']
+    relatedProjects: ['arquitetura-integracao-hibrida', 'sistema-cadastro-ocr']
   },
   {
-    id: 'solid',
-    icon: 'Box',
-    title: 'SOLID Principles',
-    shortDescription: 'Princípios fundamentais para código coeso, desacoplado e fácil de manter',
-    longDescription: 'SOLID não é apenas teoria, aplico diariamente para tomar decisões de design. Single Responsibility mantém classes focadas, Open/Closed facilita extensão, Liskov garante substituibilidade, Interface Segregation evita dependências desnecessárias, e Dependency Inversion permite testabilidade.',
+    id: 'performance',
+    icon: 'Zap',
+    title: 'Performance & Escalabilidade',
+    shortDescription: 'Sistemas rápidos mesmo com milhões de requisições',
+    longDescription: 'Performance não é luxo, é requisito. Otimizo desde queries N+1 até arquitetura de caching, garantindo tempo de resposta consistente sob carga.',
     howIApply: [
-      'Single Responsibility: cada classe tem um único motivo para mudar',
-      'Open/Closed: extensível via herança/composição sem modificar código existente',
-      'Liskov Substitution: subtipos podem substituir tipos base sem quebrar comportamento',
-      'Interface Segregation: interfaces específicas em vez de interfaces gordas',
-      'Dependency Inversion: dependo de abstrações, não de implementações concretas'
+      'Análise de execution plans para otimizar queries SQL',
+      'Caching em múltiplas camadas (Redis, Caffeine)',
+      'Async processing para operações pesadas',
+      'Indexação estratégica baseada em padrões de acesso',
+      'Profiling com Async Profiler para identificar gargalos'
     ],
-    relatedProjects: ['pipeline-event-driven', 'sistema-rca-monolito']
+    relatedProjects: ['sistema-rca-monolito', 'pipeline-event-driven']
   },
   {
-    id: 'event-driven',
-    icon: 'Workflow',
-    title: 'Event-Driven Architecture',
-    shortDescription: 'Sistemas desacoplados que reagem a eventos, permitindo escalabilidade e resiliência',
-    longDescription: 'Arquitetura orientada a eventos é minha especialidade. Desenvolvo sistemas que se comunicam via eventos assíncronos, permitindo desacoplamento temporal e espacial. Implemento padrões como Outbox, Event Sourcing, e CQRS quando apropriado.',
+    id: 'production-issues',
+    icon: 'AlertTriangle',
+    title: 'Problemas em Produção',
+    shortDescription: 'Debugging de incidentes críticos com precisão de engenharia',
+    longDescription: 'O que separa júnior de sênior é a capacidade de resolver problemas em produção. Tenho experiência em incidentes críticos, desde deadlocks até vazamentos de memória.',
     howIApply: [
-      'Outbox Pattern para garantir exactly-once delivery em transações distribuídas',
-      'Event Relay para publicação confiável de eventos',
-      'Idempotência em consumers usando identificadores únicos',
-      'Dead Letter Queues para tratamento de falhas',
-      'Event versioning para evolução de schema sem breaking changes'
+      'Distributed Tracing (OpenTelemetry) para seguir o fluxo completo',
+      'Análise de heap dumps e thread dumps',
+      'Log estruturado com correlation IDs',
+      'Post-mortem estruturado para evitar recorrência',
+      'Alertamento proativo baseado em SLOs'
     ],
-    relatedProjects: ['pipeline-event-driven', 'arquitetura-integracao-hibrida', 'sistema-cadastro-ocr']
+    relatedProjects: ['iac-terraform-aws', 'pipeline-event-driven']
   },
   {
-    id: 'ddd',
+    id: 'reliability',
+    icon: 'Shield',
+    title: 'Confiabilidade & Resiliência',
+    shortDescription: 'Sistemas que não caem quando as coisas dão errado',
+    longDescription: 'Sistemas confiáveis não evitam falhas, mas as graceful degradation. Desenvolvo arquiteturas que degradam lentamente e se recuperam automaticamente.',
+    howIApply: [
+      'Graceful degradation emfallhas parciais',
+      'Retry com backoff exponencial e jitter',
+      'Bulkheads para isolar recursos críticos',
+      'Health checks proativos e readiness probes',
+      'Rollback automatizado em deploys problemáticos'
+    ],
+    relatedProjects: ['pipeline-event-driven', 'integradora-offline-online']
+  },
+  {
+    id: 'data-consistency',
     icon: 'Database',
-    title: 'Domain-Driven Design (DDD)',
-    shortDescription: 'Modelagem de software focada no domínio de negócio e linguagem ubíqua',
-    longDescription: 'Domain-Driven Design guia minha forma de modelar sistemas complexos. Trabalho próximo ao negócio para entender o domínio, criar uma linguagem ubíqua, e dividir o sistema em Bounded Contexts bem definidos.',
+    title: 'Consistência de Dados',
+    shortDescription: 'Garantir que dados nunca se percam ou fiquem inconsistentes',
+    longDescription: 'Dados são o ativo mais importante. Desenvolvo estratégias de consistência que garantem integridade mesmo em cenários de falha parcial.',
     howIApply: [
-      'Bounded Contexts para separar domínios (Sales, Products, Orders, Customers)',
-      'Entities e Value Objects com comportamento rico, não apenas data holders',
-      'Aggregates para garantir consistência de transações',
-      'Domain Events para comunicação entre contextos',
-      'Linguagem ubíqua compartilhada entre dev e negócio'
+      'SAGA pattern para transações distribuídas',
+      'Two-phase commit quando necessário',
+      'Eventual consistency com reconciliation jobs',
+      'Checksums e validações em pipeline de dados',
+      'CDC para espelhamento de dados confiável'
     ],
-    relatedProjects: ['sistema-rca-monolito']
+    relatedProjects: ['integradora-offline-online', 'arquitetura-integracao-hibrida']
   },
   {
-    id: 'observability',
-    icon: 'Eye',
-    title: 'Observability',
-    shortDescription: 'Logs estruturados, métricas e tracing para entender o comportamento do sistema em produção',
-    longDescription: 'Observabilidade não é opcional, é parte do desenvolvimento. Implemento logs estruturados, métricas customizadas e distributed tracing desde o início, permitindo debug rápido e entendimento profundo do sistema em produção.',
+    id: 'cloud-native',
+    icon: 'Cloud',
+    title: 'Cloud & Infraestrutura',
+    shortDescription: 'Terraform, Kubernetes, AWS - infra como código',
+    longDescription: 'Infraestrutura é código. Desenvolvo toda configuração como código versionado, com pipelines reproduzíveis e ambientes idênticos.',
     howIApply: [
-      'Logs estruturados em JSON com correlation IDs para rastreamento',
-      'Métricas customizadas (Prometheus) para monitorar KPIs de negócio',
-      'Distributed Tracing (OpenTelemetry) em sistemas event-driven',
-      'Dashboards no Grafana para visualização em tempo real',
-      'Alertas proativos baseados em SLOs, não apenas em sintomas'
-    ],
-    relatedProjects: ['pipeline-event-driven', 'iac-terraform-aws']
-  },
-  {
-    id: 'cicd',
-    icon: 'GitBranch',
-    title: 'CI/CD',
-    shortDescription: 'Integração e deploy contínuos para entregas rápidas e confiáveis',
-    longDescription: 'CI/CD não é apenas automação, é cultura de entrega contínua. Pipelines automatizados executam testes, análise de código, e deploy em múltiplos ambientes, garantindo que código funcional chegue rapidamente em produção.',
-    howIApply: [
-      'Pipelines automatizados: build → test → security scan → deploy',
-      'Testes executados em todas as branches antes de merge',
-      'Deploy automatizado em staging após merge na main',
-      'Rollback automático em caso de falha em health checks',
-      'Infrastructure as Code versionado e aplicado via pipeline'
+      'Terraform para toda infraestrutura como código',
+      'EKS/Fargate para orquestração de containers',
+      'Lambda para event-driven serverless',
+      'CloudWatch/Grafana para monitoramento completo',
+      'IaC testável com Terratest'
     ],
     relatedProjects: ['iac-terraform-aws']
   },
   {
-    id: 'code-review',
-    icon: 'GitPullRequest',
-    title: 'Code Review',
-    shortDescription: 'Revisão colaborativa de código para manter qualidade e compartilhar conhecimento',
-    longDescription: 'Code review é momento de aprendizado mútuo e garantia de qualidade. Reviso código focando em design, legibilidade, testes e possíveis bugs. Também recebo feedback que me torna um desenvolvedor melhor.',
+    id: 'quality',
+    icon: 'CheckCircle',
+    title: 'Qualidade & Automação',
+    shortDescription: 'Testes que realmente protegem o código, não apenas números de cobertura',
+    longDescription: 'Qualidade não é métrica, é processo. Desenvolvo pipelines que validam behavior, não apenas executam testes.',
     howIApply: [
-      'Reviews focados em: design, legibilidade, testes, edge cases e segurança',
-      'Feedback construtivo com sugestões, não apenas críticas',
-      'Pair programming em features complexas antes do review',
-      'Checklist de qualidade: testes passando, sem code smells, documentação atualizada',
-      'Compartilhamento de conhecimento sobre padrões e práticas'
+      'TDD com emphasis em test pyramids',
+      'Testcontainers para testes de integração realistas',
+      'Mutation testing para validar qualidade de testes',
+      'Static analysis (SonarQube, SpotBugs)',
+      'Contract testing para APIs'
     ],
-    relatedProjects: ['sistema-rca-monolito', 'arquitetura-integracao-hibrida']
-  },
-  {
-    id: 'ai-assisted',
-    icon: 'Sparkles',
-    title: 'AI-Assisted Development',
-    shortDescription: 'Uso estratégico de IA para acelerar desenvolvimento, code reviews e documentação',
-    longDescription: 'Utilizo IA como parceira de desenvolvimento para aumentar produtividade e qualidade. O OpenCode com agents customizados planeja implementações, o GitHub Copilot auxilia code reviews, e Cloud Copilot implementa features complexas mantendo arquitetura e boas práticas.',
-    howIApply: [
-      'Planejamento com IA: analiso requisitos e crio plano de implementação antes de codar',
-      'OpenCode configurado com agents que respeitam a arquitetura do projeto e padrões',
-      'GitHub Copilot para code reviews automatizadas e sugestões de melhorias',
-      'Cloud Copilot para implementar features completas com contexto do sistema',
-      'Documentação e descrição de código automatizadas com IA',
-      'Aceleração do ciclo de desenvolvimento mantendo qualidade do código'
-    ],
-    relatedProjects: ['pipeline-event-driven', 'iac-terraform-aws']
+    relatedProjects: ['sistema-rca-monolito', 'pipeline-event-driven']
   }
 ];

@@ -1,22 +1,21 @@
 {
   "nav": {
     "home": "Início",
+    "projects": "Projetos",
+    "engineering": "O Que Resolvo",
+    "techstack": "Stack",
     "philosophy": "Sobre",
     "experience": "Experiência",
-    "techstack": "Stack",
-    "engineering": "Engenharia",
-    "systemDesign": "Arquitetura",
-    "projects": "Projetos",
-    "stats": "Números",
-    "testimonials": "Depoimentos"
+    "testimonials": "Depoimentos",
+    "contact": "Contato"
   },
   "hero": {
-    "role": "Desenvolvedor Backend Java",
-    "tagline": "Desenvolvedor Java construindo soluções back-end com Spring Boot.",
-    "description": "Trabalho com Java, Spring Boot, AWS, JPA e Hibernate. Focado em código limpo, boas práticas de desenvolvimento e aprendizado contínuo.",
+    "role": "Engenheiro Backend",
+    "tagline": "Backend Engineer focado em sistemas escaláveis e integrações complexas.",
+    "description": "+4 anos | Java / Spring Boot | AWS | Arquitetura distribuída",
     "cta": {
       "projects": "Ver Projetos",
-      "cv": "Download CV"
+      "contact": "Contato"
     }
   },
   "competencies": {
@@ -36,7 +35,7 @@
   },
   "about": {
     "title": "Sobre Mim",
-    "intro": "Desenvolvedor Backend com mais de 4 anos de experiência construindo APIs robustas e escaláveis. Especialista em Java e Spring Boot, com foco em arquitetura de sistemas distribuídos, microsserviços e boas práticas de desenvolvimento. Apaixonado por código limpo, soluções elegantes e aprendizado contínuo.",
+    "intro": "Engenheiro de software com foco em backend e arquitetura. Trabalho construindo sistemas resilientes e integrações críticas.",
     "experience": "Experiência Profissional",
     "competencies": "Competências",
     "recommendations": "Recomendações"
@@ -65,8 +64,8 @@
     "completeStack": "Stack Completo"
   },
   "engineeringPractices": {
-    "title": "Práticas de Engenharia",
-    "subtitle": "Princípios e metodologias que aplicamos diariamente para entregar código de qualidade",
+    "title": "O Que Eu Resolvo",
+    "subtitle": "Problemas reais que domino e soluciono com precisão de engenharia",
     "overview": "Visão Geral",
     "howIApply": "Como Aplico na Prática",
     "relatedProjects": "Projetos Relacionados",
