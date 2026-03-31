@@ -5,12 +5,16 @@ import { Github, Linkedin, Mail } from 'lucide-react';
 
 export function Contact() {
   const locale = useLocale();
+  const currentYear = new Date().getFullYear();
 
   return (
-    <section className="py-20 md:py-32 bg-neutral-950 text-white overflow-hidden relative" id="contact">
-      <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
+    <section className="py-16 md:py-20 bg-neutral-950 text-white" id="contact">
+      <div className="max-w-7xl mx-auto px-6 md:px-8">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+          <span className="text-emerald-400 font-bold tracking-widest text-xs uppercase">
+            {locale === 'pt' ? 'Contato' : 'Contact'}
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mt-3 mb-6">
             {locale === 'pt' ? 'Vamos construir algo grande?' : 'Let\'s build something great?'}
           </h2>
           <p className="text-gray-400 text-base md:text-lg mb-10">
@@ -19,7 +23,7 @@ export function Contact() {
               : 'Ready to scale your system or start a new project?'}
           </p>
           
-          <div className="flex flex-wrap justify-center gap-6">
+          <div className="flex flex-wrap justify-center gap-6 mb-12">
             <a 
               href="mailto:joao.oliveira.dev@gmail.com"
               className="flex items-center gap-3 px-6 py-4 bg-neutral-900 rounded-xl border border-white/10 hover:border-emerald-500/50 hover:bg-neutral-800 transition-all group"
@@ -51,7 +55,11 @@ export function Contact() {
         </div>
       </div>
       
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[120px]" />
+      <div className="max-w-7xl mx-auto px-6 md:px-8 pt-6">
+        <p className="text-center text-gray-600 text-sm">
+          © {currentYear} João Paulo Oliveira. {locale === 'pt' ? 'Todos os direitos reservados.' : 'All rights reserved.'}
+        </p>
+      </div>
     </section>
   );
 }

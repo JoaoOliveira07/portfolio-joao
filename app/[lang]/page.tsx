@@ -77,7 +77,7 @@ export default function HomePage() {
       </ScrollReveal>
 
       {/* Contact - Simples */}
-      <SectionDivider variant="gradient" />
+      <SectionDivider variant="line" />
       <Contact />
     </main>
   );
