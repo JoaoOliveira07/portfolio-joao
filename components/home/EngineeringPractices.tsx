@@ -19,13 +19,12 @@ export function EngineeringPractices() {
     <section className="w-full">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center mb-12">
-          <span className="text-emerald-400 font-bold tracking-widest text-xs uppercase">
-            {t('title')}
-          </span>
-          <p className="text-gray-400 mt-3">
-            {t('subtitle')}
-          </p>
+        <div className="mb-10">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-1 h-5 bg-emerald-500 rounded-full" />
+            <h2 className="text-2xl font-bold text-white">{t('title')}</h2>
+          </div>
+          <p className="text-sm text-gray-400 ml-6">{t('subtitle')}</p>
         </div>
 
         {/* Practices Grid */}

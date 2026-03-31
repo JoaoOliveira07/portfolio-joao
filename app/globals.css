@@ -12,7 +12,7 @@
   body {
     @apply bg-neutral-950 text-neutral-100 antialiased;
   }
-  
+
   html {
     scroll-behavior: smooth;
   }
@@ -83,5 +83,14 @@
 
   .animate-fadeIn {
     animation: fadeIn 0.4s ease-out;
+  }
+
+  /* Background radial gradients */
+  .bg-radial-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(16, 185, 129, 0.15), transparent);
+  }
+
+  .bg-radial-gradient-subtle {
+    background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(16, 185, 129, 0.08), transparent);
   }
 }

@@ -8,25 +8,33 @@ import { FeaturedProjects } from '@/components/home/FeaturedProjects';
 import { Stats } from '@/components/home/Stats';
 import { Testimonials } from '@/components/home/Testimonials';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
+import { SectionDivider } from '@/components/ui/SectionDivider';
+import { Sparkles } from '@/components/ui/Sparkles';
 
 export default function HomePage() {
   return (
-    <main>
+    <main className="relative">
+      {/* Background gradient */}
+      <div className="fixed inset-0 bg-radial-gradient pointer-events-none" />
+
       {/* Hero */}
-      <section id="hero">
+      <section id="hero" className="relative">
+        <Sparkles particleCount={30} particleSize={1.5} speed={0.5} className="opacity-50" />
         <Hero />
       </section>
 
       {/* Philosophy */}
+      <SectionDivider variant="glow" className="mt-8" />
       <ScrollReveal>
-        <section id="philosophy" className="bg-neutral-950">
+        <section id="philosophy" className="relative">
           <AboutSection />
         </section>
       </ScrollReveal>
 
       {/* Experience */}
+      <SectionDivider variant="line" />
       <ScrollReveal>
-        <section id="experience" className="bg-neutral-950">
+        <section id="experience" className="relative">
           <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
             <Timeline />
           </div>
@@ -34,8 +42,9 @@ export default function HomePage() {
       </ScrollReveal>
 
       {/* Tech Stack */}
+      <SectionDivider variant="line" />
       <ScrollReveal>
-        <section id="techstack" className="bg-neutral-950">
+        <section id="techstack" className="relative">
           <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
             <TechStack />
           </div>
@@ -43,8 +52,9 @@ export default function HomePage() {
       </ScrollReveal>
 
       {/* Engineering */}
+      <SectionDivider variant="line" />
       <ScrollReveal>
-        <section id="engineering" className="bg-neutral-950">
+        <section id="engineering" className="relative">
           <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
             <EngineeringPractices />
           </div>
@@ -52,8 +62,9 @@ export default function HomePage() {
       </ScrollReveal>
 
       {/* Conhecimentos (System Design) */}
+      <SectionDivider variant="line" />
       <ScrollReveal>
-        <section id="system-design" className="bg-neutral-950">
+        <section id="system-design" className="relative">
           <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
             <SystemDesignStudies />
           </div>
@@ -61,15 +72,17 @@ export default function HomePage() {
       </ScrollReveal>
 
       {/* Projects */}
+      <SectionDivider variant="line" />
       <ScrollReveal>
-        <section id="projects" className="bg-neutral-950">
+        <section id="projects" className="relative">
           <FeaturedProjects />
         </section>
       </ScrollReveal>
 
       {/* Stats */}
+      <SectionDivider variant="line" />
       <ScrollReveal>
-        <section id="stats" className="bg-neutral-950">
+        <section id="stats" className="relative">
           <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
             <Stats />
           </div>
@@ -77,11 +90,15 @@ export default function HomePage() {
       </ScrollReveal>
 
       {/* Testimonials */}
+      <SectionDivider variant="line" />
       <ScrollReveal>
-        <section id="testimonials" className="bg-neutral-950">
+        <section id="testimonials" className="relative">
           <Testimonials />
         </section>
       </ScrollReveal>
+
+      {/* Contact */}
+      <SectionDivider variant="gradient" />
     </main>
   );
 }

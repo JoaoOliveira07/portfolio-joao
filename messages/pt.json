@@ -13,7 +13,7 @@
   "hero": {
     "role": "Desenvolvedor Backend Java",
     "tagline": "Desenvolvedor Java construindo soluções back-end com Spring Boot.",
-    "description": "Trabalho com Java, Spring Boot, JPA, Hibernate, PostgreSQL e MySQL. Focado em código limpo, boas práticas de desenvolvimento e aprendizado contínuo.",
+    "description": "Trabalho com Java, Spring Boot, AWS, JPA e Hibernate. Focado em código limpo, boas práticas de desenvolvimento e aprendizado contínuo.",
     "cta": {
       "projects": "Ver Projetos",
       "cv": "Download CV"

@@ -15,27 +15,27 @@ const TechItem = ({ name, type, path, icon, displayName }: {
   displayName: string;
 }) => {
   return (
-    <div className="flex-shrink-0 flex flex-col items-center mx-0.5">
-      <div className="w-9 h-9 flex items-center justify-center bg-neutral-900 rounded-lg border border-white/10 hover:border-emerald-500/50 hover:bg-neutral-800 transition-all duration-300">
+    <div className="flex-shrink-0 flex flex-col items-center mx-1">
+      <div className="w-12 h-12 flex items-center justify-center bg-neutral-900 rounded-lg border border-white/10 hover:border-emerald-500/50 hover:bg-neutral-800 transition-all duration-300">
         {type === 'svg' && path ? (
           <Image
             src={path}
             alt={displayName}
             width={24}
             height={24}
-            className="w-7 h-7 object-contain"
+            className="w-10 h-10 object-contain"
             unoptimized
           />
         ) : icon ? (
           <div className="text-gray-400 group-hover:text-emerald-400 transition-colors">
             {(() => {
               const IconComponent = (LucideIcons as any)[icon];
-              return IconComponent ? <IconComponent className="w-6 h-6" /> : null;
+              return IconComponent ? <IconComponent className="w-8 h-8" /> : null;
             })()}
           </div>
         ) : null}
       </div>
-      <span className="text-[9px] text-gray-500 font-medium">{displayName}</span>
+      <span className="text-xs text-gray-500 font-medium mt-1">{displayName}</span>
     </div>
   );
 };
