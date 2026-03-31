@@ -10,6 +10,7 @@ import { FeaturedProjects } from '@/components/home/FeaturedProjects';
 import { Stats } from '@/components/home/Stats';
 import { Testimonials } from '@/components/home/Testimonials';
 import { Contact } from '@/components/home/Contact';
+import { ScrollReveal } from '@/components/ui/ScrollReveal';
 
 export default function HomePage() {
   return (
@@ -20,71 +21,93 @@ export default function HomePage() {
       </section>
 
       {/* Philosophy - Gray */}
-      <section id="philosophy" className="bg-gray-50">
-        <AboutSection />
-      </section>
+      <ScrollReveal>
+        <section id="philosophy" className="bg-gray-50">
+          <AboutSection />
+        </section>
+      </ScrollReveal>
 
       {/* Expertise - White */}
-      <section id="expertise" className="bg-white">
-        <Competencies />
-      </section>
+      <ScrollReveal>
+        <section id="expertise" className="bg-white">
+          <Competencies />
+        </section>
+      </ScrollReveal>
 
       {/* Experience - Gray */}
-      <section id="experience" className="bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
-          <Timeline />
-        </div>
-      </section>
+      <ScrollReveal>
+        <section id="experience" className="bg-gray-50">
+          <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
+            <Timeline />
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* Engineering - White */}
-      <section id="engineering" className="bg-white">
-        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
-          <EngineeringPractices />
-        </div>
-      </section>
+      <ScrollReveal>
+        <section id="engineering" className="bg-white">
+          <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
+            <EngineeringPractices />
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* Tech Stack - Gray */}
-      <section id="techstack" className="bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
-          <TechStack />
-        </div>
-      </section>
+      <ScrollReveal>
+        <section id="techstack" className="bg-gray-50">
+          <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
+            <TechStack />
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* Learning - White */}
-      <section id="learning" className="bg-white">
-        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
-          <CurrentlyLearning />
-        </div>
-      </section>
+      <ScrollReveal>
+        <section id="learning" className="bg-white">
+          <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
+            <CurrentlyLearning />
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* System Design Studies - Gray */}
-      <section id="system-design" className="bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
-          <SystemDesignStudies />
-        </div>
-      </section>
+      <ScrollReveal>
+        <section id="system-design" className="bg-gray-50">
+          <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
+            <SystemDesignStudies />
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* Projects - White */}
-      <section id="projects" className="bg-white">
-        <FeaturedProjects />
-      </section>
+      <ScrollReveal>
+        <section id="projects" className="bg-white">
+          <FeaturedProjects />
+        </section>
+      </ScrollReveal>
 
       {/* Stats - Gray */}
-      <section id="stats" className="bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
-          <Stats />
-        </div>
-      </section>
+      <ScrollReveal>
+        <section id="stats" className="bg-gray-50">
+          <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
+            <Stats />
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* Testimonials - White */}
-      <section id="testimonials" className="bg-white">
-        <Testimonials />
-      </section>
+      <ScrollReveal>
+        <section id="testimonials" className="bg-white">
+          <Testimonials />
+        </section>
+      </ScrollReveal>
 
       {/* Contact - Emerald Dark */}
-      <section id="contact" className="bg-emerald-900">
-        <Contact />
-      </section>
+      <ScrollReveal>
+        <section id="contact" className="bg-emerald-900">
+          <Contact />
+        </section>
+      </ScrollReveal>
     </main>
   );
 }

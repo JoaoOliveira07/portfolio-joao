@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { FadeIn } from '@/components/ui/Animations';
 import { GitCommit, GitPullRequest, FolderGit2, Code2 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -62,6 +62,27 @@ export function Stats() {
   const t = useTranslations('stats');
   const [githubData, setGithubData] = useState<GitHubData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [animatedValues, setAnimatedValues] = useState<Record<string, number>>({});
+  const [languageProgress, setLanguageProgress] = useState<Record<string, number>>({});
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     fetch('/api/github')
@@ -92,27 +113,64 @@ export function Stats() {
       });
   }, []);
 
+  useEffect(() => {
+    if (githubData && isVisible && !loading) {
+      const targets = {
+        totalCommits: githubData.contributions.totalCommits,
+        pullRequests: githubData.contributions.pullRequests,
+        activeRepos: githubData.contributions.activeRepos,
+        publicRepos: githubData.public_repos,
+      };
+
+      Object.entries(targets).forEach(([key, target]) => {
+        let current = 0;
+        const increment = target / 50;
+        const interval = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(interval);
+          }
+          setAnimatedValues(prev => ({ ...prev, [key]: Math.floor(current) }));
+        }, 20);
+      });
+
+      githubData.topLanguages.forEach((lang) => {
+        let progress = 0;
+        const target = parseFloat(lang.percentage);
+        const interval = setInterval(() => {
+          progress += target / 50;
+          if (progress >= target) {
+            progress = target;
+            clearInterval(interval);
+          }
+          setLanguageProgress(prev => ({ ...prev, [lang.name]: progress }));
+        }, 20);
+      });
+    }
+  }, [githubData, isVisible, loading]);
+
   const stats: Stat[] = [
     {
-      value: githubData?.contributions.totalCommits.toString() || '0',
+      value: (animatedValues.totalCommits || githubData?.contributions.totalCommits || 0).toString(),
       label: 'Total Commits',
       sublabel: 'All time',
       icon: GitCommit,
     },
     {
-      value: githubData?.contributions.pullRequests.toString() || '0',
+      value: (animatedValues.pullRequests || githubData?.contributions.pullRequests || 0).toString(),
       label: 'Pull Requests',
       sublabel: 'Last 30 days',
       icon: GitPullRequest,
     },
     {
-      value: githubData?.contributions.activeRepos.toString() || '0',
+      value: (animatedValues.activeRepos || githubData?.contributions.activeRepos || 0).toString(),
       label: 'Active Repos',
       sublabel: 'Last 30 days',
       icon: FolderGit2,
     },
     {
-      value: githubData?.public_repos.toString() || '0',
+      value: (animatedValues.publicRepos || githubData?.public_repos || 0).toString(),
       label: 'Total Projects',
       sublabel: 'Public repositories',
       icon: Code2,
@@ -120,7 +178,7 @@ export function Stats() {
   ];
 
   return (
-    <div className="w-full">
+    <div className="w-full" ref={containerRef}>
       <div className="max-w-7xl mx-auto px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -194,13 +252,13 @@ export function Stats() {
                           />
                           <span className="font-medium text-neutral-900">{lang.name}</span>
                         </div>
-                        <span className="text-neutral-500 text-xs">{lang.percentage}%</span>
+                        <span className="text-neutral-500 text-xs">{languageProgress[lang.name]?.toFixed(1) || lang.percentage}%</span>
                       </div>
                       <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
                         <div 
-                          className="h-full rounded-full transition-all duration-500"
+                          className="h-full rounded-full"
                           style={{ 
-                            width: `${lang.percentage}%`,
+                            width: `${languageProgress[lang.name] || 0}%`,
                             backgroundColor: LANGUAGE_COLORS[lang.name] || LANGUAGE_COLORS.Default
                           }}
                         />

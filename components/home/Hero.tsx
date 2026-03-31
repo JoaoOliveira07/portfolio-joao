@@ -4,25 +4,55 @@ import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Github, Linkedin, Download, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export function Hero() {
   const t = useTranslations('hero');
   const locale = useLocale();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <section className="pt-32 md:pt-40 pb-20 px-6 md:px-8 max-w-7xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         {/* Left - Text */}
         <div className="lg:col-span-8">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter text-gray-900 leading-[1.1] mb-6 md:mb-8">
+          <h1 
+            className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter text-gray-900 leading-[1.1] mb-6 md:mb-8"
+            style={{
+              opacity: mounted ? 1 : 0,
+              transform: mounted ? 'translateY(0)' : 'translateY(20px)',
+              transition: 'opacity 400ms ease-out, transform 400ms ease-out',
+              transitionDelay: '0ms',
+            }}
+          >
             {t('tagline')}
           </h1>
           
-          <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mb-8 md:mb-12">
+          <p 
+            className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mb-8 md:mb-12"
+            style={{
+              opacity: mounted ? 1 : 0,
+              transform: mounted ? 'translateY(0)' : 'translateY(20px)',
+              transition: 'opacity 400ms ease-out, transform 400ms ease-out',
+              transitionDelay: '150ms',
+            }}
+          >
             {t('description')}
           </p>
           
-          <div className="flex flex-wrap gap-4">
+          <div 
+            className="flex flex-wrap gap-4"
+            style={{
+              opacity: mounted ? 1 : 0,
+              transform: mounted ? 'translateY(0)' : 'translateY(20px)',
+              transition: 'opacity 400ms ease-out, transform 400ms ease-out',
+              transitionDelay: '300ms',
+            }}
+          >
             <Button asChild size="lg" className="bg-emerald-700 hover:bg-emerald-800 text-white">
               <Link href="#projects" className="flex items-center gap-2" scroll={false}>
                 <span>{t('cta.projects')}</span>
@@ -37,7 +67,15 @@ export function Hero() {
             </Button>
           </div>
 
-          <div className="flex items-center gap-6 mt-8 md:mt-10">
+          <div 
+            className="flex items-center gap-6 mt-8 md:mt-10"
+            style={{
+              opacity: mounted ? 1 : 0,
+              transform: mounted ? 'translateY(0)' : 'translateY(20px)',
+              transition: 'opacity 400ms ease-out, transform 400ms ease-out',
+              transitionDelay: '450ms',
+            }}
+          >
             <Link href="https://github.com/JoaoOliveira07" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-emerald-700 transition-colors">
               <Github className="h-6 w-6" />
             </Link>

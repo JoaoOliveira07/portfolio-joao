@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { currentlyLearning as learningPt } from '@/data/currently-learning/pt';
 import { currentlyLearning as learningEn } from '@/data/currently-learning/en';
 import { Modal } from '@/components/ui/Modal';
@@ -17,6 +17,44 @@ export function CurrentlyLearning() {
   const learningItems = locale === 'pt' ? learningPt : learningEn;
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [selectedItem, setSelectedItem] = useState<typeof learningItems[0] | null>(null);
+  const [animatedProgress, setAnimatedProgress] = useState<Record<string, number>>({});
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (isVisible) {
+      learningItems.forEach((item) => {
+        if (item.progress !== undefined) {
+          let progress = 0;
+          const interval = setInterval(() => {
+            progress += 2;
+            if (progress >= item.progress!) {
+              progress = item.progress!;
+              clearInterval(interval);
+            }
+            setAnimatedProgress(prev => ({ ...prev, [item.id]: progress }));
+          }, 15);
+        }
+      });
+    }
+  }, [isVisible, learningItems]);
 
   const filters = [
     { id: 'all', labelPt: 'Todos', labelEn: 'All' },
@@ -26,7 +64,7 @@ export function CurrentlyLearning() {
   ];
 
   return (
-    <section className="w-full">
+    <section className="w-full" ref={containerRef}>
       <div className="container mx-auto px-6 max-w-7xl">
         {/* Section Header */}
         <div className="mb-8">
@@ -109,12 +147,12 @@ export function CurrentlyLearning() {
                         <div className="flex flex-col gap-1">
                           <div className="flex justify-between text-xs text-neutral-500">
                             <span>{t('progress')}</span>
-                            <span>{item.progress}%</span>
+                            <span>{animatedProgress[item.id] || 0}%</span>
                           </div>
                           <div className="h-2 bg-neutral-100 rounded-full overflow-hidden">
                             <div 
-                              className="h-full bg-primary-500 rounded-full transition-all duration-500"
-                              style={{ width: `${item.progress}%` }}
+                              className="h-full bg-primary-500 rounded-full"
+                              style={{ width: `${animatedProgress[item.id] || 0}%` }}
                             />
                           </div>
                         </div>

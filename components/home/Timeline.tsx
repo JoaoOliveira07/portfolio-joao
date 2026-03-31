@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { experience as experiencePt } from '@/data/experience/pt';
 import { experience as experienceEn } from '@/data/experience/en';
@@ -19,6 +19,9 @@ export function Timeline() {
   const locale = useLocale();
   const experience = locale === 'pt' ? experiencePt : experienceEn;
   const t = useTranslations('about');
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [animatedProgress, setAnimatedProgress] = useState(0);
 
   const [hovered, setHovered] = useState<number | null>(null);
   // Encontra o índice do Mid-Level no array original
@@ -28,6 +31,34 @@ export function Timeline() {
   // Como vamos inverter o array, calculamos o índice correspondente na timeline invertida
   const reversedMidLevelIndex = experience.positions.length - 1 - midLevelIndex;
   const [selected, setSelected] = useState<number | null>(reversedMidLevelIndex);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          // Anima a linha progressivamente
+          let progress = 0;
+          const interval = setInterval(() => {
+            progress += 2;
+            if (progress >= 100) {
+              progress = 100;
+              clearInterval(interval);
+            }
+            setAnimatedProgress(progress);
+          }, 20);
+          return () => clearInterval(interval);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (timelineRef.current) {
+      observer.observe(timelineRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   // Inverte para mostrar cronologicamente (do passado para o presente)
   const timelineData = [...experience.positions].reverse().map((pos, index) => ({
@@ -56,7 +87,7 @@ export function Timeline() {
       : '';
 
   return (
-    <div className="w-full">
+    <div className="w-full" ref={timelineRef}>
       {/* Header */}
       <div className="text-center mb-12">
         <span className="text-emerald-700 font-bold tracking-widest text-xs uppercase">
@@ -136,6 +167,7 @@ export function Timeline() {
             const isActive = active === exp.id;
             const isFirst = i === 0;
             const isLast = i === timelineData.length - 1;
+            const progressWidth = isVisible ? `${animatedProgress}%` : '0%';
             return (
               <div
                 key={`dot-${exp.id}`}
@@ -154,6 +186,9 @@ export function Timeline() {
                       right: '50%',
                       top: '50%',
                       transform: 'translateY(-50%)',
+                      width: isVisible ? '100%' : '0%',
+                      transition: 'width 800ms ease-out',
+                      transitionDelay: `${i * 50}ms`,
                     }}
                   />
                 )}
@@ -167,6 +202,9 @@ export function Timeline() {
                       right: 0,
                       top: '50%',
                       transform: 'translateY(-50%)',
+                      width: isVisible ? '100%' : '0%',
+                      transition: 'width 800ms ease-out',
+                      transitionDelay: `${i * 50}ms`,
                     }}
                   />
                 )}
@@ -359,8 +397,8 @@ export function Timeline() {
           to   { opacity: 1; transform: translateY(0); }
         }
         @keyframes pulse {
-          0%, 100% { transform: scale(1);   opacity: 0.5; }
-          50%       { transform: scale(1.9); opacity: 0; }
+          0%, 100% { transform: scale(1); opacity: 0.4; }
+          50%       { transform: scale(1.5); opacity: 0; }
         }
       `}</style>
     </div>

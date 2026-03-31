@@ -38,7 +38,7 @@ export function EngineeringPractices() {
               <StaggerItem key={practice.id}>
                 <button
                   onClick={() => setSelectedPractice(practice)}
-                  className="w-full p-6 bg-white rounded-2xl border border-neutral-200 hover:border-primary/30 hover:shadow-lg transition-all duration-300 text-left group flex flex-col h-full cursor-pointer"
+                  className="w-full p-6 bg-white rounded-2xl border border-neutral-200 hover:border-emerald-700 transition-all duration-200 hover:shadow-lg transition-all duration-300 text-left group flex flex-col h-full cursor-pointer"
                 >
                   <div className="flex flex-col gap-4 flex-grow">
                     {/* Icon */}

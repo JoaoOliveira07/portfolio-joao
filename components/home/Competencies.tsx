@@ -30,7 +30,7 @@ export function Competencies() {
           {competencies.map((competency) => (
             <div
               key={competency.title.en}
-              className="bg-white p-6 md:p-8 rounded-xl transition-all hover:bg-gray-50 border border-gray-200 hover:border-emerald-300 hover:shadow-lg group"
+              className="bg-white p-6 md:p-8 rounded-xl border border-gray-200 hover:border-emerald-700 transition-all duration-200 hover:shadow-lg group"
             >
               <span className="material-symbols-outlined text-3xl md:text-4xl text-emerald-700 mb-4 md:mb-6 block group-hover:scale-110 transition-transform">
                 {getIcon(competency.icon)}

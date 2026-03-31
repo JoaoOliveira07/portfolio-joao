@@ -18,8 +18,8 @@ const TechItem = ({ name, type, path, icon, displayName }: {
   const isAwsIcon = path?.includes('aws-');
   
   return (
-    <div className="flex-shrink-0 flex flex-col items-center px-6 gap-3">
-      <div className="w-14 h-14 flex items-center justify-center">
+    <div className="flex-shrink-0 flex flex-col items-center px-6 gap-3 group relative" style={{ paddingTop: '32px' }}>
+      <div className="w-14 h-14 flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
         {type === 'svg' && path ? (
           <div className={`
             ${isAwsIcon 
@@ -46,9 +46,17 @@ const TechItem = ({ name, type, path, icon, displayName }: {
         ) : null}
       </div>
       
-      <span className="text-xs text-neutral-500 text-center whitespace-nowrap font-medium hover:text-neutral-700 transition-colors">
+      <span className="text-xs text-neutral-500 text-center whitespace-nowrap font-medium">
         {displayName}
       </span>
+      
+      {/* Tooltip */}
+      <div 
+        className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none bg-neutral-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap"
+        style={{ top: '-28px', left: '50%', transform: 'translateX(-50%)' }}
+      >
+        {displayName}
+      </div>
     </div>
   );
 };

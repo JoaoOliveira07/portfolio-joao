@@ -40,7 +40,7 @@ export function FeaturedProjects() {
           {projects.map((project) => (
             <div 
               key={project.slug} 
-              className="group cursor-pointer bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all border border-gray-200"
+              className="group cursor-pointer bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-200 hover:border-emerald-300"
               onClick={() => setSelectedProject(project)}
             >
               <div className="aspect-video relative overflow-hidden bg-gray-100">
@@ -48,7 +48,7 @@ export function FeaturedProjects() {
                   src={projectImages[project.slug] || '/images/projects/iac_terraform_v1_1.png'}
                   alt={project.title}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
               
@@ -66,6 +66,11 @@ export function FeaturedProjects() {
                 
                 <h3 className="text-lg font-bold mb-1 text-gray-900">{project.title}</h3>
                 <p className="text-sm text-gray-600 line-clamp-2">{project.subtitle}</p>
+                
+                <div className="mt-3 flex items-center text-emerald-700 text-sm font-medium group-hover:translate-x-1 transition-transform duration-200">
+                  <span>View details</span>
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </div>
               </div>
             </div>
           ))}
