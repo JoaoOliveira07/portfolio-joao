@@ -8,6 +8,7 @@ import { projects as projectsPt } from '@/data/projects/pt';
 import { projects as projectsEn } from '@/data/projects/en';
 import type { Project } from '@/data/projects/pt';
 import { ProjectModal } from '@/components/ui/ProjectModal';
+import { MagicCard } from '@/components/ui/MagicCard';
 
 const projectImages: Record<string, string> = {
   'iac-terraform-aws': '/images/projects/iac_terraform_v1_1.png',
@@ -29,8 +30,8 @@ export function FeaturedProjects() {
       <div className="max-w-7xl mx-auto px-6 md:px-8">
         <div className="flex justify-between items-end mb-10 md:mb-16">
           <div>
-            <span className="text-emerald-700 font-bold tracking-widest text-xs uppercase">Portfolio</span>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mt-3 md:mt-4">
+            <span className="text-emerald-400 font-bold tracking-widest text-xs uppercase">Portfolio</span>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mt-3 md:mt-4">
               {t('title')}
             </h2>
           </div>
@@ -38,18 +39,22 @@ export function FeaturedProjects() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {projects.map((project) => (
-            <div 
-              key={project.slug} 
-              className="group cursor-pointer bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-200 hover:border-emerald-300"
-              onClick={() => setSelectedProject(project)}
+            <MagicCard
+              key={project.slug}
+              className="overflow-hidden cursor-pointer h-full"
+              gradientColor="#10b981"
             >
-              <div className="aspect-video relative overflow-hidden bg-gray-100">
+              <div 
+                className="relative aspect-video overflow-hidden bg-neutral-800"
+                onClick={() => setSelectedProject(project)}
+              >
                 <Image
                   src={projectImages[project.slug] || '/images/projects/iac_terraform_v1_1.png'}
                   alt={project.title}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent" />
               </div>
               
               <div className="p-4 md:p-5">
@@ -57,22 +62,25 @@ export function FeaturedProjects() {
                   {project.techStack.slice(0, 3).map((tech) => (
                     <span
                       key={tech}
-                      className="text-[9px] font-bold tracking-widest bg-emerald-100 text-emerald-700 px-2 py-1 rounded"
+                      className="text-[9px] font-bold tracking-widest bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded border border-emerald-500/30"
                     >
                       {tech.toUpperCase()}
                     </span>
                   ))}
                 </div>
                 
-                <h3 className="text-lg font-bold mb-1 text-gray-900">{project.title}</h3>
-                <p className="text-sm text-gray-600 line-clamp-2">{project.subtitle}</p>
+                <h3 className="text-lg font-bold mb-1 text-white">{project.title}</h3>
+                <p className="text-sm text-gray-400 line-clamp-2">{project.subtitle}</p>
                 
-                <div className="mt-3 flex items-center text-emerald-700 text-sm font-medium group-hover:translate-x-1 transition-transform duration-200">
+                <div 
+                  className="mt-3 flex items-center text-emerald-400 text-sm font-medium group-hover:translate-x-2 transition-transform duration-200 cursor-pointer"
+                  onClick={() => setSelectedProject(project)}
+                >
                   <span>View details</span>
                   <ArrowRight className="ml-1 h-4 w-4" />
                 </div>
               </div>
-            </div>
+            </MagicCard>
           ))}
         </div>
       </div>

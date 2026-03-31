@@ -1,15 +1,14 @@
 {
   "nav": {
     "home": "Home",
-    "philosophy": "Philosophy",
-    "expertise": "Expertise",
+    "philosophy": "About",
     "experience": "Experience",
+    "techstack": "Stack",
     "engineering": "Engineering",
-    "techstack": "Tech Stack",
+    "systemDesign": "Architecture",
     "projects": "Projects",
     "stats": "Stats",
-    "testimonials": "Testimonials",
-    "contact": "Contact"
+    "testimonials": "Testimonials"
   },
   "hero": {
     "role": "Java Backend Developer",
@@ -37,8 +36,8 @@
   },
   "about": {
     "title": "About Me",
-    "intro": "Java backend developer with experience in back-end development. I mainly work with Spring Boot, JPA, Hibernate, PostgreSQL and MySQL. Focused on writing clean code, following SOLID principles and development best practices.",
-    "experience": "Professional Experience",
+    "intro": "Backend Developer with 4+ years of experience building robust and scalable APIs. Specialized in Java and Spring Boot, focused on distributed systems architecture, microservices, and development best practices. Passionate about clean code, elegant solutions, and continuous learning.",
+    "experience": "Work Experience",
     "competencies": "Competencies",
     "recommendations": "Recommendations"
   },

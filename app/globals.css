@@ -6,11 +6,11 @@
 
 @layer base {
   * {
-    @apply border-neutral-200;
+    @apply border-neutral-800;
   }
   
   body {
-    @apply bg-white text-neutral-900 antialiased;
+    @apply bg-neutral-950 text-neutral-100 antialiased;
   }
   
   html {

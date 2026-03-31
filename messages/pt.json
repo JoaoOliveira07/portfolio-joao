@@ -1,15 +1,14 @@
 {
   "nav": {
     "home": "Início",
-    "philosophy": "Filosofia",
-    "expertise": "Expertise",
+    "philosophy": "Sobre",
     "experience": "Experiência",
+    "techstack": "Stack",
     "engineering": "Engenharia",
-    "techstack": "Tech Stack",
+    "systemDesign": "Arquitetura",
     "projects": "Projetos",
     "stats": "Números",
-    "testimonials": "Depoimentos",
-    "contact": "Contato"
+    "testimonials": "Depoimentos"
   },
   "hero": {
     "role": "Desenvolvedor Backend Java",
@@ -37,7 +36,7 @@
   },
   "about": {
     "title": "Sobre Mim",
-    "intro": "Desenvolvedor Java com experiência em desenvolvimento back-end. Trabalho principalmente com Spring Boot, JPA, Hibernate, PostgreSQL e MySQL. Focado em escrever código limpo, seguindo princípios SOLID e boas práticas de desenvolvimento.",
+    "intro": "Desenvolvedor Backend com mais de 4 anos de experiência construindo APIs robustas e escaláveis. Especialista em Java e Spring Boot, com foco em arquitetura de sistemas distribuídos, microsserviços e boas práticas de desenvolvimento. Apaixonado por código limpo, soluções elegantes e aprendizado contínuo.",
     "experience": "Experiência Profissional",
     "competencies": "Competências",
     "recommendations": "Recomendações"

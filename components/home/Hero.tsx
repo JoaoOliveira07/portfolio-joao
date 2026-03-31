@@ -3,97 +3,137 @@
 import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Github, Linkedin, Download, ArrowRight } from 'lucide-react';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import Image from 'next/image';
 
 export function Hero() {
   const t = useTranslations('hero');
   const locale = useLocale();
   const [mounted, setMounted] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const targetId = href.replace('#', '');
+    const element = document.getElementById(targetId);
+    if (element) {
+      const headerHeight = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <section className="pt-32 md:pt-40 pb-20 px-6 md:px-8 max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        {/* Left - Text */}
-        <div className="lg:col-span-8">
-          <h1 
-            className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter text-gray-900 leading-[1.1] mb-6 md:mb-8"
-            style={{
-              opacity: mounted ? 1 : 0,
-              transform: mounted ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 400ms ease-out, transform 400ms ease-out',
-              transitionDelay: '0ms',
-            }}
-          >
-            {t('tagline')}
-          </h1>
-          
-          <p 
-            className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mb-8 md:mb-12"
-            style={{
-              opacity: mounted ? 1 : 0,
-              transform: mounted ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 400ms ease-out, transform 400ms ease-out',
-              transitionDelay: '150ms',
-            }}
-          >
-            {t('description')}
-          </p>
-          
-          <div 
-            className="flex flex-wrap gap-4"
-            style={{
-              opacity: mounted ? 1 : 0,
-              transform: mounted ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 400ms ease-out, transform 400ms ease-out',
-              transitionDelay: '300ms',
-            }}
-          >
-            <Button asChild size="lg" className="bg-emerald-700 hover:bg-emerald-800 text-white">
-              <Link href="#projects" className="flex items-center gap-2" scroll={false}>
-                <span>{t('cta.projects')}</span>
-                <ArrowRight className="h-5 w-5" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="border-emerald-700 text-emerald-700 hover:bg-emerald-50">
-              <a href={`/cv/cv-${locale}.pdf`} download className="flex items-center gap-2">
-                <Download className="h-5 w-5" />
-                <span>{t('cta.cv')}</span>
+    <section ref={sectionRef} className="relative min-h-screen flex items-center overflow-hidden bg-neutral-950">
+      {/* Simple gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-950 to-neutral-900" />
+      
+      {/* Subtle grid pattern */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: 'linear-gradient(rgb(255,255,255) 1px, transparent 1px), linear-gradient(90deg, rgb(255,255,255) 1px, transparent 1px)',
+        backgroundSize: '50px 50px'
+      }} />
+
+      {/* Radial glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-500/5 rounded-full blur-3xl" />
+
+      <div className="relative z-10 pt-32 pb-20 px-6 md:px-8 max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Left - Text */}
+          <div>
+            <h1 
+              className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter text-white leading-[1.1] mb-6 md:mb-8"
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(20px)',
+                transition: 'opacity 600ms ease-out, transform 600ms ease-out',
+                transitionDelay: '0ms',
+              }}
+            >
+              {t('tagline')}
+            </h1>
+            
+            <p 
+              className="text-lg md:text-xl text-gray-400 leading-relaxed max-w-xl mb-8 md:mb-12"
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(20px)',
+                transition: 'opacity 600ms ease-out, transform 600ms ease-out',
+                transitionDelay: '150ms',
+              }}
+            >
+              {t('description')}
+            </p>
+            
+            <div 
+              className="flex flex-wrap gap-4"
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(20px)',
+                transition: 'opacity 600ms ease-out, transform 600ms ease-out',
+                transitionDelay: '300ms',
+              }}
+            >
+              <Button asChild size="lg" className="bg-emerald-500 hover:bg-emerald-600 text-white border-0">
+                <a href="#projects" onClick={(e) => handleScroll(e, '#projects')} className="flex items-center gap-2 cursor-pointer">
+                  <span>{t('cta.projects')}</span>
+                  <ArrowRight className="h-5 w-5" />
+                </a>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 bg-transparent">
+                <a href={`/cv/cv-${locale}.pdf`} download className="flex items-center gap-2">
+                  <Download className="h-5 w-5" />
+                  <span>{t('cta.cv')}</span>
+                </a>
+              </Button>
+            </div>
+
+            <div 
+              className="flex items-center gap-6 mt-8 md:mt-10"
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(20px)',
+                transition: 'opacity 600ms ease-out, transform 600ms ease-out',
+                transitionDelay: '450ms',
+              }}
+            >
+              <a href="https://github.com/JoaoOliveira07" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-emerald-400 transition-colors">
+                <Github className="h-6 w-6" />
               </a>
-            </Button>
+              <a href="https://www.linkedin.com/in/joão-paulo-oliveira07/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-emerald-400 transition-colors">
+                <Linkedin className="h-6 w-6" />
+              </a>
+            </div>
           </div>
 
+          {/* Right - Image */}
           <div 
-            className="flex items-center gap-6 mt-8 md:mt-10"
+            className="hidden lg:block relative"
             style={{
               opacity: mounted ? 1 : 0,
               transform: mounted ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 400ms ease-out, transform 400ms ease-out',
-              transitionDelay: '450ms',
+              transition: 'opacity 600ms ease-out, transform 600ms ease-out',
+              transitionDelay: '200ms',
             }}
           >
-            <Link href="https://github.com/JoaoOliveira07" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-emerald-700 transition-colors">
-              <Github className="h-6 w-6" />
-            </Link>
-            <Link href="https://www.linkedin.com/in/joão-paulo-oliveira07/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-emerald-700 transition-colors">
-              <Linkedin className="h-6 w-6" />
-            </Link>
-          </div>
-        </div>
-
-        {/* Right - Image */}
-        <div className="lg:col-span-4 flex justify-end">
-          <div className="w-full aspect-square bg-emerald-100 rounded-xl relative overflow-hidden group">
-            <img 
-              src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=800&fit=crop"
-              alt="Clean code on a monitor"
-              className="absolute inset-0 w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-emerald-700/10 mix-blend-multiply"></div>
+            <div className="relative w-full aspect-[4/5] max-w-lg mx-auto">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-transparent to-transparent rounded-2xl" />
+              <div className="absolute inset-0 border border-white/10 rounded-2xl" />
+              <div className="relative w-full h-full rounded-2xl overflow-hidden">
+                <Image
+                  src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=1000&fit=crop"
+                  alt="Clean code"
+                  fill
+                  className="object-cover grayscale opacity-70 hover:opacity-90 transition-opacity duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/60 via-neutral-900/10 to-transparent" />
+              </div>
+            </div>
           </div>
         </div>
       </div>

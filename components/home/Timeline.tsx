@@ -4,403 +4,129 @@ import { useState, useEffect, useRef } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { experience as experiencePt } from '@/data/experience/pt';
 import { experience as experienceEn } from '@/data/experience/en';
-import { Lock, Unlock } from 'lucide-react';
-
-const GREEN = '#10b981';
-const GREEN_DARK = '#047857';
-const GREEN_LIGHT = '#d1fae5';
-const GREEN_BORDER = '#a7f3d0';
-const GREEN_SOFT = '#d1fae5';
-const TEXT_MAIN = '#111827';
-const TEXT_MUTED = '#4b5563';
-const TEXT_LIGHT = '#9ca3af';
+import { cn } from '@/lib/utils';
+import { Lock } from 'lucide-react';
 
 export function Timeline() {
   const locale = useLocale();
   const experience = locale === 'pt' ? experiencePt : experienceEn;
   const t = useTranslations('about');
-  const timelineRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const [animatedProgress, setAnimatedProgress] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const [hovered, setHovered] = useState<number | null>(null);
-  // Encontra o índice do Mid-Level no array original
-  const midLevelIndex = experience.positions.findIndex(p => 
-    p.title.includes("Mid-Level") || p.title.includes("Mid Level")
-  );
-  // Como vamos inverter o array, calculamos o índice correspondente na timeline invertida
-  const reversedMidLevelIndex = experience.positions.length - 1 - midLevelIndex;
-  const [selected, setSelected] = useState<number | null>(reversedMidLevelIndex);
+  const reversedPositions = [...experience.positions].reverse();
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          // Anima a linha progressivamente
-          let progress = 0;
-          const interval = setInterval(() => {
-            progress += 2;
-            if (progress >= 100) {
-              progress = 100;
-              clearInterval(interval);
-            }
-            setAnimatedProgress(progress);
-          }, 20);
-          return () => clearInterval(interval);
+    const handleScroll = () => {
+      if (!containerRef.current) return;
+      
+      const items = containerRef.current.querySelectorAll('[data-timeline-item]');
+      items.forEach((item, index) => {
+        const rect = item.getBoundingClientRect();
+        const itemMiddle = rect.top + rect.height / 2;
+        const viewportMiddle = window.innerHeight / 2;
+        
+        if (Math.abs(itemMiddle - viewportMiddle) < 150) {
+          setActiveIndex(index);
         }
-      },
-      { threshold: 0.3 }
-    );
+      });
+    };
 
-    if (timelineRef.current) {
-      observer.observe(timelineRef.current);
-    }
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
 
-    return () => observer.disconnect();
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Inverte para mostrar cronologicamente (do passado para o presente)
-  const timelineData = [...experience.positions].reverse().map((pos, index) => ({
-    id: index,
-    period: pos.period,
-    shortYear: pos.period.split(' - ')[0].trim(),
-    title: pos.title,
-    duration: pos.period.includes('(')
-      ? pos.period.split('(')[1].split(')')[0].trim()
-      : '',
-    skills: pos.techStack,
-    description: pos.description,
-    details: pos.responsibilities,
-    isCurrent:
-      pos.period.toLowerCase().includes('present') ||
-      pos.period.toLowerCase().includes('atual'),
-    isLocked: pos.isLocked || false,
-  }));
-
-  const active = selected ?? hovered;
-  const activeExp = timelineData.find((e) => e.id === active);
-
-  const totalYears =
-    timelineData.length > 0
-      ? `${timelineData[timelineData.length - 1].shortYear} – ${locale === 'pt' ? 'Presente' : 'Present'}`
-      : '';
-
   return (
-    <div className="w-full" ref={timelineRef}>
-      {/* Header */}
+    <div className="w-full" ref={containerRef}>
       <div className="text-center mb-12">
-        <span className="text-emerald-700 font-bold tracking-widest text-xs uppercase">
+        <span className="text-emerald-400 font-bold tracking-widest text-xs uppercase">
           Professional Journey
         </span>
-        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mt-3">
+        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mt-3">
           {t('experience')}
         </h2>
       </div>
 
-      {/* Timeline — single grid so labels align exactly with dots */}
-      <div className="w-full max-w-[900px] mx-auto">
-        {/*
-          Each column = one timeline position.
-          Row 1: top label (even indexes)
-          Row 2: dot + track line
-          Row 3: bottom label (odd indexes)
-        */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${timelineData.length}, 1fr)`,
-          }}
-        >
-          {/* ── ROW 1: top labels (even) ── */}
-          {timelineData.map((exp, i) => {
-            const isActive = active === exp.id;
-            const show = i % 2 === 0;
+      <div className="relative max-w-4xl mx-auto px-4 md:px-0">
+        {/* Vertical line */}
+        <div className="absolute left-2 md:left-1/2 top-0 bottom-0 w-px bg-white/10 -translate-x-1/2">
+          <div 
+            className="absolute left-0 top-0 w-full bg-emerald-500 transition-all duration-500 ease-out"
+            style={{
+              height: `${(activeIndex / (reversedPositions.length - 1)) * 100}%`,
+              boxShadow: '0 0 20px rgba(16, 185, 129, 0.5)',
+            }}
+          />
+        </div>
+
+        <div className="space-y-12">
+          {reversedPositions.map((position, index) => {
+            const isActive = index === activeIndex;
+            const isLocked = position.isLocked;
+            const isLeft = index % 2 === 0;
+
             return (
               <div
-                key={`top-${exp.id}`}
-                className="flex flex-col items-center justify-end pb-4 cursor-pointer"
-                style={{ minHeight: 108, visibility: show ? 'visible' : 'hidden' }}
-                onMouseEnter={() => setHovered(exp.id)}
-                onMouseLeave={() => setHovered(null)}
-                onClick={() => setSelected(selected === exp.id ? null : exp.id)}
+                key={index}
+                data-timeline-item
+                className={cn(
+                  'relative flex items-center md:justify-between',
+                  !isLeft && 'md:flex-row-reverse'
+                )}
               >
-                <span
-                  className="inline-block text-[10px] tracking-[0.14em] uppercase font-bold px-2 py-0.5 rounded-full mb-1 transition-all duration-200"
-                  style={{
-                    background: isActive && !exp.isLocked ? GREEN_SOFT : 'transparent',
-                    color: exp.isLocked ? '#9ca3af' : (isActive ? GREEN_DARK : TEXT_LIGHT),
-                    border: `1px solid ${exp.isLocked ? '#d1d5db' : (isActive ? GREEN_BORDER : 'transparent')}`,
-                  }}
-                >
-                  {exp.shortYear}
-                </span>
-                <span
-                  className="text-[11px] font-semibold text-center transition-colors duration-200"
-                  style={{ 
-                    color: exp.isLocked ? '#9ca3af' : (isActive ? TEXT_MAIN : TEXT_MUTED), 
-                    maxWidth: 120,
-                    lineHeight: '1.2',
-                    minHeight: 36,
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden'
-                  }}
-                >
-                  {exp.title}
-                </span>
-                {exp.duration && (
-                  <span
-                    className="text-[10px] mt-1 text-center"
-                    style={{ color: exp.isLocked ? '#9ca3af' : (isActive ? GREEN_DARK : TEXT_LIGHT) }}
-                  >
-                    {exp.duration}
-                  </span>
-                )}
-              </div>
-            );
-          })}
-
-          {/* ── ROW 2: track line + dots ── */}
-          {timelineData.map((exp, i) => {
-            const isActive = active === exp.id;
-            const isFirst = i === 0;
-            const isLast = i === timelineData.length - 1;
-            const progressWidth = isVisible ? `${animatedProgress}%` : '0%';
-            return (
-              <div
-                key={`dot-${exp.id}`}
-                className="relative flex items-center justify-center h-8 cursor-pointer"
-                onMouseEnter={() => setHovered(exp.id)}
-                onMouseLeave={() => setHovered(null)}
-                onClick={() => setSelected(selected === exp.id ? null : exp.id)}
-              >
-                {/* Left segment of track line */}
-                {!isFirst && (
-                  <div
-                    className="absolute h-px"
-                    style={{
-                      background: exp.isLocked ? '#d1d5db' : GREEN_BORDER,
-                      left: 0,
-                      right: '50%',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      width: isVisible ? '100%' : '0%',
-                      transition: 'width 800ms ease-out',
-                      transitionDelay: `${i * 50}ms`,
-                    }}
-                  />
-                )}
-                {/* Right segment of track line */}
-                {!isLast && (
-                  <div
-                    className="absolute h-px"
-                    style={{
-                      background: timelineData[i + 1]?.isLocked ? '#d1d5db' : GREEN_BORDER,
-                      left: '50%',
-                      right: 0,
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      width: isVisible ? '100%' : '0%',
-                      transition: 'width 800ms ease-out',
-                      transitionDelay: `${i * 50}ms`,
-                    }}
-                  />
-                )}
-
-                {/* Pulse ring for current */}
-                {exp.isCurrent && (
-                  <div
-                    className="absolute rounded-full"
-                    style={{
-                      width: 36,
-                      height: 36,
-                      border: `1.5px solid ${GREEN}`,
-                      opacity: 0.5,
-                      animation: 'pulse 2s ease-in-out infinite',
-                    }}
-                  />
-                )}
-                {/* Hover ring */}
-                {isActive && (
-                  <div
-                    className="absolute rounded-full transition-all duration-200"
-                    style={{ width: 32, height: 32, background: GREEN_SOFT }}
-                  />
-                )}
-                {/* Dot with lock icon */}
-                <div
-                  className="rounded-full transition-all duration-200 ease-in-out relative z-10 flex items-center justify-center"
-                  style={{
-                    width: isActive ? 24 : 20,
-                    height: isActive ? 24 : 20,
-                    background: exp.isLocked ? '#e5e7eb' : (isActive ? GREEN : '#fff'),
-                    border: `2px solid ${exp.isLocked ? '#9ca3af' : (isActive ? GREEN : GREEN_BORDER)}`,
-                    opacity: exp.isLocked ? 0.8 : 1,
-                  }}
-                >
-                  {exp.isLocked ? (
-                    <Lock className="w-3 h-3" style={{ color: '#9ca3af' }} strokeWidth={3} />
-                  ) : (
-                    <Unlock className="w-3 h-3" style={{ color: exp.isCurrent ? GREEN_DARK : '#6b7280' }} strokeWidth={3} />
+                {/* Dot on the line - centered */}
+                <div 
+                  className={cn(
+                    'absolute left-2 md:left-1/2 w-4 h-4 rounded-full border-2 transition-all duration-300 z-10 -translate-x-1/2',
+                    isActive && !isLocked
+                      ? 'bg-emerald-500 border-emerald-500 scale-125' 
+                      : isLocked
+                        ? 'bg-neutral-800 border-neutral-600'
+                        : 'bg-neutral-900 border-white/30',
                   )}
-                </div>
-              </div>
-            );
-          })}
-
-          {/* ── ROW 3: bottom labels (odd) ── */}
-          {timelineData.map((exp, i) => {
-            const isActive = active === exp.id;
-            const show = i % 2 !== 0;
-            return (
-              <div
-                key={`bot-${exp.id}`}
-                className="flex flex-col items-center justify-start pt-4 cursor-pointer"
-                style={{ minHeight: 108, visibility: show ? 'visible' : 'hidden' }}
-                onMouseEnter={() => setHovered(exp.id)}
-                onMouseLeave={() => setHovered(null)}
-                onClick={() => setSelected(selected === exp.id ? null : exp.id)}
-              >
-                <span
-                  className="inline-block text-[10px] tracking-[0.14em] uppercase font-bold px-2 py-0.5 rounded-full mb-1 transition-all duration-200"
                   style={{
-                    background: isActive && !exp.isLocked ? GREEN_SOFT : 'transparent',
-                    color: exp.isLocked ? '#9ca3af' : (isActive ? GREEN_DARK : TEXT_LIGHT),
-                    border: `1px solid ${exp.isLocked ? '#d1d5db' : (isActive ? GREEN_BORDER : 'transparent')}`,
+                    boxShadow: isActive && !isLocked ? '0 0 20px rgba(16, 185, 129, 0.8)' : 'none',
                   }}
+                />
+
+                {/* Content left of line (or right on alternate) */}
+                <div 
+                  className={cn(
+                    'ml-10 md:ml-0 md:w-[45%] p-4 rounded-xl transition-all duration-300',
+                    isActive && !isLocked
+                      ? 'bg-emerald-950/30 border border-emerald-500/30' 
+                      : isLocked
+                        ? 'bg-neutral-900/30 border border-white/5 opacity-50'
+                        : 'bg-neutral-900/50 border border-white/10'
+                  )}
                 >
-                  {exp.shortYear}
-                </span>
-                <span
-                  className="text-[11px] font-semibold text-center transition-colors duration-200"
-                  style={{ 
-                    color: exp.isLocked ? '#9ca3af' : (isActive ? TEXT_MAIN : TEXT_MUTED), 
-                    maxWidth: 120,
-                    lineHeight: '1.2',
-                    minHeight: 36,
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden'
-                  }}
-                >
-                  {exp.title}
-                </span>
-                {exp.duration && (
-                  <span
-                    className="text-[10px] mt-1 text-center"
-                    style={{ color: isActive ? GREEN_DARK : TEXT_LIGHT }}
-                  >
-                    {exp.duration}
-                  </span>
-                )}
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs text-emerald-400 font-medium">
+                      {position.period}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2">
+                    {position.title}
+                  </h3>
+                  <div className="space-y-2">
+                    <p className="text-emerald-400/80 font-medium text-sm">
+                      {experience.company}
+                    </p>
+                    <p className="text-neutral-400 text-sm">
+                      {position.description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Empty space on the other side */}
+                <div className="hidden md:block md:w-[45%]" />
               </div>
             );
           })}
         </div>
       </div>
-
-      {/* Detail card - Compacto */}
-      <div className="w-full max-w-[660px] mx-auto mt-8">
-        {activeExp ? (
-          <div
-            key={activeExp.id}
-            className="rounded-xl overflow-hidden"
-            style={{
-              background: activeExp.isLocked ? '#f3f4f6' : GREEN_LIGHT,
-              border: `1px solid ${activeExp.isLocked ? '#d1d5db' : GREEN_BORDER}`,
-              animation: 'fadeIn 0.2s ease',
-            }}
-          >
-            {/* Card header */}
-            <div className="px-4 py-3 flex justify-between items-center" style={{ borderBottom: `1px solid ${activeExp.isLocked ? '#d1d5db' : GREEN_BORDER}` }}>
-              <div>
-                <p className="text-[10px] font-bold tracking-[0.14em] uppercase mb-0.5" style={{ color: activeExp.isLocked ? '#9ca3af' : GREEN_DARK }}>
-                  {activeExp.period}
-                </p>
-                <h3 className="text-[14px] font-bold leading-tight" style={{ color: activeExp.isLocked ? '#6b7280' : TEXT_MAIN }}>
-                  {activeExp.title}
-                </h3>
-              </div>
-              {activeExp.isCurrent && !activeExp.isLocked && (
-                <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full" style={{ background: GREEN_SOFT, color: '#017A5C' }}>
-                  ● Atual
-                </span>
-              )}
-              {activeExp.isLocked && (
-                <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-full" style={{ background: '#f3f4f6', color: '#6b7280' }}>
-                  <Lock className="w-3 h-3" />
-                  Em breve
-                </span>
-              )}
-            </div>
-
-            {/* Card body */}
-            <div className="px-4 py-3 space-y-3">
-              <p className="text-xs leading-relaxed" style={{ color: activeExp.isLocked ? '#9ca3af' : TEXT_MUTED }}>
-                {activeExp.description}
-              </p>
-
-              {/* Responsibilities (max 3 items) */}
-              <div className="space-y-1.5">
-                {activeExp.details.slice(0, 3).map((d, i) => (
-                  <div key={i} className="flex gap-2 items-start text-xs" style={{ color: activeExp.isLocked ? '#6b7280' : TEXT_MAIN }}>
-                    <span className={activeExp.isLocked ? 'text-[#9ca3af] mt-0.5' : 'text-[#5CE1A7] mt-0.5'}>•</span>
-                    <span>{d}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Tech stack */}
-              <div className="flex flex-wrap gap-1 pt-1">
-                {activeExp.skills.map((s, i) => (
-                  <span key={i} className="text-[10px] px-2 py-0.5 rounded" style={{ 
-                    background: activeExp.isLocked ? '#f9fafb' : '#fff', 
-                    color: activeExp.isLocked ? '#9ca3af' : GREEN_DARK, 
-                    border: `1px solid ${activeExp.isLocked ? '#e5e7eb' : GREEN_BORDER}` 
-                  }}>
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div
-            className="flex flex-col items-center justify-center gap-2 h-[140px] text-sm rounded-2xl cursor-pointer border-2 border-dashed transition-colors duration-200"
-            style={{ color: TEXT_LIGHT, borderColor: GREEN_BORDER }}
-            onClick={() => setSelected(0)}
-          >
-            <span className="text-2xl" style={{ color: GREEN_BORDER }}>↑</span>
-            <span>
-              {locale === 'pt'
-                ? 'Passe o mouse ou clique em uma posição'
-                : 'Hover or click on a TIMELINE position'}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Footer */}
-      <p
-        className="mt-8 text-center text-[11px] tracking-[0.15em] uppercase"
-        style={{ color: TEXT_LIGHT }}
-      >
-        {timelineData.length} {locale === 'pt' ? 'posições' : 'positions'} · {totalYears}
-      </p>
-
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(6px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); opacity: 0.4; }
-          50%       { transform: scale(1.5); opacity: 0; }
-        }
-      `}</style>
     </div>
   );
 }

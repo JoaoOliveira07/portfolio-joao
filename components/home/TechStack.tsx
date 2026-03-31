@@ -3,11 +3,10 @@
 import { useTranslations, useLocale } from 'next-intl';
 import Image from 'next/image';
 import { competencies } from '@/data/skills';
-import { Stagger, StaggerItem } from '@/components/ui/Animations';
 import { techLogos } from '@/data/tech-logos';
+import { MagicCard } from '@/components/ui/MagicCard';
 import * as LucideIcons from 'lucide-react';
 
-// Component for rendering either SVG logo or Lucide icon
 const TechItem = ({ name, type, path, icon, displayName }: {
   name: string;
   type: 'svg' | 'lucide';
@@ -15,48 +14,28 @@ const TechItem = ({ name, type, path, icon, displayName }: {
   icon?: string;
   displayName: string;
 }) => {
-  const isAwsIcon = path?.includes('aws-');
-  
   return (
-    <div className="flex-shrink-0 flex flex-col items-center px-6 gap-3 group relative" style={{ paddingTop: '32px' }}>
-      <div className="w-14 h-14 flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
+    <div className="flex-shrink-0 flex flex-col items-center mx-0.5">
+      <div className="w-9 h-9 flex items-center justify-center bg-neutral-900 rounded-lg border border-white/10 hover:border-emerald-500/50 hover:bg-neutral-800 transition-all duration-300">
         {type === 'svg' && path ? (
-          <div className={`
-            ${isAwsIcon 
-              ? 'rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300' 
-              : ''
-            } 
-            w-full h-full flex items-center justify-center
-          `}>
-            <Image
-              src={path}
-              alt={displayName}
-              width={56}
-              height={56}
-              className="w-full h-full object-contain"
-            />
-          </div>
+          <Image
+            src={path}
+            alt={displayName}
+            width={24}
+            height={24}
+            className="w-7 h-7 object-contain"
+            unoptimized
+          />
         ) : icon ? (
-          <div className="w-full h-full rounded-xl bg-neutral-50 hover:bg-neutral-100 transition-colors duration-300 flex items-center justify-center text-neutral-600 hover:text-neutral-800">
+          <div className="text-gray-400 group-hover:text-emerald-400 transition-colors">
             {(() => {
               const IconComponent = (LucideIcons as any)[icon];
-              return IconComponent ? <IconComponent className="w-9 h-9 stroke-[1.5]" /> : null;
+              return IconComponent ? <IconComponent className="w-6 h-6" /> : null;
             })()}
           </div>
         ) : null}
       </div>
-      
-      <span className="text-xs text-neutral-500 text-center whitespace-nowrap font-medium">
-        {displayName}
-      </span>
-      
-      {/* Tooltip */}
-      <div 
-        className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none bg-neutral-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap"
-        style={{ top: '-28px', left: '50%', transform: 'translateX(-50%)' }}
-      >
-        {displayName}
-      </div>
+      <span className="text-[9px] text-gray-500 font-medium">{displayName}</span>
     </div>
   );
 };
@@ -65,86 +44,63 @@ export function TechStack() {
   const t = useTranslations('techStack');
   const locale = useLocale();
   
+  const duplicatedLogos = [...techLogos, ...techLogos, ...techLogos, ...techLogos];
+  
   return (
-    <section className="w-full">
+    <section className="w-full py-8">
       <div className="container mx-auto px-6 max-w-7xl">
-        {/* Section Header */}
-        <div className="mb-8">
+        <div className="mb-10">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-1 h-5 bg-primary-500 rounded-full flex-shrink-0" />
-            <h2 className="text-2xl font-bold text-neutral-900">
-              {t('title')}
-            </h2>
+            <div className="w-1 h-5 bg-emerald-500 rounded-full" />
+            <h2 className="text-2xl font-bold text-white">{t('title')}</h2>
           </div>
-          <p className="text-sm text-neutral-500 ml-6">
-            {t('subtitle')}
-          </p>
+          <p className="text-sm text-gray-400 ml-6">{t('subtitle')}</p>
         </div>
 
-        {/* Tech Marquee - Full Width with Gradient Overlays */}
-        <div className="relative mb-8 -mx-6 px-6 md:-mx-12 md:px-12">
-          {/* Gradient Overlays - fade to gray-50 on left and right edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none" />
+        <div className="relative mb-12">
+          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-neutral-950 via-neutral-950/95 to-transparent z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-neutral-950 via-neutral-950/95 to-transparent z-10" />
           
-          {/* Scrolling Container */}
-          <div className="overflow-hidden">
-            {/* Duplicate the marquee content for seamless infinite scroll */}
-            <div className="flex animate-marquee">
-              {[...techLogos, ...techLogos].map((tech, index) => (
-                <TechItem
-                  key={`tech-${tech.name}-${index}`}
-                  {...tech}
-                />
+          <div className="overflow-hidden py-4">
+            <div className="flex gap-2 animate-marquee whitespace-nowrap">
+              {duplicatedLogos.map((tech, index) => (
+                <TechItem key={`${tech.name}-${index}`} {...tech} />
               ))}
             </div>
           </div>
-          
-          {/* CSS for infinite marquee animation */}
-          <style>{`
-            @keyframes marquee {
-              0% { transform: translateX(0); }
-              100% { transform: translateX(-50%); }
-            }
-            .animate-marquee {
-              display: flex;
-              animation: marquee 40s linear infinite;
-            }
-            .animate-marquee:hover {
-              animation-play-state: paused;
-            }
-          `}</style>
         </div>
 
-        {/* Skills Categories - Gray Background Cards */}
-        <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {competencies.map((category, index) => (
-            <StaggerItem key={index}>
-              <div className="bg-neutral-200 rounded-lg p-6 h-full">
-                {/* Title with accent */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-1 h-6 bg-primary-500 rounded-full" />
-                  <h3 className="text-base font-semibold text-neutral-900">
-                    {category.title[locale as 'pt' | 'en']}
-                  </h3>
-                </div>
-                
-                {/* Skills as simple text list */}
-                <div className="space-y-2">
-                  {category.skills.map((skill) => (
-                    <div 
-                      key={skill} 
-                      className="text-sm text-neutral-600"
-                    >
-                      {skill}
-                    </div>
-                  ))}
-                </div>
+            <MagicCard key={index} className="p-6 h-full">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-1 h-6 bg-emerald-500 rounded-full" />
+                <h3 className="text-base font-semibold text-white">
+                  {category.title[locale as 'pt' | 'en']}
+                </h3>
               </div>
-            </StaggerItem>
+              <div className="space-y-2">
+                {category.skills.map((skill) => (
+                  <div key={skill} className="text-sm text-gray-400">{skill}</div>
+                ))}
+              </div>
+            </MagicCard>
           ))}
-        </Stagger>
+        </div>
       </div>
+
+      <style jsx>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-25%); }
+        }
+        .animate-marquee {
+          animation: marquee 30s linear infinite;
+        }
+        .animate-marquee:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
     </section>
   );
 }

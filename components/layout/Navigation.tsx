@@ -14,14 +14,13 @@ export function Navigation() {
   const navItems = [
     { href: '#hero', label: t('home') },
     { href: '#philosophy', label: t('philosophy') },
-    { href: '#expertise', label: t('expertise') },
     { href: '#experience', label: t('experience') },
-    { href: '#engineering', label: t('engineering') },
     { href: '#techstack', label: t('techstack') },
+    { href: '#engineering', label: t('engineering') },
+    { href: '#system-design', label: t('systemDesign') },
     { href: '#projects', label: t('projects') },
     { href: '#stats', label: t('stats') },
     { href: '#testimonials', label: t('testimonials') },
-    { href: '#contact', label: t('contact') },
   ];
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -38,10 +37,10 @@ export function Navigation() {
   };
 
   return (
-    <nav ref={navRef} className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-sm shadow-emerald-900/5">
+    <nav ref={navRef} className="fixed top-0 w-full z-50 bg-neutral-950/80 backdrop-blur-xl border-b border-white/5">
       <div className="flex items-center justify-between px-6 md:px-8 py-5 max-w-7xl mx-auto">
         {/* Logo */}
-        <a href="#hero" onClick={(e) => handleScroll(e, '#hero')} className="text-2xl font-black tracking-tighter text-emerald-800">
+        <a href="#hero" onClick={(e) => handleScroll(e, '#hero')} className="text-2xl font-black tracking-tighter text-emerald-400">
           JOPES
         </a>
 
@@ -52,7 +51,7 @@ export function Navigation() {
               key={item.href}
               href={item.href}
               onClick={(e) => handleScroll(e, item.href)}
-              className="text-slate-600 pb-1 hover:text-emerald-600 transition-colors border-b-2 border-transparent hover:border-emerald-600 whitespace-nowrap"
+              className="text-gray-400 hover:text-emerald-400 transition-colors pb-1 border-b-2 border-transparent hover:border-emerald-400 whitespace-nowrap"
             >
               {item.label}
             </a>
@@ -66,7 +65,7 @@ export function Navigation() {
               key={item.href}
               href={item.href}
               onClick={(e) => handleScroll(e, item.href)}
-              className="text-slate-600 pb-1 hover:text-emerald-600 transition-colors border-b-2 border-transparent hover:border-emerald-600"
+              className="text-gray-400 hover:text-emerald-400 transition-colors pb-1 border-b-2 border-transparent hover:border-emerald-400"
             >
               {item.label}
             </a>
@@ -78,7 +77,7 @@ export function Navigation() {
           <LanguageToggle />
           
           {/* Mobile Menu Button */}
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <Button variant="ghost" size="icon" className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </div>
@@ -86,14 +85,14 @@ export function Navigation() {
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 py-4 bg-white">
+        <div className="md:hidden border-t border-white/5 py-4 bg-neutral-900">
           <div className="flex flex-col gap-3 px-6 max-h-[70vh] overflow-y-auto">
             {navItems.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
                 onClick={(e) => handleScroll(e, item.href)}
-                className="text-sm font-medium text-slate-600 hover:text-emerald-600 py-1"
+                className="text-sm font-medium text-gray-400 hover:text-emerald-400 py-1"
               >
                 {item.label}
               </a>

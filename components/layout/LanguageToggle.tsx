@@ -22,7 +22,7 @@ export function LanguageToggle() {
       variant="outline"
       size="sm"
       onClick={toggleLanguage}
-      className="gap-1"
+      className="gap-1 border-white/20 text-gray-300 hover:bg-white/10 hover:text-white"
       aria-label="Toggle language"
     >
       <Languages className="h-4 w-4" />

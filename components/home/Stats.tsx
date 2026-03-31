@@ -2,7 +2,6 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, useRef } from 'react';
-import { FadeIn } from '@/components/ui/Animations';
 import { GitCommit, GitPullRequest, FolderGit2, Code2 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -70,44 +69,23 @@ export function Stats() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
+        if (entry.isIntersecting) setIsVisible(true);
       },
       { threshold: 0.2 }
     );
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
+    if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
     fetch('/api/github')
       .then(res => res.json())
-      .then(data => {
-        setGithubData(data);
-        setLoading(false);
-      })
+      .then(data => { setGithubData(data); setLoading(false); })
       .catch(() => {
         setGithubData({
-          public_repos: 7,
-          followers: 4,
-          contributions: {
-            commits: 0,
-            pullRequests: 0,
-            issues: 0,
-            activeRepos: 0,
-            totalCommits: 0,
-          },
-          topLanguages: [],
-          streak: {
-            current: 0,
-            longest: 0,
-            total: 0,
-          },
+          public_repos: 7, followers: 4,
+          contributions: { commits: 0, pullRequests: 0, issues: 0, activeRepos: 0, totalCommits: 0 },
+          topLanguages: [], streak: { current: 0, longest: 0, total: 0 }
         });
         setLoading(false);
       });
@@ -121,29 +99,20 @@ export function Stats() {
         activeRepos: githubData.contributions.activeRepos,
         publicRepos: githubData.public_repos,
       };
-
       Object.entries(targets).forEach(([key, target]) => {
         let current = 0;
-        const increment = target / 50;
         const interval = setInterval(() => {
-          current += increment;
-          if (current >= target) {
-            current = target;
-            clearInterval(interval);
-          }
+          current += target / 50;
+          if (current >= target) { current = target; clearInterval(interval); }
           setAnimatedValues(prev => ({ ...prev, [key]: Math.floor(current) }));
         }, 20);
       });
-
       githubData.topLanguages.forEach((lang) => {
         let progress = 0;
         const target = parseFloat(lang.percentage);
         const interval = setInterval(() => {
           progress += target / 50;
-          if (progress >= target) {
-            progress = target;
-            clearInterval(interval);
-          }
+          if (progress >= target) { progress = target; clearInterval(interval); }
           setLanguageProgress(prev => ({ ...prev, [lang.name]: progress }));
         }, 20);
       });
@@ -151,178 +120,100 @@ export function Stats() {
   }, [githubData, isVisible, loading]);
 
   const stats: Stat[] = [
-    {
-      value: (animatedValues.totalCommits || githubData?.contributions.totalCommits || 0).toString(),
-      label: 'Total Commits',
-      sublabel: 'All time',
-      icon: GitCommit,
-    },
-    {
-      value: (animatedValues.pullRequests || githubData?.contributions.pullRequests || 0).toString(),
-      label: 'Pull Requests',
-      sublabel: 'Last 30 days',
-      icon: GitPullRequest,
-    },
-    {
-      value: (animatedValues.activeRepos || githubData?.contributions.activeRepos || 0).toString(),
-      label: 'Active Repos',
-      sublabel: 'Last 30 days',
-      icon: FolderGit2,
-    },
-    {
-      value: (animatedValues.publicRepos || githubData?.public_repos || 0).toString(),
-      label: 'Total Projects',
-      sublabel: 'Public repositories',
-      icon: Code2,
-    },
+    { value: (animatedValues.totalCommits || githubData?.contributions.totalCommits || 0).toString(), label: 'Total Commits', sublabel: 'All time', icon: GitCommit },
+    { value: (animatedValues.pullRequests || githubData?.contributions.pullRequests || 0).toString(), label: 'Pull Requests', sublabel: 'Last 30 days', icon: GitPullRequest },
+    { value: (animatedValues.activeRepos || githubData?.contributions.activeRepos || 0).toString(), label: 'Active Repos', sublabel: 'Last 30 days', icon: FolderGit2 },
+    { value: (animatedValues.publicRepos || githubData?.public_repos || 0).toString(), label: 'Total Projects', sublabel: 'Public repositories', icon: Code2 },
   ];
 
   return (
     <div className="w-full" ref={containerRef}>
       <div className="max-w-7xl mx-auto px-8">
-        {/* Section Header */}
         <div className="text-center mb-12">
-          <span className="text-primary font-bold tracking-widest text-xs uppercase">
-            GitHub Activity
-          </span>
-          <h2 className="text-4xl font-bold tracking-tight mt-4">
-            {t('title')}
-          </h2>
-          <p className="text-on-surface-variant mt-4 max-w-2xl mx-auto">
-            {t('subtitle')}
-          </p>
+          <span className="text-emerald-400 font-bold tracking-widest text-xs uppercase">GitHub Activity</span>
+          <h2 className="text-4xl font-bold tracking-tight mt-4 text-white">{t('title')}</h2>
+          <p className="text-gray-400 mt-4 max-w-2xl mx-auto">{t('subtitle')}</p>
         </div>
 
-        {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {stats.map((stat, index) => {
             const IconComponent = stat.icon;
-            
             return (
-              <FadeIn key={stat.label} delay={index * 0.1}>
-                <div className="bg-white rounded-lg border border-neutral-200 hover:border-primary/30 hover:shadow-md transition-all duration-300 p-6 h-full">
-                  {/* Icon and Value */}
-                  <div className="flex items-start gap-3 mb-4 pb-4 border-b border-neutral-100">
-                    <div className="w-1 h-12 bg-primary-500 rounded-full" />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-3xl md:text-4xl font-bold text-neutral-900 leading-none mb-1">
-                        {loading ? '...' : stat.value}
-                      </div>
-                      <div className="text-sm font-medium text-neutral-700">
-                        {stat.label}
-                      </div>
+              <div key={stat.label} className="bg-neutral-900/50 border border-white/10 rounded-lg p-6 h-full hover:border-emerald-500/30 transition-all">
+                <div className="flex items-start gap-3 mb-4 pb-4 border-b border-white/10">
+                  <IconComponent className="w-6 h-6 text-emerald-400" />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-3xl md:text-4xl font-bold text-white leading-none mb-1">
+                      {loading ? '...' : stat.value}
                     </div>
+                    <div className="text-sm font-medium text-gray-300">{stat.label}</div>
                   </div>
-                  
-                  {/* Sublabel */}
-                  {stat.sublabel && (
-                    <div className="text-xs text-neutral-500">
-                      {stat.sublabel}
-                    </div>
-                  )}
                 </div>
-              </FadeIn>
+                {stat.sublabel && <div className="text-xs text-gray-500">{stat.sublabel}</div>}
+              </div>
             );
           })}
         </div>
 
-        {/* Most Used Languages & Contribution Streak */}
-        <FadeIn delay={0.4}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Most Used Languages */}
-            <div className="bg-white rounded-lg border border-neutral-200 hover:border-primary/30 hover:shadow-md transition-all duration-300 p-6 h-full">
-              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-neutral-100">
-                <div className="w-1 h-6 bg-primary-500 rounded-full" />
-                <h3 className="text-base font-semibold text-neutral-900">
-                  Most Used Languages
-                </h3>
-              </div>
-              
-              {loading ? (
-                <div className="text-center py-8 text-neutral-400 text-sm">Loading...</div>
-              ) : githubData && githubData.topLanguages.length > 0 ? (
-                <div className="space-y-4">
-                  {githubData.topLanguages.map((lang, index) => (
-                    <div key={lang.name} className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-2">
-                          <div 
-                            className="w-2.5 h-2.5 rounded-full" 
-                            style={{ backgroundColor: LANGUAGE_COLORS[lang.name] || LANGUAGE_COLORS.Default }}
-                          />
-                          <span className="font-medium text-neutral-900">{lang.name}</span>
-                        </div>
-                        <span className="text-neutral-500 text-xs">{languageProgress[lang.name]?.toFixed(1) || lang.percentage}%</span>
-                      </div>
-                      <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full rounded-full"
-                          style={{ 
-                            width: `${languageProgress[lang.name] || 0}%`,
-                            backgroundColor: LANGUAGE_COLORS[lang.name] || LANGUAGE_COLORS.Default
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-neutral-400 text-sm">No language data available</div>
-              )}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-neutral-900/50 border border-white/10 rounded-lg p-6">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+              <div className="w-1 h-6 bg-emerald-500 rounded-full" />
+              <h3 className="text-base font-semibold text-white">Most Used Languages</h3>
             </div>
-
-            {/* Contribution Streak */}
-            <div className="bg-white rounded-lg border border-neutral-200 hover:border-primary/30 hover:shadow-md transition-all duration-300 p-6 h-full">
-              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-neutral-100">
-                <div className="w-1 h-6 bg-primary-500 rounded-full" />
-                <h3 className="text-base font-semibold text-neutral-900">
-                  Contribution Streak
-                </h3>
-              </div>
-              
-              {loading ? (
-                <div className="text-center py-8 text-neutral-400 text-sm">Loading...</div>
-              ) : githubData && githubData.streak ? (
-                <div className="space-y-6">
-                  {/* Current Streak */}
-                  <div className="text-center p-6 bg-neutral-50 rounded-lg border border-neutral-200">
-                    <div className="text-xs text-neutral-500 mb-2 font-medium uppercase tracking-wider">Current Streak</div>
-                    <div className="text-4xl font-bold text-neutral-900 mb-1">
-                      {githubData.streak.current}
+            {loading ? (
+              <div className="text-center py-8 text-gray-500 text-sm">Loading...</div>
+            ) : githubData && githubData.topLanguages.length > 0 ? (
+              <div className="space-y-4">
+                {githubData.topLanguages.map((lang) => (
+                  <div key={lang.name} className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: LANGUAGE_COLORS[lang.name] || LANGUAGE_COLORS.Default }} />
+                        <span className="font-medium text-white">{lang.name}</span>
+                      </div>
+                      <span className="text-gray-500 text-xs">{languageProgress[lang.name]?.toFixed(1) || lang.percentage}%</span>
                     </div>
-                    <div className="text-xs text-neutral-500">
-                      {githubData.streak.current === 1 ? 'day' : 'days'}
+                    <div className="h-1.5 bg-neutral-800 rounded-full overflow-hidden">
+                      <div className="h-full rounded-full" style={{ width: `${languageProgress[lang.name] || 0}%`, backgroundColor: LANGUAGE_COLORS[lang.name] || LANGUAGE_COLORS.Default }} />
                     </div>
                   </div>
-
-                  {/* Stats Row */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center p-4 bg-neutral-50 rounded-lg border border-neutral-200">
-                      <div className="text-2xl font-bold text-neutral-900 mb-1">
-                        {githubData.streak.longest}
-                      </div>
-                      <div className="text-xs text-neutral-500">Longest Streak</div>
-                    </div>
-                    <div className="text-center p-4 bg-neutral-50 rounded-lg border border-neutral-200">
-                      <div className="text-2xl font-bold text-neutral-900 mb-1">
-                        {githubData.streak.total}
-                      </div>
-                      <div className="text-xs text-neutral-500">Total Days</div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-8 text-neutral-400 text-sm">No streak data available</div>
-              )}
-            </div>
+                ))}
+              </div>
+            ) : <div className="text-center py-8 text-gray-500 text-sm">No language data</div>}
           </div>
-        </FadeIn>
 
-        {/* Footer Note */}
+          <div className="bg-neutral-900/50 border border-white/10 rounded-lg p-6">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+              <div className="w-1 h-6 bg-emerald-500 rounded-full" />
+              <h3 className="text-base font-semibold text-white">Contribution Streak</h3>
+            </div>
+            {loading ? (
+              <div className="text-center py-8 text-gray-500 text-sm">Loading...</div>
+            ) : githubData && githubData.streak ? (
+              <div className="space-y-6">
+                <div className="text-center p-6 bg-neutral-800/50 rounded-lg border border-white/10">
+                  <div className="text-xs text-gray-500 mb-2 font-medium uppercase tracking-wider">Current Streak</div>
+                  <div className="text-4xl font-bold text-white mb-1">{githubData.streak.current}</div>
+                  <div className="text-xs text-gray-500">{githubData.streak.current === 1 ? 'day' : 'days'}</div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-4 bg-neutral-800/50 rounded-lg border border-white/10">
+                    <div className="text-2xl font-bold text-white mb-1">{githubData.streak.longest}</div>
+                    <div className="text-xs text-gray-500">Longest Streak</div>
+                  </div>
+                  <div className="text-center p-4 bg-neutral-800/50 rounded-lg border border-white/10">
+                    <div className="text-2xl font-bold text-white mb-1">{githubData.streak.total}</div>
+                    <div className="text-xs text-gray-500">Total Days</div>
+                  </div>
+                </div>
+              </div>
+            ) : <div className="text-center py-8 text-gray-500 text-sm">No streak data</div>}
+          </div>
+        </div>
+
         <div className="text-center mt-8">
-          <p className="text-xs text-neutral-400">
-            Data refreshed every hour • Powered by GitHub API
-          </p>
+          <p className="text-xs text-gray-600">Data refreshed every hour • Powered by GitHub API</p>
         </div>
       </div>
     </div>
