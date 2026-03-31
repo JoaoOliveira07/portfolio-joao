@@ -18,16 +18,13 @@ export function EngineeringPractices() {
 
   return (
     <section className="w-full">
-      <div className="container mx-auto px-6 max-w-7xl">
+      <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-1 h-5 bg-primary-500 rounded-full flex-shrink-0" />
-            <h2 className="text-2xl font-bold text-neutral-900">
-              {t('title')}
-            </h2>
-          </div>
-          <p className="text-sm text-neutral-500 ml-6">
+        <div className="text-center mb-12">
+          <span className="text-emerald-700 font-bold tracking-widest text-xs uppercase">
+            {t('title')}
+          </span>
+          <p className="text-gray-600 mt-3">
             {t('subtitle')}
           </p>
         </div>

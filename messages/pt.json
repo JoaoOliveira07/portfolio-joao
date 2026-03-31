@@ -1,17 +1,20 @@
 {
   "nav": {
     "home": "Início",
-    "about": "Sobre",
+    "philosophy": "Filosofia",
+    "expertise": "Expertise",
     "experience": "Experiência",
     "engineering": "Engenharia",
-    "learning": "Aprendizado",
-    "techStack": "Tech Stack",
-    "projects": "Projetos"
+    "techstack": "Tech Stack",
+    "projects": "Projetos",
+    "stats": "Números",
+    "testimonials": "Depoimentos",
+    "contact": "Contato"
   },
   "hero": {
-    "role": "Mid-Level Backend Developer",
-    "tagline": "Construindo sistemas que realmente funcionam, estáveis, performáticos e prontos para escalar.",
-    "description": "Especializado em Java e Spring Boot, com forte expertise em arquiteturas orientadas a eventos, integrações complexas e Infrastructure as Code.",
+    "role": "Desenvolvedor Backend Java",
+    "tagline": "Desenvolvedor Java construindo soluções back-end com Spring Boot.",
+    "description": "Trabalho com Java, Spring Boot, JPA, Hibernate, PostgreSQL e MySQL. Focado em código limpo, boas práticas de desenvolvimento e aprendizado contínuo.",
     "cta": {
       "projects": "Ver Projetos",
       "cv": "Download CV"
@@ -34,22 +37,18 @@
   },
   "about": {
     "title": "Sobre Mim",
-    "intro": "Sou apaixonado por construir sistemas que realmente funcionam — estáveis, performáticos e projetados para escalar. Trabalho diariamente com Java e Spring Boot, desenvolvendo soluções robustas que suportam necessidades de negócio e entregam valor real.",
-    "expertise": "Minha maior expertise está em integrações e arquitetura orientada a eventos. Gosto de transformar sistemas complexos em fluxos simples, confiáveis e observáveis.",
-    "focus": "Nos últimos meses, venho expandindo minha expertise em Cloud e Infrastructure as Code, focando em AWS, Terraform e observabilidade.",
-    "mindset": "Sou motivado por desafios, aprendizado contínuo e o desejo de entregar soluções que realmente fazem diferença — tanto para os usuários quanto para a equipe.",
+    "intro": "Desenvolvedor Java com experiência em desenvolvimento back-end. Trabalho principalmente com Spring Boot, JPA, Hibernate, PostgreSQL e MySQL. Focado em escrever código limpo, seguindo princípios SOLID e boas práticas de desenvolvimento.",
     "experience": "Experiência Profissional",
-    "competencies": "Principais Competências",
+    "competencies": "Competências",
     "recommendations": "Recomendações"
   },
   "techStack": {
-    "title": "Stack Técnica Completa",
-    "subtitle": "Ferramentas e tecnologias que domino para entregar soluções de qualidade",
+    "title": "Stack Técnica",
+    "subtitle": "Tecnologias que uso diariamente para construir aplicações robustas",
     "core": "Core Backend",
-    "eventDriven": "Event-Driven & Integration",
-    "cloud": "Cloud & Infrastructure",
-    "quality": "Quality & Practices",
-    "observability": "Observability & Monitoring"
+    "database": "Banco de Dados",
+    "versionControl": "Controle de Versão",
+    "quality": "Qualidade & Testes"
   },
   "stats": {
     "title": "Números que Contam",

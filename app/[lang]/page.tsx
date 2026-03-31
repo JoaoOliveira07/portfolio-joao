@@ -3,77 +3,87 @@ import { AboutSection } from '@/components/home/AboutSection';
 import { Competencies } from '@/components/home/Competencies';
 import { Timeline } from '@/components/home/Timeline';
 import { EngineeringPractices } from '@/components/home/EngineeringPractices';
-import { SystemDesignStudies } from '@/components/home/SystemDesignStudies';
-import { CurrentlyLearning } from '@/components/home/CurrentlyLearning';
 import { TechStack } from '@/components/home/TechStack';
-import { Stats } from '@/components/home/Stats';
+import { CurrentlyLearning } from '@/components/home/CurrentlyLearning';
+import { SystemDesignStudies } from '@/components/home/SystemDesignStudies';
 import { FeaturedProjects } from '@/components/home/FeaturedProjects';
+import { Stats } from '@/components/home/Stats';
 import { Testimonials } from '@/components/home/Testimonials';
+import { Contact } from '@/components/home/Contact';
 
 export default function HomePage() {
   return (
-    <main className="bg-gray-50">
-      {/* Hero Section */}
-      <section id="hero" className="bg-white scroll-mt-16">
+    <main>
+      {/* Hero - White */}
+      <section id="hero" className="bg-white">
         <Hero />
       </section>
 
-      {/* About Me & Core Competencies - CINZA */}
-      <section id="about" className="bg-gray-50 py-16 md:py-20 scroll-mt-16">
-        <div className="max-w-7xl mx-auto px-6 space-y-12">
-          <AboutSection />
-          <Competencies />
-        </div>
+      {/* Philosophy - Gray */}
+      <section id="philosophy" className="bg-gray-50">
+        <AboutSection />
       </section>
 
-      {/* Professional Experience - BRANCA */}
-      <section id="experience" className="bg-white py-16 md:py-20 scroll-mt-16">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* Expertise - White */}
+      <section id="expertise" className="bg-white">
+        <Competencies />
+      </section>
+
+      {/* Experience - Gray */}
+      <section id="experience" className="bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
           <Timeline />
         </div>
       </section>
 
-      {/* Engineering - CINZA */}
-      <section id="engineering" className="bg-gray-50 py-16 md:py-20 scroll-mt-16">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* Engineering - White */}
+      <section id="engineering" className="bg-white">
+        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
           <EngineeringPractices />
         </div>
       </section>
 
-      {/* Tech Stack - BRANCA */}
-      <section id="techstack" className="bg-white py-16 md:py-20 scroll-mt-16">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* Tech Stack - Gray */}
+      <section id="techstack" className="bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
           <TechStack />
         </div>
       </section>
 
-      {/* Currently Learning & System Design - CINZA */}
-      <section id="learning" className="bg-gray-50 py-16 md:py-20 scroll-mt-16">
-        <div className="max-w-7xl mx-auto px-6 space-y-12">
+      {/* Learning - White */}
+      <section id="learning" className="bg-white">
+        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
           <CurrentlyLearning />
+        </div>
+      </section>
+
+      {/* System Design Studies - Gray */}
+      <section id="system-design" className="bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
           <SystemDesignStudies />
         </div>
       </section>
 
-      {/* Projects - BRANCA */}
-      <section id="projects" className="bg-white py-16 md:py-20 scroll-mt-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <FeaturedProjects />
-        </div>
+      {/* Projects - White */}
+      <section id="projects" className="bg-white">
+        <FeaturedProjects />
       </section>
 
-      {/* Stats (Numbers that Matter) - CINZA */}
-      <section id="stats" className="bg-gray-50 py-16 md:py-20 scroll-mt-16">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* Stats - Gray */}
+      <section id="stats" className="bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
           <Stats />
         </div>
       </section>
 
-      {/* Testimonials - BRANCA */}
-      <section id="testimonials" className="bg-white py-16 md:py-20 scroll-mt-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <Testimonials />
-        </div>
+      {/* Testimonials - White */}
+      <section id="testimonials" className="bg-white">
+        <Testimonials />
+      </section>
+
+      {/* Contact - Emerald Dark */}
+      <section id="contact" className="bg-emerald-900">
+        <Contact />
       </section>
     </main>
   );

@@ -6,13 +6,13 @@ import { experience as experiencePt } from '@/data/experience/pt';
 import { experience as experienceEn } from '@/data/experience/en';
 import { Lock, Unlock } from 'lucide-react';
 
-const GREEN = '#5CE1A7';
-const GREEN_DARK = '#01926D';
-const GREEN_LIGHT = '#E6FFF5';
-const GREEN_BORDER = '#C2F5E2';
-const GREEN_SOFT = '#C2F5E2';
+const GREEN = '#10b981';
+const GREEN_DARK = '#047857';
+const GREEN_LIGHT = '#d1fae5';
+const GREEN_BORDER = '#a7f3d0';
+const GREEN_SOFT = '#d1fae5';
 const TEXT_MAIN = '#111827';
-const TEXT_MUTED = '#6b7280';
+const TEXT_MUTED = '#4b5563';
 const TEXT_LIGHT = '#9ca3af';
 
 export function Timeline() {
@@ -58,13 +58,13 @@ export function Timeline() {
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="text-center mb-8">
-        <p
-          className="text-[11px] tracking-[0.25em] uppercase mb-2 font-semibold"
-          style={{ color: GREEN_DARK }}
-        >
+      <div className="text-center mb-12">
+        <span className="text-emerald-700 font-bold tracking-widest text-xs uppercase">
+          Professional Journey
+        </span>
+        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mt-3">
           {t('experience')}
-        </p>
+        </h2>
       </div>
 
       {/* Timeline — single grid so labels align exactly with dots */}

@@ -38,19 +38,7 @@ export const techLogos: TechLogo[] = [
     displayName: 'MySQL'
   },
 
-  // Event-Driven & Integration
-  {
-    name: 'Apache Kafka',
-    type: 'svg',
-    path: '/logos/kafka.svg',
-    displayName: 'Kafka'
-  },
-  {
-    name: 'Event-Driven',
-    type: 'lucide',
-    icon: 'Workflow',
-    displayName: 'Event-Driven'
-  },
+  // Cloud & Infrastructure
 
   // Cloud & Infrastructure
   {

@@ -121,16 +121,16 @@ export function Stats() {
 
   return (
     <div className="w-full">
-      <div className="container mx-auto px-6 max-w-7xl">
+      <div className="max-w-7xl mx-auto px-8">
         {/* Section Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-1 h-5 bg-primary-500 rounded-full flex-shrink-0" />
-            <h2 className="text-2xl font-bold text-neutral-900">
-              {t('title')}
-            </h2>
-          </div>
-          <p className="text-sm text-neutral-500 ml-6">
+        <div className="text-center mb-12">
+          <span className="text-primary font-bold tracking-widest text-xs uppercase">
+            GitHub Activity
+          </span>
+          <h2 className="text-4xl font-bold tracking-tight mt-4">
+            {t('title')}
+          </h2>
+          <p className="text-on-surface-variant mt-4 max-w-2xl mx-auto">
             {t('subtitle')}
           </p>
         </div>

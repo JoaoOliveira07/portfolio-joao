@@ -1,27 +1,51 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useLocale } from 'next-intl';
 
 export function AboutSection() {
   const t = useTranslations('about');
-  const locale = useLocale();
+
+  const philosophyItems = [
+    {
+      title: 'Excelência Técnica',
+      description: 'Priorizamos a manutenibilidade e a clareza sobre soluções rápidas e frágeis.',
+    },
+    {
+      title: 'Foco em Performance',
+      description: 'Sistemas otimizados desde o kernel até a interface do usuário final.',
+    },
+  ];
 
   return (
-    <div className="max-w-4xl">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-1 h-5 bg-primary-500 rounded-full flex-shrink-0" />
-        <h2 className="text-2xl font-bold text-neutral-900">
-          {t('title')}
-        </h2>
+    <section className="py-20 md:py-32" id="philosophy">
+      <div className="max-w-7xl mx-auto px-6 md:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-center">
+          {/* Left - Image */}
+          <div className="relative order-2 md:order-1">
+            <div className="aspect-[4/5] rounded-xl overflow-hidden bg-gray-200 shadow-lg">
+              <img 
+                src="/avatars/eu.png"
+                alt="João Paulo Oliveira"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="absolute -bottom-6 md:-bottom-8 -right-6 md:-right-8 bg-emerald-700 p-6 md:p-10 rounded-xl shadow-lg hidden md:block">
+              <span className="text-white text-2xl md:text-3xl font-black tracking-widest opacity-30">EST. 2024</span>
+            </div>
+          </div>
+
+          {/* Right - Content */}
+          <div className="order-1 md:order-2">
+            <span className="text-emerald-700 font-bold tracking-widest text-xs uppercase">About</span>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mt-2 mb-6">
+              {t('title')}
+            </h2>
+            <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-8">
+              {t('intro')}
+            </p>
+          </div>
+        </div>
       </div>
-      
-      <div className="space-y-4 text-neutral-700 leading-relaxed">
-        <p className="text-base">{t('intro')}</p>
-        <p className="text-base">{t('expertise')}</p>
-        <p className="text-base">{t('focus')}</p>
-        <p className="text-base text-neutral-600 italic">{t('mindset')}</p>
-      </div>
-    </div>
+    </section>
   );
 }

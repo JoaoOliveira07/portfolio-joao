@@ -1,17 +1,20 @@
 {
   "nav": {
     "home": "Home",
-    "about": "About",
+    "philosophy": "Philosophy",
+    "expertise": "Expertise",
     "experience": "Experience",
     "engineering": "Engineering",
-    "learning": "Learning",
-    "techStack": "Tech Stack",
-    "projects": "Projects"
+    "techstack": "Tech Stack",
+    "projects": "Projects",
+    "stats": "Stats",
+    "testimonials": "Testimonials",
+    "contact": "Contact"
   },
   "hero": {
-    "role": "Mid-Level Backend Developer",
-    "tagline": "Building systems that truly work, stable, high-performing, and designed to scale.",
-    "description": "Specialized in Java and Spring Boot, with strong expertise in event-driven architecture, complex integrations, and Infrastructure as Code.",
+    "role": "Java Backend Developer",
+    "tagline": "Java developer building back-end solutions with Spring Boot.",
+    "description": "I work with Java, Spring Boot, JPA, Hibernate, PostgreSQL and MySQL. Focused on clean code, development best practices and continuous learning.",
     "cta": {
       "projects": "View Projects",
       "cv": "Download Resume"
@@ -34,22 +37,18 @@
   },
   "about": {
     "title": "About Me",
-    "intro": "I'm passionate about building systems that truly work — stable, high-performing, and designed to scale. I work daily with Java and Spring Boot, developing robust solutions that support business needs and deliver real value.",
-    "expertise": "My strongest expertise lies in integrations and event-driven architecture. I enjoy transforming complex systems into simple, reliable, and observable flows.",
-    "focus": "In recent months, I've been expanding my expertise into Cloud and Infrastructure as Code, focusing on AWS, Terraform, and observability.",
-    "mindset": "I'm driven by challenges, continuous learning, and the desire to deliver solutions that truly make a difference — both for users and for the team.",
+    "intro": "Java backend developer with experience in back-end development. I mainly work with Spring Boot, JPA, Hibernate, PostgreSQL and MySQL. Focused on writing clean code, following SOLID principles and development best practices.",
     "experience": "Professional Experience",
-    "competencies": "Core Competencies",
+    "competencies": "Competencies",
     "recommendations": "Recommendations"
   },
   "techStack": {
-    "title": "Complete Tech Stack",
-    "subtitle": "Tools and technologies I master to deliver quality solutions",
+    "title": "Tech Stack",
+    "subtitle": "Technologies I use daily to build robust applications",
     "core": "Core Backend",
-    "eventDriven": "Event-Driven & Integration",
-    "cloud": "Cloud & Infrastructure",
-    "quality": "Quality & Practices",
-    "observability": "Observability & Monitoring"
+    "database": "Database",
+    "versionControl": "Version Control",
+    "quality": "Quality & Testing"
   },
   "stats": {
     "title": "Numbers that Matter",

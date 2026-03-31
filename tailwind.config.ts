@@ -6,10 +6,13 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
-primary: {
+        // Primary colors (emerald-based from MD3)
+        primary: {
+          DEFAULT: '#00694d',
           50: '#E6FFF5',
           100: '#C2F5E2',
           200: '#8FEBC4',
@@ -20,19 +23,69 @@ primary: {
           700: '#016149',
           800: '#014837',
           900: '#013021',
+          container: '#008563',
         },
+        // MD3 Surface Colors
+        surface: {
+          DEFAULT: '#f8f9fa',
+          bright: '#f8f9fa',
+          dim: '#d9dadb',
+          container: '#edeeef',
+          'container-low': '#f3f4f5',
+          'container-lowest': '#ffffff',
+          'container-high': '#e7e8e9',
+          'container-highest': '#e1e3e4',
+          variant: '#e1e3e4',
+          tint: '#006c50',
+        },
+        // MD3 On Surface Colors
+        'on-surface': {
+          DEFAULT: '#191c1d',
+          variant: '#3d4943',
+        },
+        'on-background': '#191c1d',
+        
+        // Secondary colors
         secondary: {
-          50: '#F5F3FF',
-          100: '#EDE9FE',
-          200: '#DDD6FE',
-          300: '#C4B5FD',
-          400: '#A78BFA',
-          500: '#8B5CF6',
-          600: '#7C3AED',
-          700: '#6D28D9',
-          800: '#5B21B6',
-          900: '#4C1D95',
+          DEFAULT: '#006c49',
+          container: '#74f8bc',
+          'fixed': '#77fabe',
+          'fixed-dim': '#58dda4',
         },
+        
+        // Tertiary colors
+        tertiary: {
+          DEFAULT: '#555c6e',
+          container: '#6e7487',
+          fixed: '#dce2f7',
+          'fixed-dim': '#c0c6db',
+        },
+        
+        // Primary fixed (for selections/highlights)
+        'primary-fixed': '#87f7cc',
+        'primary-fixed-dim': '#6adbb1',
+        'on-primary-fixed': '#002116',
+        'on-primary-fixed-variant': '#00513b',
+        
+        // Error colors
+        error: '#ba1a1a',
+        'error-container': '#ffdad6',
+        'on-error': '#ffffff',
+        'on-error-container': '#93000a',
+        
+        // Outline colors
+        outline: '#6d7a73',
+        'outline-variant': '#bccac1',
+        
+        // Inverse colors
+        'inverse-surface': '#2e3132',
+        'inverse-on-surface': '#f0f1f2',
+        'inverse-primary': '#6adbb1',
+        
+        // Background
+        background: '#f8f9fa',
+        
+        // Legacy colors (kept for compatibility)
         success: {
           50: '#F0FDF4',
           100: '#C2F5E2',
@@ -59,12 +112,6 @@ primary: {
           900: '#171717',
           950: '#0A0A0A',
         },
-        background: {
-          primary: '#FFFFFF',
-          secondary: '#FAFAFA',
-          tertiary: '#F5F5F5',
-          dark: '#0A0A0A',
-        },
         text: {
           primary: '#171717',
           secondary: '#525252',
@@ -73,7 +120,10 @@ primary: {
         },
       },
       fontFamily: {
-        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        body: ['Inter'],
+        headline: ['Inter'],
+        label: ['Inter'],
         mono: ['SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', 'monospace'],
       },
       spacing: {
@@ -82,9 +132,12 @@ primary: {
         'element': '1.5rem',
       },
       borderRadius: {
-        'xl': '1rem',
-        '2xl': '1.5rem',
-        '3xl': '2rem',
+        'DEFAULT': '0.25rem',
+        'lg': '0.5rem',
+        'xl': '0.75rem',
+        '2xl': '1rem',
+        '3xl': '1.5rem',
+        'full': '9999px',
       },
       boxShadow: {
         'glow': '0 0 20px rgba(1, 146, 109, 0.3)',

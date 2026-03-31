@@ -1,51 +1,49 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import { IconContainer } from '@/components/ui/IconContainer';
-import { Card } from '@/components/ui/Card';
+import { useLocale } from 'next-intl';
 import { competencies } from '@/data/skills';
-import { Stagger, StaggerItem } from '@/components/ui/Animations';
-import { Workflow, FlaskConical, Cloud, ShieldCheck } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-
-// Mapeamento de strings para componentes de ícones
-const iconMap: Record<string, LucideIcon> = {
-  Workflow,
-  FlaskConical,
-  Cloud,
-  ShieldCheck,
-};
 
 export function Competencies() {
-  const t = useTranslations('competencies');
+  const locale = useLocale() as 'pt' | 'en';
+
+  const getIcon = (iconName: string) => {
+    const icons: Record<string, string> = {
+      'Workflow': 'sync',
+      'FlaskConical': 'science',
+      'Cloud': 'cloud_done',
+      'ShieldCheck': 'verified_user',
+    };
+    return icons[iconName] || 'code';
+  };
 
   return (
-    <section className="w-full">
-      <div className="container mx-auto px-6 max-w-7xl">
-        {/* Competency Grid */}
-        <Stagger className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {competencies.map((competency, index) => {
-            const IconComponent = iconMap[competency.icon];
-            
-            return (
-              <StaggerItem key={competency.title.en}>
-                <div className="flex flex-col gap-3 p-6 bg-white rounded-lg border border-neutral-200 hover:border-primary/30 hover:shadow-md transition-all h-full">
-                  <div className="flex items-center gap-3">
-                    <IconContainer size="sm" variant="primary">
-                      {IconComponent && <IconComponent className="w-5 h-5 text-primary-600" />}
-                    </IconContainer>
-                    <h3 className="text-lg font-bold text-neutral-900">
-                      {competency.title[t('locale') as 'pt' | 'en']}
-                    </h3>
-                  </div>
-                  <p className="text-sm text-neutral-600 leading-relaxed">
-                    {competency.description[t('locale') as 'pt' | 'en']}
-                  </p>
-                </div>
-              </StaggerItem>
-            );
-          })}
-        </Stagger>
+    <section className="py-20 md:py-32" id="expertise">
+      <div className="max-w-7xl mx-auto px-6 md:px-8">
+        <div className="text-center mb-12 md:mb-20">
+          <span className="text-emerald-700 font-bold tracking-widest text-xs uppercase">Core Capabilities</span>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mt-3 md:mt-4">
+            {locale === 'pt' ? 'Minha Expertise' : 'My Expertise'}
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          {competencies.map((competency) => (
+            <div
+              key={competency.title.en}
+              className="bg-white p-6 md:p-8 rounded-xl transition-all hover:bg-gray-50 border border-gray-200 hover:border-emerald-300 hover:shadow-lg group"
+            >
+              <span className="material-symbols-outlined text-3xl md:text-4xl text-emerald-700 mb-4 md:mb-6 block group-hover:scale-110 transition-transform">
+                {getIcon(competency.icon)}
+              </span>
+              <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-gray-900">
+                {competency.title[locale]}
+              </h3>
+              <p className="text-sm md:text-base text-gray-600 leading-relaxed">
+                {competency.description[locale]}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

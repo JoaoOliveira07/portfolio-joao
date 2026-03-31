@@ -2,7 +2,7 @@
 
 import { useTranslations, useLocale } from 'next-intl';
 import Image from 'next/image';
-import { skillCategories } from '@/data/skills';
+import { competencies } from '@/data/skills';
 import { Stagger, StaggerItem } from '@/components/ui/Animations';
 import { techLogos } from '@/data/tech-logos';
 import * as LucideIcons from 'lucide-react';
@@ -75,9 +75,9 @@ export function TechStack() {
 
         {/* Tech Marquee - Full Width with Gradient Overlays */}
         <div className="relative mb-8 -mx-6 px-6 md:-mx-12 md:px-12">
-          {/* Gradient Overlays - fade to white on left and right edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+          {/* Gradient Overlays - fade to gray-50 on left and right edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none" />
           
           {/* Scrolling Container */}
           <div className="overflow-hidden">
@@ -108,13 +108,13 @@ export function TechStack() {
           `}</style>
         </div>
 
-        {/* Skills Categories - Minimalist Grid */}
-        <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-          {skillCategories.map((category) => (
-            <StaggerItem key={category.id}>
-              <div className="bg-white rounded-lg border border-neutral-200 hover:border-primary/30 hover:shadow-md transition-all duration-300 p-6 h-full">
+        {/* Skills Categories - Gray Background Cards */}
+        <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {competencies.map((category, index) => (
+            <StaggerItem key={index}>
+              <div className="bg-neutral-200 rounded-lg p-6 h-full">
                 {/* Title with accent */}
-                <div className="flex items-center gap-3 mb-5 pb-4 border-b border-neutral-100">
+                <div className="flex items-center gap-3 mb-4">
                   <div className="w-1 h-6 bg-primary-500 rounded-full" />
                   <h3 className="text-base font-semibold text-neutral-900">
                     {category.title[locale as 'pt' | 'en']}
@@ -122,11 +122,11 @@ export function TechStack() {
                 </div>
                 
                 {/* Skills as simple text list */}
-                <div className="space-y-2.5">
+                <div className="space-y-2">
                   {category.skills.map((skill) => (
                     <div 
                       key={skill} 
-                      className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors"
+                      className="text-sm text-neutral-600"
                     >
                       {skill}
                     </div>

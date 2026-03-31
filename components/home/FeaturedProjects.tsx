@@ -2,24 +2,20 @@
 
 import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
-import { IconContainer } from '@/components/ui/IconContainer';
-import { ProjectModal } from '@/components/ui/ProjectModal';
-import { ArrowRight, Boxes, Workflow, Link2, RefreshCw, Bot, Building2, Star } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowRight } from 'lucide-react';
 import { projects as projectsPt } from '@/data/projects/pt';
 import { projects as projectsEn } from '@/data/projects/en';
 import type { Project } from '@/data/projects/pt';
-import { Stagger, StaggerItem } from '@/components/ui/Animations';
+import { ProjectModal } from '@/components/ui/ProjectModal';
 
-const categoryIcons = {
-  iac: Boxes,
-  'event-driven': Workflow,
-  integration: Link2,
-  sync: RefreshCw,
-  automation: Bot,
-  monolith: Building2,
+const projectImages: Record<string, string> = {
+  'iac-terraform-aws': '/images/projects/iac_terraform_v1_1.png',
+  'pipeline-event-driven': '/images/projects/event_driven_pipeline_v1_1.png',
+  'arquitetura-integracao-hibrida': '/images/projects/hybrid_integration_v1_1.png',
+  'integradora-offline-online': '/images/projects/offline_online_sync_v1_1.png',
+  'sistema-cadastro-ocr': '/images/projects/ocr_automation_v1_1.png',
+  'sistema-rca-monolito': '/images/projects/modular_monolith_v1_1.png',
 };
 
 export function FeaturedProjects() {
@@ -29,92 +25,53 @@ export function FeaturedProjects() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
-    <section className="w-full">
-      <div className="container mx-auto px-6 max-w-7xl">
-        <div className="flex flex-col gap-8">
-          <div className="mb-0">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-1 h-5 bg-primary-500 rounded-full flex-shrink-0" />
-              <h2 className="text-2xl font-bold text-neutral-900">
-                {t('title')}
-              </h2>
-            </div>
-            <p className="text-sm text-neutral-500 ml-6">
-              {locale === 'pt' 
-                ? 'Ordenados por complexidade técnica' 
-                : 'Sorted by technical complexity'}
-            </p>
+    <section className="py-20 md:py-32" id="projects">
+      <div className="max-w-7xl mx-auto px-6 md:px-8">
+        <div className="flex justify-between items-end mb-10 md:mb-16">
+          <div>
+            <span className="text-emerald-700 font-bold tracking-widest text-xs uppercase">Portfolio</span>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mt-3 md:mt-4">
+              {t('title')}
+            </h2>
           </div>
+        </div>
 
-          <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {projects.map((project) => {
-              const Icon = categoryIcons[project.category];
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {projects.map((project) => (
+            <div 
+              key={project.slug} 
+              className="group cursor-pointer bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all border border-gray-200"
+              onClick={() => setSelectedProject(project)}
+            >
+              <div className="aspect-video relative overflow-hidden bg-gray-100">
+                <Image
+                  src={projectImages[project.slug] || '/images/projects/iac_terraform_v1_1.png'}
+                  alt={project.title}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
               
-              return (
-                <StaggerItem key={project.slug}>
-                  <Card
-                    className="flex flex-col hover:border-primary/30 transition-all hover:shadow-md p-5 h-full"
-                  >
-                  <CardHeader className="p-0 pb-3">
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <IconContainer size="sm" variant="primary">
-                        <Icon className="w-5 h-5 text-primary-600" />
-                      </IconContainer>
-                      <div className="flex flex-col items-end gap-1">
-                        <div className="flex items-center gap-0.5">
-                          {Array.from({ length: project.complexity }).map((_, i) => (
-                            <Star key={i} className="w-2.5 h-2.5 fill-primary-500 text-primary-500" />
-                          ))}
-                        </div>
-                        <span className="text-xs text-neutral-400">{project.year}</span>
-                      </div>
-                    </div>
-                    <CardTitle className="text-lg">{project.title}</CardTitle>
-                    <CardDescription className="line-clamp-2 text-sm">
-                      {project.subtitle}
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent className="flex-1 p-0 py-3">
-                    <p className="text-sm text-textMuted line-clamp-2">
-                      {project.description}
-                    </p>
-                    
-                    <div className="flex flex-wrap gap-1.5 mt-3">
-                      {project.techStack.slice(0, 3).map((tech) => (
-                        <Badge key={tech} variant="default" className="text-xs px-2 py-0.5">
-                          {tech}
-                        </Badge>
-                      ))}
-                      {project.techStack.length > 3 && (
-                        <Badge variant="default" className="text-xs px-2 py-0.5">
-                          +{project.techStack.length - 3}
-                        </Badge>
-                      )}
-                    </div>
-                  </CardContent>
-                  
-                  <CardFooter className="p-0 pt-3">
-                    <Button 
-                      variant="ghost" 
-                      className="w-full group text-success-600 hover:text-success-700"
-                      onClick={() => setSelectedProject(project)}
+              <div className="p-4 md:p-5">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {project.techStack.slice(0, 3).map((tech) => (
+                    <span
+                      key={tech}
+                      className="text-[9px] font-bold tracking-widest bg-emerald-100 text-emerald-700 px-2 py-1 rounded"
                     >
-                      <span>{t('viewDetails')}</span>
-                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </Button>
-                  </CardFooter>
-                  </Card>
-                </StaggerItem>
-              );
-            })}
-          </Stagger>
+                      {tech.toUpperCase()}
+                    </span>
+                  ))}
+                </div>
+                
+                <h3 className="text-lg font-bold mb-1 text-gray-900">{project.title}</h3>
+                <p className="text-sm text-gray-600 line-clamp-2">{project.subtitle}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Project Modal */}
       {selectedProject && (
         <ProjectModal
           isOpen={!!selectedProject}
