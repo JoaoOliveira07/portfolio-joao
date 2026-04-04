@@ -6,9 +6,11 @@ import { AboutSection } from '@/components/home/AboutSection';
 import { Timeline } from '@/components/home/Timeline';
 import { Testimonials } from '@/components/home/Testimonials';
 import { Contact } from '@/components/home/Contact';
+import { LabTeaser } from '@/components/home/LabTeaser';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import { SectionDivider } from '@/components/ui/SectionDivider';
 import { Sparkles } from '@/components/ui/Sparkles';
+import { OnlineBadge } from '@/components/ui/OnlineBadge';
 
 export default function HomePage() {
   return (
@@ -20,6 +22,9 @@ export default function HomePage() {
       <section id="hero" className="relative">
         <Sparkles particleCount={30} particleSize={1.5} speed={0.5} className="opacity-50" />
         <Hero />
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+          <OnlineBadge page="/" />
+        </div>
       </section>
 
       {/* Projects - PROVA PRIMEIRO */}
@@ -73,6 +78,14 @@ export default function HomePage() {
       <ScrollReveal>
         <section id="testimonials" className="relative">
           <Testimonials />
+        </section>
+      </ScrollReveal>
+
+      {/* Backend Lab teaser */}
+      <SectionDivider variant="glow" />
+      <ScrollReveal>
+        <section id="lab" className="relative">
+          <LabTeaser />
         </section>
       </ScrollReveal>
 

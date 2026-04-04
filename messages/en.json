@@ -7,7 +7,8 @@
     "philosophy": "About",
     "experience": "Experience",
     "testimonials": "Testimonials",
-    "contact": "Contact"
+    "contact": "Contact",
+    "lab": "Lab"
   },
   "hero": {
     "role": "Backend Engineer",
@@ -35,7 +36,13 @@
   },
   "about": {
     "title": "About Me",
-    "intro": "Software engineer focused on backend and architecture. I build resilient systems and critical integrations.",
+    "intro": "I'm from Blumenau, SC — Brazil. I joined the tech industry in 2023 with no formal CS background, learning through practice, consistency, and a lot of curiosity.",
+    "paragraph2": "What drives me is understanding systems end-to-end: not just making things work, but knowing why that decision and not another. That's what makes me actively take part in architecture discussions, not just execute tasks.",
+    "paragraph3": "Outside of work I'm always studying something I haven't mastered yet — distributed systems, high scalability and software architecture. I believe the best way to grow as an engineer is to expose yourself to problems bigger than the ones you solve today.",
+    "valuesTitle": "How I work",
+    "value1": "I deliver sustainable code, not just code that works",
+    "value2": "I take part in technical decisions with reasoning, not just execution",
+    "value3": "I learn proactively — what I don't know today, I master before I need it",
     "experience": "Work Experience",
     "competencies": "Competencies",
     "recommendations": "Recommendations"

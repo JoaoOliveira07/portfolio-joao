@@ -7,7 +7,8 @@
     "philosophy": "Sobre",
     "experience": "Experiência",
     "testimonials": "Depoimentos",
-    "contact": "Contato"
+    "contact": "Contato",
+    "lab": "Lab"
   },
   "hero": {
     "role": "Engenheiro Backend",
@@ -35,7 +36,13 @@
   },
   "about": {
     "title": "Sobre Mim",
-    "intro": "Engenheiro de software com foco em backend e arquitetura. Trabalho construindo sistemas resilientes e integrações críticas.",
+    "intro": "Sou de Blumenau, SC. Entrei na área de TI em 2023 sem background técnico formal — aprendi na prática, com consistência e bastante curiosidade.",
+    "paragraph2": "O que me move é entender sistemas por completo: não só fazer funcionar, mas entender por que aquela decisão e não outra. Isso me faz participar ativamente de discussões de arquitetura, não só executar tarefas.",
+    "paragraph3": "Fora do trabalho estou sempre estudando algo que ainda não domino — sistemas distribuídos, alta escalabilidade e arquitetura de software. Acredito que a melhor forma de crescer como engenheiro é se expor a problemas maiores do que os que você resolve hoje.",
+    "valuesTitle": "Como trabalho",
+    "value1": "Entrego código sustentável, não apenas código que funciona",
+    "value2": "Participo de decisões técnicas com embasamento, não apenas executo",
+    "value3": "Aprendo proativamente — o que não sei hoje, domino antes de precisar",
     "experience": "Experiência Profissional",
     "competencies": "Competências",
     "recommendations": "Recomendações"

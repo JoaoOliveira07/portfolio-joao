@@ -1,15 +1,19 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { MermaidDiagram } from '@/components/ui/MermaidDiagram';
 import { Badge } from '@/components/ui/Badge';
 import { Target, Lightbulb, TrendingUp, Code, Sparkles } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useProjectViews, useProjectReactions } from '@/hooks/useProjectInteractions';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
   project: {
+    slug: string;
     title: string;
     subtitle: string;
     description: string;
@@ -21,8 +25,30 @@ interface ProjectModalProps {
   };
 }
 
+const REACTION_EMOJIS: Record<string, string> = {
+  rocket: '🚀',
+  fire: '🔥',
+  clap: '👏',
+  mind_blown: '🤯',
+};
+
+const REACTION_LABELS: Record<string, string> = {
+  rocket: 'Impressionante',
+  fire: 'Incrível',
+  clap: 'Ótimo trabalho',
+  mind_blown: 'Mind blown',
+};
+
 export function ProjectModal({ isOpen, onClose, project }: ProjectModalProps) {
   const t = useTranslations('projectModal');
+  const { registerView } = useProjectViews(project.slug);
+  const { reactions, react, loading } = useProjectReactions(project.slug);
+
+  useEffect(() => {
+    if (isOpen) {
+      registerView();
+    }
+  }, [isOpen, registerView]);
   
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={project.title}>
@@ -116,6 +142,38 @@ export function ProjectModal({ isOpen, onClose, project }: ProjectModalProps) {
             </ul>
           </div>
         )}
+
+        {/* Reactions */}
+        <div className="bg-neutral-800/30 rounded-lg p-5 border border-white/5">
+          <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-4">O que você achou?</p>
+          <div className="flex gap-3 flex-wrap">
+            {(Object.keys(REACTION_EMOJIS) as Array<keyof typeof REACTION_EMOJIS>).map((type) => (
+              <button
+                key={type}
+                onClick={() => react(type as Parameters<typeof react>[0])}
+                disabled={loading}
+                className="group flex flex-col items-center gap-1.5 px-4 py-3 rounded-xl border border-white/10 bg-neutral-900/50 hover:border-emerald-500/40 hover:bg-emerald-500/10 transition-all duration-200 disabled:opacity-50 min-w-[72px]"
+                title={REACTION_LABELS[type]}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={reactions?.[type as keyof typeof reactions] ?? 0}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 1.2, opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="text-2xl leading-none"
+                  >
+                    {REACTION_EMOJIS[type]}
+                  </motion.span>
+                </AnimatePresence>
+                <span className="text-xs font-mono text-gray-400 group-hover:text-emerald-400 transition-colors tabular-nums">
+                  {reactions ? reactions[type as keyof typeof reactions] : '—'}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </Modal>
   );

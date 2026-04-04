@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Eye } from 'lucide-react';
 import { projects as projectsPt } from '@/data/projects/pt';
 import { projects as projectsEn } from '@/data/projects/en';
 import type { Project } from '@/data/projects/pt';
@@ -24,6 +24,27 @@ export function FeaturedProjects() {
   const locale = useLocale();
   const projects = locale === 'pt' ? projectsPt : projectsEn;
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [viewsMap, setViewsMap] = useState<Record<string, number>>({});
+
+  const fetchAllViews = useCallback(async () => {
+    try {
+      const res = await fetch('/api/projects/views');
+      if (res.ok) {
+        const data = await res.json();
+        const map: Record<string, number> = {};
+        for (const item of data.views) {
+          map[item.slug] = item.views;
+        }
+        setViewsMap(map);
+      }
+    } catch {
+      // non-critical
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAllViews();
+  }, [fetchAllViews]);
 
   return (
     <section className="py-20 md:py-32" id="projects">
@@ -72,12 +93,20 @@ export function FeaturedProjects() {
                 <h3 className="text-lg font-bold mb-1 text-white">{project.title}</h3>
                 <p className="text-sm text-gray-400 line-clamp-2">{project.subtitle}</p>
                 
-                <div 
-                  className="mt-3 flex items-center text-emerald-400 text-sm font-medium group-hover:translate-x-2 transition-transform duration-200 cursor-pointer"
-                  onClick={() => setSelectedProject(project)}
-                >
-                  <span>View details</span>
-                  <ArrowRight className="ml-1 h-4 w-4" />
+                <div className="mt-3 flex items-center justify-between">
+                  <div 
+                    className="flex items-center text-emerald-400 text-sm font-medium group-hover:translate-x-2 transition-transform duration-200 cursor-pointer"
+                    onClick={() => setSelectedProject(project)}
+                  >
+                    <span>View details</span>
+                    <ArrowRight className="ml-1 h-4 w-4" />
+                  </div>
+                  {viewsMap[project.slug] !== undefined && (
+                    <div className="flex items-center gap-1 text-gray-500 text-xs">
+                      <Eye className="w-3 h-3" />
+                      <span>{viewsMap[project.slug]}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </MagicCard>

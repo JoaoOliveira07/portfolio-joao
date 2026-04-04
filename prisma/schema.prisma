@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ProjectView {
+  id         String   @id @default(cuid())
+  slug       String
+  ipHash     String   @map("ip_hash")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([slug])
+  @@index([slug, ipHash, createdAt])
+  @@map("project_views")
+}
+
+model ProjectReaction {
+  id        String   @id @default(cuid())
+  slug      String
+  type      String   // rocket | fire | clap | mind_blown
+  ipHash    String   @map("ip_hash")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([slug])
+  @@index([slug, ipHash])
+  @@map("project_reactions")
+}
+
+model Challenge {
+  id            String   @id @default(cuid())
+  type          String   // architecture | debug | complexity | tradeoff
+  difficulty    String   // easy | medium | hard
+  question      String
+  context       String?
+  options       Json     // string[]
+  correctAnswer Int      @map("correct_answer") // index in options
+  explanation   String
+  relatedSlug   String?  @map("related_slug")
+  order         Int      @default(0)
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("challenges")
+}
+
+model GameSession {
+  id          String   @id @default(cuid())
+  sessionId   String   @unique @map("session_id")
+  answers     Json     // { challengeId: string, chosen: number, correct: boolean, timeMs: number }[]
+  score       Int      @default(0)
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([sessionId])
+  @@map("game_sessions")
+}
+
+model Leaderboard {
+  id        String   @id @default(cuid())
+  nickname  String
+  score     Int
+  sessionId String   @map("session_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([score(sort: Desc)])
+  @@map("leaderboard")
+}
+
+model Presence {
+  id        String   @id @default(cuid())
+  sessionId String   @unique @map("session_id")
+  page      String   @default("/")
+  lastSeen  DateTime @default(now()) @map("last_seen")
+
+  @@index([lastSeen])
+  @@map("presence")
+}
+
+model ApiEvent {
+  id         String   @id @default(cuid())
+  method     String   // GET | POST | etc
+  endpoint   String   // /api/challenges, /api/leaderboard, etc
+  statusCode Int      @map("status_code")
+  latencyMs  Int      @map("latency_ms")
+  sessionId  String?  @map("session_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@index([endpoint])
+  @@map("api_events")
+}
