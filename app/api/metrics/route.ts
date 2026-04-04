@@ -1,6 +1,21 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+type EndpointGroup = {
+  endpoint: string;
+  _count: { id: number };
+  _avg: { latencyMs: number | null };
+};
+
+type FeedEvent = {
+  id: string;
+  method: string;
+  endpoint: string;
+  statusCode: number;
+  latencyMs: number;
+  createdAt: Date;
+};
+
 const PRESENCE_TTL_SECONDS = 45;
 
 // GET /api/metrics — live dashboard data
@@ -68,7 +83,7 @@ export async function GET() {
       take: 8,
     });
 
-    const endpoints = endpointGroups.map((g) => ({
+    const endpoints = (endpointGroups as EndpointGroup[]).map((g) => ({
       endpoint: g.endpoint,
       count: g._count.id,
       avgLatencyMs: Math.round(g._avg.latencyMs ?? 0),
@@ -86,7 +101,7 @@ export async function GET() {
             : 0,
         onlineNow: onlineCount,
         endpoints,
-        feed: recentEvents.map((e) => ({
+        feed: (recentEvents as FeedEvent[]).map((e) => ({
           id: e.id,
           method: e.method,
           endpoint: e.endpoint,
