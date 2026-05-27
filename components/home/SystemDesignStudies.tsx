@@ -2,18 +2,15 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { systemDesignStudies as studiesPt } from '@/data/system-design/pt';
-import { systemDesignStudies as studiesEn } from '@/data/system-design/en';
+import { systemDesignStudies, type SystemDesignStudy } from '@/data/system-design';
 import { SystemDesignModal } from '@/components/ui/SystemDesignModal';
 import { MagicCard } from '@/components/ui/MagicCard';
 import * as LucideIcons from 'lucide-react';
 
 export function SystemDesignStudies() {
   const t = useTranslations('systemDesign');
-  const locale = useLocale();
-  const studies = locale === 'pt' ? studiesPt : studiesEn;
-  
-  const [selectedStudy, setSelectedStudy] = useState<typeof studies[0] | null>(null);
+  const locale = useLocale() as 'pt' | 'en';
+  const [selectedStudy, setSelectedStudy] = useState<SystemDesignStudy | null>(null);
 
   return (
     <section className="w-full">
@@ -33,7 +30,7 @@ export function SystemDesignStudies() {
 
         {/* Studies Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {studies.map((study) => {
+          {systemDesignStudies.map((study) => {
             const IconComponent = (LucideIcons as any)[study.icon];
             
             return (
@@ -59,20 +56,20 @@ export function SystemDesignStudies() {
                     
                     {/* Title */}
                     <h3 className="text-lg font-bold text-white leading-tight">
-                      {study.title}
+                      {study.title[locale]}
                     </h3>
-                    
+
                     {/* Description */}
                     <p className="text-sm text-gray-400 leading-relaxed line-clamp-3">
-                      {study.description}
+                      {study.description[locale]}
                     </p>
-                    
+
                     {/* Scale Info */}
                     <div className="flex items-center gap-2 text-xs text-gray-500">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
-                      <span>{study.estimatedScale}</span>
+                      <span>{study.estimatedScale[locale]}</span>
                     </div>
                     
                     {/* CTA */}

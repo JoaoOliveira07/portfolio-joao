@@ -4,35 +4,23 @@ import { Modal } from '@/components/ui/Modal';
 import { MermaidDiagram } from '@/components/ui/MermaidDiagram';
 import { Badge } from '@/components/ui/Badge';
 import { Cog, Zap, BarChart3, Layers } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import * as LucideIcons from 'lucide-react';
+import type { SystemDesignStudy } from '@/data/system-design';
 
 interface SystemDesignModalProps {
   isOpen: boolean;
   onClose: () => void;
-  study: {
-    id: string;
-    icon: string;
-    title: string;
-    description: string;
-    category: string;
-    diagram: string;
-    keyDecisions: string[];
-    components: {
-      name: string;
-      description: string;
-    }[];
-    scalabilityNotes: string[];
-    estimatedScale: string;
-  };
+  study: SystemDesignStudy;
 }
 
 export function SystemDesignModal({ isOpen, onClose, study }: SystemDesignModalProps) {
   const t = useTranslations('systemDesign');
+  const locale = useLocale() as 'pt' | 'en';
   const IconComponent = (LucideIcons as any)[study.icon];
-  
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={study.title}>
+    <Modal isOpen={isOpen} onClose={onClose} title={study.title[locale]}>
       <div className="flex flex-col gap-8">
         {/* Header */}
         <div className="flex flex-col gap-2 -mt-2">
@@ -42,11 +30,11 @@ export function SystemDesignModal({ isOpen, onClose, study }: SystemDesignModalP
               {study.category}
             </span>
           </div>
-          <p className="text-lg text-gray-300 leading-relaxed">{study.description}</p>
+          <p className="text-lg text-gray-300 leading-relaxed">{study.description[locale]}</p>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <Zap className="w-4 h-4" />
             <span className="font-medium">{t('estimatedScale')}:</span>
-            <span>{study.estimatedScale}</span>
+            <span>{study.estimatedScale[locale]}</span>
           </div>
         </div>
 
@@ -68,7 +56,7 @@ export function SystemDesignModal({ isOpen, onClose, study }: SystemDesignModalP
             <h3 className="text-base font-semibold text-white">{t('keyDecisions')}</h3>
           </div>
           <ul className="flex flex-col gap-3">
-            {study.keyDecisions.map((decision, idx) => (
+            {study.keyDecisions[locale].map((decision, idx) => (
               <li key={idx} className="flex items-start gap-3 text-sm text-gray-300">
                 <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">
                   {idx + 1}
@@ -93,7 +81,7 @@ export function SystemDesignModal({ isOpen, onClose, study }: SystemDesignModalP
                 </Badge>
                 <div>
                   <h4 className="text-sm font-semibold text-white">{component.name}</h4>
-                  <p className="text-sm text-gray-400">{component.description}</p>
+                  <p className="text-sm text-gray-400">{component.description[locale]}</p>
                 </div>
               </div>
             ))}
@@ -107,7 +95,7 @@ export function SystemDesignModal({ isOpen, onClose, study }: SystemDesignModalP
             <h3 className="text-base font-semibold text-white">{t('scalability')}</h3>
           </div>
           <ul className="flex flex-col gap-2.5">
-            {study.scalabilityNotes.map((note, idx) => (
+            {study.scalabilityNotes[locale].map((note, idx) => (
               <li key={idx} className="flex items-start gap-3 text-sm text-gray-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0 mt-2" />
                 <span className="leading-relaxed">{note}</span>
