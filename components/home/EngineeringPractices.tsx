@@ -2,17 +2,16 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { engineeringPractices as practicesPt } from '@/data/engineering-practices/pt';
-import { engineeringPractices as practicesEn } from '@/data/engineering-practices/en';
+import { engineeringPractices } from '@/data/engineering-practices';
 import { EngineeringPracticeModal } from '@/components/ui/EngineeringPracticeModal';
 import { MagicCard } from '@/components/ui/MagicCard';
 import * as LucideIcons from 'lucide-react';
 
 export function EngineeringPractices() {
   const t = useTranslations('engineeringPractices');
-  const locale = useLocale();
-  const practices = locale === 'pt' ? practicesPt : practicesEn;
-  
+  const locale = useLocale() as 'pt' | 'en';
+  const practices = engineeringPractices;
+
   const [selectedPractice, setSelectedPractice] = useState<typeof practices[0] | null>(null);
 
   return (
@@ -50,12 +49,12 @@ export function EngineeringPractices() {
                     
                     {/* Title */}
                     <h3 className="text-lg font-bold text-white leading-tight">
-                      {practice.title}
+                      {practice.title[locale]}
                     </h3>
-                    
+
                     {/* Short Description */}
                     <p className="text-sm text-gray-400 leading-relaxed line-clamp-3 flex-grow">
-                      {practice.shortDescription}
+                      {practice.shortDescription[locale]}
                     </p>
                     
                     {/* CTA */}
