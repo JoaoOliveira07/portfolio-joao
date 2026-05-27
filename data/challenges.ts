@@ -252,4 +252,117 @@ export const CHALLENGES: ChallengeData[] = [
       "Saga com compensating transactions é o padrão para microsserviços financeiros: debita A (sucesso), tenta creditar B (falha) → executa compensação: credita A de volta. 2PC funciona mas tem baixa disponibilidade e alto risco de locks. Eventual consistency é inaceitável para sistemas financeiros onde não pode haver dinheiro 'no ar'.",
     relatedSlug: "modular-monolith",
   },
+
+  // ─── DEBUG (continued) ────────────────────────────────────────────────────
+  {
+    id: "debug-001",
+    type: "debug",
+    difficulty: "medium",
+    order: 14,
+    question: "Por que esse endpoint retorna HTTP 200 para um usuário não autenticado?",
+    context: `@GetMapping("/admin/users")
+public ResponseEntity<List<User>> listUsers(HttpServletRequest request) {
+    String token = request.getHeader("Authorization");
+    if (token != null) {
+        jwtService.validate(token);
+    }
+    return ResponseEntity.ok(userRepository.findAll());
+}`,
+    options: [
+      "Falta o return dentro do if — validação não bloqueia execução",
+      "O método jwtService.validate() não lança exceção em caso de token inválido",
+      "A anotação @GetMapping deveria ser @PostMapping para endpoints admin",
+      "userRepository.findAll() precisa de @Transactional para funcionar corretamente",
+    ],
+    correctAnswer: 0,
+    explanation:
+      "O bug é clássico: a validação só ocorre se o token existir, mas mesmo quando existe o código continua executando após o if e retorna os dados. A correção é lançar exceção ou retornar 401 dentro do if — e também tratar o caso de token ausente. Versão correta: if (token == null || !jwtService.validate(token)) { return ResponseEntity.status(401).build(); }",
+  },
+  {
+    id: "debug-002",
+    type: "debug",
+    difficulty: "hard",
+    order: 15,
+    question: "Esse código de retry causa um problema sutil em produção. O que está errado?",
+    context: `public void sendWithRetry(String message) throws Exception {
+    int attempts = 0;
+    while (attempts < 3) {
+        try {
+            kafkaProducer.send(message);
+            return;
+        } catch (Exception e) {
+            attempts++;
+            Thread.sleep(1000);
+        }
+    }
+    throw new RuntimeException("Failed after 3 attempts");
+}`,
+    options: [
+      "Thread.sleep() bloqueia a thread e prejudica throughput sob alta carga",
+      "O counter attempts deveria começar em 1, não em 0",
+      "Sem exponential backoff, retry agressivo pode causar thundering herd e sobrecarregar o broker",
+      "A exceção final deveria ser checked, não RuntimeException",
+    ],
+    correctAnswer: 2,
+    explanation:
+      "Retry com delay fixo de 1s causa 'thundering herd': quando o Kafka fica instável, todos os produtores retentam no mesmo segundo, amplificando a sobrecarga. Solução: exponential backoff com jitter — delay de 1s, 2s, 4s + rand(0-500ms). O bloqueio da thread (opção A) é um problema real mas secundário; o impacto sistêmico do backoff fixo é o bug principal em produção.",
+  },
+
+  // ─── COMPLEXITY (continued) ───────────────────────────────────────────────
+  {
+    id: "complexity-004",
+    type: "complexity",
+    difficulty: "medium",
+    order: 16,
+    question: "Qual é a complexidade de tempo da busca em uma Trie (prefix tree) para uma palavra de comprimento k?",
+    context:
+      "Uma Trie armazena strings por caracteres, com cada nó representando um caractere. Usada em autocomplete, spell check e roteamento de IPs.",
+    options: [
+      "O(n) onde n é o número de palavras na Trie",
+      "O(k) onde k é o comprimento da palavra buscada",
+      "O(n × k) onde n é número de palavras e k é comprimento médio",
+      "O(log n) onde n é o número de palavras na Trie",
+    ],
+    correctAnswer: 1,
+    explanation:
+      "Busca em Trie é O(k) onde k é o comprimento da palavra — você percorre exatamente k nós, um por caractere. É independente do número total de palavras armazenadas. Por isso Trie é ideal para autocomplete: buscar prefixo de 3 letras é sempre O(3), independente de ter 1 mil ou 1 bilhão de palavras.",
+  },
+  {
+    id: "complexity-005",
+    type: "complexity",
+    difficulty: "hard",
+    order: 17,
+    question: "Qual a complexidade de espaço de um merge sort para um array de n elementos?",
+    context:
+      "Merge sort divide o array recursivamente ao meio até ter arrays de tamanho 1, então mescla de volta na ordem correta. Implementação clássica (não in-place).",
+    options: [
+      "O(1) — ordena no próprio array sem espaço adicional",
+      "O(log n) — apenas a pilha de recursão",
+      "O(n) — array auxiliar para merge + pilha O(log n)",
+      "O(n log n) — cria cópias em cada nível de recursão",
+    ],
+    correctAnswer: 2,
+    explanation:
+      "Merge sort clássico usa O(n) de espaço: o array auxiliar para fazer o merge de dois subarrays é O(n) no pior caso, e a pilha de recursão é O(log n). O dominante é O(n). Isso contrasta com quicksort (O(log n) médio, O(n) pior caso para pilha) e heapsort (O(1) — in-place). Se O(n) de espaço for proibitivo, existe merge sort in-place mas com implementação complexa e constantes piores.",
+  },
+
+  // ─── TRADEOFFS (continued) ────────────────────────────────────────────────
+  {
+    id: "tradeoff-004",
+    type: "tradeoff",
+    difficulty: "medium",
+    order: 18,
+    question: "Para um chat em tempo real com 100K usuários simultâneos, qual abordagem de comunicação você escolheria?",
+    context:
+      "Requisitos: mensagens entregues em < 200ms, suporte a grupos de até 1000 membros, indicador de 'digitando...', histórico persistido. Infraestrutura: múltiplos servidores stateless.",
+    options: [
+      "HTTP polling a cada 1s — simples de implementar, sem dependências extras",
+      "Server-Sent Events (SSE) — push unidirecional do servidor para o cliente",
+      "WebSockets + Redis Pub/Sub para fan-out entre servidores",
+      "gRPC streaming bidirecional — protocolo mais eficiente que WebSocket",
+    ],
+    correctAnswer: 2,
+    explanation:
+      "WebSockets + Redis Pub/Sub é o padrão da indústria para chat em escala: WebSocket mantém conexão persistente bidirecional (essencial para 'digitando...' e latência < 200ms), Redis Pub/Sub distribui mensagens entre servidores stateless (usuário A no server-1 recebe mensagem do usuário B no server-2 via canal Redis). HTTP polling criaria 100K × 1 req/s = 100K req/s desnecessários. SSE é unidirecional, inadequado para chat.",
+  },
 ];

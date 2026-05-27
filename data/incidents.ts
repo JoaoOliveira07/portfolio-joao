@@ -209,4 +209,129 @@ export const INCIDENTS: Incident[] = [
         "Adicionar step de EXPLAIN ANALYZE no pipeline de CI para queries em tabelas > 100k linhas. PRs com novas queries devem incluir query plan no review. Configurar alerta de Seq Scan em tabelas grandes no Datadog.",
     },
   },
+  {
+    id: "incident-002",
+    title: "P2: Memory Leak no Worker de Processamento",
+    subtitle: "Heap crescendo 50MB/hora. OOMKiller vai agir em ~3h.",
+    severity: "P2",
+    scenario:
+      "São 14h20. O Datadog dispara um alerta amarelo: o worker de processamento assíncrono está com heap crescendo linearmente há 6 horas. Hoje nenhum deploy foi feito. O processo vai ser killed pelo OOMKiller em ~3 horas se nada for feito. Produção ainda está estável.",
+    steps: [
+      {
+        id: "step-1",
+        alert: {
+          severity: "warning",
+          title: "WARNING: worker-service heap growth detected",
+          message: "Heap used: 1.2GB / 2GB limit | Growth rate: ~50MB/h | Uptime: 26h",
+          timestamp: "14:20:33",
+        },
+        logs: [
+          "14:20:10 INFO  WorkerService - Heap used: 1247MB, Heap total: 2048MB",
+          "14:20:10 INFO  WorkerService - GC (major) pause: 340ms — reclaimed 0MB",
+          "14:20:11 WARN  WorkerService - GC major collection ineffective: heap not decreasing",
+          "14:20:12 INFO  WorkerService - Active listeners: 14832 (expected: ~20)",
+          "14:20:15 INFO  WorkerService - Processed jobs last hour: 3600 | Queued: 0",
+        ],
+        question:
+          "GC não está conseguindo liberar memória e há 14.832 listeners ativos (esperado ~20). Qual é o seu primeiro passo?",
+        options: [
+          {
+            label: "Reiniciar o worker imediatamente para ganhar tempo",
+            isCorrect: false,
+            consequence:
+              "Worker reiniciou. Heap voltou a 180MB. Mas sem identificar a causa raiz, o leak vai recomeçar. Em 26h você estará no mesmo ponto.",
+            metricsDelta: { latencyMs: 120, errorRate: 0, throughput: 3600 },
+          },
+          {
+            label: "Tirar um heap dump e analisar quais objetos estão retidos",
+            isCorrect: true,
+            consequence:
+              "Heap dump gerado (1.2GB). Análise no Eclipse MAT revela: 14.810 instâncias de EventEmitter com listeners não removidos. Todos referenciando objetos de cache da última semana.",
+            metricsDelta: { latencyMs: 125, errorRate: 0, throughput: 3600 },
+          },
+          {
+            label: "Aumentar o heap limit de 2GB para 4GB para aguentar até amanhã",
+            isCorrect: false,
+            consequence:
+              "Aumentou o limite. Ganhou mais tempo, mas o problema persiste. Em 12h você vai ter o dobro de memória consumida e ainda sem causa raiz.",
+            metricsDelta: { latencyMs: 120, errorRate: 0, throughput: 3600 },
+          },
+          {
+            label: "Verificar os últimos deploys e fazer rollback",
+            isCorrect: false,
+            consequence:
+              "Nenhum deploy nas últimas 26h. Rollback não vai resolver — o leak pode ser causado por dados de produção específicos, não por código novo.",
+            metricsDelta: { latencyMs: 122, errorRate: 0, throughput: 3600 },
+          },
+        ],
+        learning:
+          "Memory leaks requerem análise antes de ação. GC ineficiente + listeners acumulando são sinais clássicos de event listener leak. Heap dump é a ferramenta diagnóstica correta — reiniciar sem entender apenas atrasa o problema.",
+      },
+      {
+        id: "step-2",
+        alert: {
+          severity: "warning",
+          title: "WARNING: heap dump analysis complete",
+          message: "14.810 EventEmitter instances retained | Dominator: CacheService | Retained: 890MB",
+          timestamp: "14:38:05",
+        },
+        logs: [
+          "14:38:01 INFO  HeapDump - Top retained: CacheService (890MB, 14810 refs)",
+          "14:38:02 INFO  HeapDump - CacheService → EventEmitter → processingCallback → jobData",
+          "14:38:03 INFO  HeapDump - jobData objects: oldest from 6 days ago",
+          "14:38:04 WARN  HeapDump - Pattern: 1 listener added per job, 0 removed",
+          "14:38:05 INFO  HeapDump - addListener called 14810x, removeListener called 0x",
+        ],
+        question:
+          "O heap dump mostra: CacheService adiciona um listener por job processado mas nunca chama removeListener(). O que você faz?",
+        options: [
+          {
+            label: "Adicionar cacheService.removeListener() no finally block do job processor",
+            isCorrect: true,
+            consequence:
+              "Fix aplicado e deployado. Heap estabilizou em 180MB após GC. removeListener() no finally garante cleanup mesmo em caso de erro no job.",
+            metricsDelta: { latencyMs: 118, errorRate: 0, throughput: 3600 },
+          },
+          {
+            label: "Usar WeakRef para os listeners para que o GC possa coletá-los automaticamente",
+            isCorrect: false,
+            consequence:
+              "WeakRef funciona, mas o listener pode ser coletado no meio da execução do job, causando comportamento indeterminado. Fix correto é cleanup explícito.",
+            metricsDelta: { latencyMs: 120, errorRate: 0.2, throughput: 3580 },
+          },
+          {
+            label: "Limitar o número máximo de listeners por EventEmitter (maxListeners: 20)",
+            isCorrect: false,
+            consequence:
+              "Definir maxListeners apenas suprime o warning — não resolve o leak. O processo ainda vai acumular memória indefinidamente.",
+            metricsDelta: { latencyMs: 121, errorRate: 0, throughput: 3600 },
+          },
+          {
+            label: "Refatorar CacheService para usar Map<jobId, callback> com TTL",
+            isCorrect: false,
+            consequence:
+              "Refatoração válida no longo prazo, mas muito invasiva para um hotfix de P2. O fix cirúrgico (removeListener no finally) é o correto agora.",
+            metricsDelta: { latencyMs: 130, errorRate: 0.5, throughput: 3500 },
+          },
+        ],
+        learning:
+          "Event listener leaks são um dos vazamentos mais comuns em Node.js/Java. O padrão correto: sempre fazer cleanup no finally block. addListener() e removeListener() devem sempre ser balanceados.",
+      },
+    ],
+    rca: {
+      rootCause:
+        "CacheService adicionava um EventEmitter listener por job processado para receber notificação de cache miss, mas removeListener() nunca era chamado após conclusão. Com ~3.600 jobs/hora × 26 horas = 93.600 listeners acumulados, o GC não conseguia liberar os objetos referenciados.",
+      timeline: [
+        { time: "~12:00", event: "Worker restart automático — contador de listeners zerou" },
+        { time: "12:00–14:20", event: "Listeners acumulando ~570/hora junto com taxa de jobs" },
+        { time: "14:20", event: "Datadog alerta: heap growth anômala, 14.832 listeners ativos" },
+        { time: "14:22", event: "On-call iniciou investigação — descartou deploy recente como causa" },
+        { time: "14:38", event: "Heap dump analisado: CacheService retendo 890MB via listeners" },
+        { time: "14:52", event: "Fix deployado: removeListener() no finally block — heap estabilizou" },
+      ],
+      fix: "Adicionado cacheService.removeListener(jobId, callback) no finally block do JobProcessor. Cleanup garantido independente de sucesso ou falha do job. Zero downtime, fix em produção em 12 minutos após diagnóstico.",
+      prevention:
+        "Adicionar teste automatizado que verifica listenerCount antes e depois de N jobs (deve ser igual). Configurar alerta no Datadog para EventEmitter.listenerCount() acima de threshold. Checklist de review: código com addListener exige removeListener correspondente.",
+    },
+  },
 ];
