@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Activity, Terminal, Brain, ArrowLeft, Beaker } from "lucide-react";
+import { Activity, Terminal, Brain, ArrowLeft, Beaker, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useLocale } from "next-intl";
 import { LiveDashboard } from "@/components/home/LiveDashboard";
 import { IncidentSimulator } from "@/components/home/IncidentSimulator";
 import { BackendChallenges } from "@/components/home/BackendChallenges";
+import { TILSection } from "@/components/lab/TILSection";
 
-type Tab = "dashboard" | "incident" | "challenges";
+type Tab = "dashboard" | "incident" | "challenges" | "til";
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode; badge?: string }[] = [
   {
@@ -29,12 +31,20 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode; badge?: string }[] 
     label: "Backend Challenges",
     icon: <Brain className="w-4 h-4" />,
   },
+  {
+    id: "til",
+    label: "TIL",
+    icon: <BookOpen className="w-4 h-4" />,
+  },
 ];
 
 export function LabPage() {
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
   const params = useParams();
   const lang = (params?.lang as string) ?? "pt";
+  const locale = useLocale() as "pt" | "en";
+
+  const backLabel = locale === "pt" ? "Voltar ao portfólio" : "Back to portfolio";
 
   return (
     <div className="min-h-screen bg-neutral-950 pt-24 pb-16">
@@ -45,7 +55,7 @@ export function LabPage() {
           className="inline-flex items-center gap-2 text-white/40 hover:text-white/70 text-sm transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Voltar ao portfólio
+          {backLabel}
         </Link>
       </div>
 
@@ -60,53 +70,58 @@ export function LabPage() {
           </span>
         </div>
         <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
-          Engenharia real,{" "}
-          <span className="text-emerald-400">não só slides</span>
+          {locale === "pt" ? (
+            <>Engenharia real, <span className="text-emerald-400">não só slides</span></>
+          ) : (
+            <>Real engineering, <span className="text-emerald-400">not just slides</span></>
+          )}
         </h1>
         <p className="text-white/50 text-base max-w-2xl leading-relaxed">
-          Três experiências interativas que mostram como um engenheiro backend pensa: métricas ao vivo de um sistema em produção, tomada de decisão sob incidente e raciocínio sobre arquitetura.
+          {locale === "pt"
+            ? "Quatro experiências interativas que mostram como um engenheiro backend pensa: métricas ao vivo, tomada de decisão sob incidente, raciocínio sobre arquitetura e aprendizados do dia a dia."
+            : "Four interactive experiences showing how a backend engineer thinks: live metrics, incident decision-making, architecture reasoning, and day-to-day learnings."}
         </p>
       </div>
 
-      {/* Tab bar */}
+      {/* Tab bar — scrollable on mobile */}
       <div className="max-w-7xl mx-auto px-6 mb-2">
-        <div className="flex items-center gap-1 bg-white/[0.03] border border-white/[0.06] rounded-xl p-1 w-fit">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`relative flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                activeTab === tab.id
-                  ? "text-white"
-                  : "text-white/40 hover:text-white/70"
-              }`}
-            >
-              {activeTab === tab.id && (
-                <motion.div
-                  layoutId="active-tab"
-                  className="absolute inset-0 bg-white/[0.08] rounded-lg"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
-                />
-              )}
-              <span className="relative z-10 flex items-center gap-2">
-                {tab.icon}
-                {tab.label}
-                {tab.badge && (
-                  <span
-                    className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
-                      tab.badge === "Ao vivo"
-                        ? "bg-emerald-500/20 text-emerald-400"
-                        : tab.badge === "P1"
-                        ? "bg-red-500/20 text-red-400"
-                        : "bg-blue-500/20 text-blue-400"
-                    }`}
-                  >
-                    {tab.badge}
-                  </span>
+        <div className="overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex items-center gap-1 bg-white/[0.03] border border-white/[0.06] rounded-xl p-1 w-fit min-w-max">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`relative flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                  activeTab === tab.id ? "text-white" : "text-white/40 hover:text-white/70"
+                }`}
+              >
+                {activeTab === tab.id && (
+                  <motion.div
+                    layoutId="active-tab"
+                    className="absolute inset-0 bg-white/[0.08] rounded-lg"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
+                  />
                 )}
-              </span>
-            </button>
-          ))}
+                <span className="relative z-10 flex items-center gap-2">
+                  {tab.icon}
+                  {tab.label}
+                  {tab.badge && (
+                    <span
+                      className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                        tab.badge === "Ao vivo"
+                          ? "bg-emerald-500/20 text-emerald-400"
+                          : tab.badge === "P1"
+                          ? "bg-red-500/20 text-red-400"
+                          : "bg-blue-500/20 text-blue-400"
+                      }`}
+                    >
+                      {tab.badge}
+                    </span>
+                  )}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -126,6 +141,7 @@ export function LabPage() {
               <BackendChallenges />
             </div>
           )}
+          {activeTab === "til" && <TILSection />}
         </motion.div>
       </AnimatePresence>
     </div>
