@@ -77,5 +77,55 @@ export const testimonials: Testimonial[] = [
       en: 'João is an excellent professional, I had the opportunity to work with him for 2 years and he has always been a dedicated professional, showing from the beginning that he learns easily and is capable of taking on responsibilities. He performed excellently in the projects he participated in. João is and will be a fundamental piece in any team he works with. Therefore, I leave my recommendation for his services.'
     },
     featured: true
-  }
+  },
+  {
+    id: 'joao-vargas',
+    author: {
+      name: 'Joao Vargas',
+      role: {
+        pt: 'Desenvolvedor | Full-stack | Java, Spring Boot | React.js, Flutter',
+        en: 'Developer | Full-stack | Java, Spring Boot | React.js, Flutter'
+      },
+      company: '',
+      linkedin: 'https://www.linkedin.com/in/joaovargas',
+    },
+    date: {
+      pt: '16 de abril de 2026',
+      en: 'April 16, 2026'
+    },
+    relationship: {
+      pt: 'Joao trabalhou na mesma equipe que João Paulo',
+      en: 'Joao worked on the same team as João Paulo'
+    },
+    content: {
+      pt: 'Tive a sorte de iniciar minha carreira como desenvolvedor ao lado do João Paulo. Desde o começo, sempre ficou evidente a competência e a curiosidade dele na resolução de problemas.\n\nO João foi uma peça fundamental na minha evolução profissional. Como colega e amigo, nunca mediu esforços para ajudar ou explicando algo que eu não entendia ou dedicando horas (às vezes o dia inteiro) para resolver um problema junto. Para ele, o importante sempre foi chegar na melhor solução.\n\nRecomendo o João com total confiança para qualquer empresa. Trabalhar com ele é uma experiência que eleva o nível de quem está ao redor.',
+      en: 'I was lucky to start my career as a developer alongside João Paulo. From the start, his competence and curiosity in problem-solving were always evident.\n\nJoão was a fundamental piece in my professional growth. As a colleague and friend, he never held back from helping — whether explaining something I didn\'t understand or dedicating hours (sometimes all day) to solve a problem together. What always mattered to him was reaching the best solution.\n\nI recommend João with full confidence to any company. Working with him is an experience that elevates everyone around.'
+    },
+    featured: true
+  },
+  {
+    id: 'felipe-baer',
+    author: {
+      name: 'Felipe Baer',
+      role: {
+        pt: 'Desenvolvedor Full-Stack | Web, Mobile e PWA',
+        en: 'Full-Stack Developer | Web, Mobile and PWA'
+      },
+      company: '',
+      linkedin: 'https://www.linkedin.com/in/felipebaer',
+    },
+    date: {
+      pt: '16 de abril de 2026',
+      en: 'April 16, 2026'
+    },
+    relationship: {
+      pt: 'Felipe trabalhou com João Paulo, mas em equipes diferentes',
+      en: 'Felipe worked with João Paulo, but on different teams'
+    },
+    content: {
+      pt: 'Tive o prazer de trabalhar com o João e posso afirmar, com total convicção, que seu trabalho é excepcional. Acompanhei de perto sua evolução, assim como sua dedicação e vontade constante de aprender e fazer as coisas acontecerem.\n\nSeu papel sempre foi fundamental, tanto na tomada de decisões quanto na construção de soluções, graças ao seu profundo conhecimento e domínio técnico. Trabalhar com o João é, sem dúvida, uma oportunidade valiosa que todos deveriam ter.',
+      en: 'I had the pleasure of working with João and can state, with full conviction, that his work is exceptional. I followed his evolution closely, as well as his dedication and constant drive to learn and make things happen.\n\nHis role was always fundamental, both in decision-making and solution building, thanks to his deep technical knowledge and domain mastery. Working with João is, without a doubt, a valuable opportunity that everyone should have.'
+    },
+    featured: true
+  },
 ];
