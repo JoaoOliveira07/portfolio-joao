@@ -1,7 +1,6 @@
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { notFound } from 'next/navigation';
-import { projects as projectsPt } from '@/data/projects/pt';
-import { projects as projectsEn } from '@/data/projects/en';
+import { projects } from '@/data/projects';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
@@ -27,8 +26,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const { lang, slug } = await params;
   const t = useTranslations('projects');
   const locale = lang as 'pt' | 'en';
-  
-  const projects = locale === 'pt' ? projectsPt : projectsEn;
+
   const project = projects.find((p) => p.slug === slug);
 
   if (!project) {
@@ -53,7 +51,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               {t('title')}
             </Link>
             <span>/</span>
-            <span className="text-text">{project.title}</span>
+            <span className="text-text">{project.title[locale]}</span>
           </nav>
 
           {/* Hero */}
@@ -62,9 +60,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <span className="text-6xl">{categoryIcons[project.category]}</span>
               <div className="flex flex-col gap-2">
                 <h1 className="text-3xl md:text-4xl font-bold text-text">
-                  {project.title}
+                  {project.title[locale]}
                 </h1>
-                <p className="text-lg text-textMuted">{project.subtitle}</p>
+                <p className="text-lg text-textMuted">{project.subtitle[locale]}</p>
               </div>
             </div>
 
@@ -84,20 +82,20 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           {/* Problem */}
           <section className="flex flex-col gap-4 p-6 bg-surface rounded-lg border border-border">
             <h2 className="text-2xl font-bold text-primary">{t('problem')}</h2>
-            <p className="text-textMuted leading-relaxed">{project.problem}</p>
+            <p className="text-textMuted leading-relaxed">{project.problem[locale]}</p>
           </section>
 
           {/* Solution */}
           <section className="flex flex-col gap-4 p-6 bg-surface rounded-lg border border-border">
             <h2 className="text-2xl font-bold text-accent">{t('solution')}</h2>
-            <p className="text-textMuted leading-relaxed">{project.solution}</p>
+            <p className="text-textMuted leading-relaxed">{project.solution[locale]}</p>
           </section>
 
           {/* Highlights */}
           <section className="flex flex-col gap-4 p-6 bg-surface rounded-lg border border-border">
             <h2 className="text-2xl font-bold text-text">{t('highlights')}</h2>
             <ul className="flex flex-col gap-3">
-              {project.highlights.map((highlight, index) => (
+              {project.highlights[locale].map((highlight, index) => (
                 <li key={index} className="flex items-start gap-3">
                   <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
                   <span className="text-textMuted">{highlight}</span>
@@ -109,7 +107,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           {/* Role */}
           <section className="flex flex-col gap-4 p-6 bg-surface rounded-lg border border-border">
             <h2 className="text-2xl font-bold text-text">{t('role')}</h2>
-            <p className="text-textMuted leading-relaxed">{project.role}</p>
+            <p className="text-textMuted leading-relaxed">{project.role[locale]}</p>
           </section>
 
           {/* Navigation */}
@@ -118,7 +116,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <Button asChild variant="outline">
                 <Link href={`/${locale}/projects/${prevProject.slug}`}>
                   <ArrowLeft className="h-4 w-4" />
-                  <span className="hidden sm:inline">{prevProject.title}</span>
+                  <span className="hidden sm:inline">{prevProject.title[locale]}</span>
                   <span className="sm:hidden">
                     {locale === 'pt' ? 'Anterior' : 'Previous'}
                   </span>
@@ -137,7 +135,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             {nextProject ? (
               <Button asChild variant="outline">
                 <Link href={`/${locale}/projects/${nextProject.slug}`}>
-                  <span className="hidden sm:inline">{nextProject.title}</span>
+                  <span className="hidden sm:inline">{nextProject.title[locale]}</span>
                   <span className="sm:hidden">
                     {locale === 'pt' ? 'Próximo' : 'Next'}
                   </span>
@@ -155,9 +153,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 }
 
 export async function generateStaticParams() {
-  const slugs = projectsPt.map((project) => project.slug);
+  const slugs = projects.map((project) => project.slug);
   const langs = ['pt', 'en'];
-  
+
   return langs.flatMap((lang) =>
     slugs.map((slug) => ({
       lang,

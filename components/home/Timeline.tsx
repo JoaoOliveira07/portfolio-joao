@@ -2,14 +2,11 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { experience as experiencePt } from '@/data/experience/pt';
-import { experience as experienceEn } from '@/data/experience/en';
+import { experience } from '@/data/experience';
 import { cn } from '@/lib/utils';
-import { Lock } from 'lucide-react';
 
 export function Timeline() {
-  const locale = useLocale();
-  const experience = locale === 'pt' ? experiencePt : experienceEn;
+  const locale = useLocale() as 'pt' | 'en';
   const t = useTranslations('about');
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -104,7 +101,7 @@ export function Timeline() {
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs text-emerald-400 font-medium">
-                      {position.period}
+                      {position.period[locale]}
                     </span>
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2">
@@ -115,7 +112,7 @@ export function Timeline() {
                       {experience.company}
                     </p>
                     <p className="text-neutral-400 text-sm">
-                      {position.description}
+                      {position.description[locale]}
                     </p>
                   </div>
                 </div>

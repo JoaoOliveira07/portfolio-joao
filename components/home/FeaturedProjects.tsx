@@ -4,9 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import Image from 'next/image';
 import { ArrowRight, Eye } from 'lucide-react';
-import { projects as projectsPt } from '@/data/projects/pt';
-import { projects as projectsEn } from '@/data/projects/en';
-import type { Project } from '@/data/projects/pt';
+import { projects, type Project } from '@/data/projects';
 import { ProjectModal } from '@/components/ui/ProjectModal';
 import { MagicCard } from '@/components/ui/MagicCard';
 
@@ -21,8 +19,7 @@ const projectImages: Record<string, string> = {
 
 export function FeaturedProjects() {
   const t = useTranslations('projects');
-  const locale = useLocale();
-  const projects = locale === 'pt' ? projectsPt : projectsEn;
+  const locale = useLocale() as 'pt' | 'en';
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [viewsMap, setViewsMap] = useState<Record<string, number>>({});
 
@@ -71,7 +68,7 @@ export function FeaturedProjects() {
               >
                 <Image
                   src={projectImages[project.slug] || '/images/projects/iac_terraform_v1_1.png'}
-                  alt={project.title}
+                  alt={project.title[locale]}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
@@ -90,8 +87,8 @@ export function FeaturedProjects() {
                   ))}
                 </div>
                 
-                <h3 className="text-lg font-bold mb-1 text-white">{project.title}</h3>
-                <p className="text-sm text-gray-400 line-clamp-2">{project.subtitle}</p>
+                <h3 className="text-lg font-bold mb-1 text-white">{project.title[locale]}</h3>
+                <p className="text-sm text-gray-400 line-clamp-2">{project.subtitle[locale]}</p>
                 
                 <div className="mt-3 flex items-center justify-between">
                   <div 
