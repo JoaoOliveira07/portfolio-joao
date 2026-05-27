@@ -2,8 +2,7 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { useState, useEffect, useRef } from 'react';
-import { currentlyLearning as learningPt } from '@/data/currently-learning/pt';
-import { currentlyLearning as learningEn } from '@/data/currently-learning/en';
+import { currentlyLearning } from '@/data/currently-learning';
 import { Modal } from '@/components/ui/Modal';
 import { Badge } from '@/components/ui/Badge';
 import { IconContainer } from '@/components/ui/IconContainer';
@@ -13,8 +12,8 @@ import * as LucideIcons from 'lucide-react';
 
 export function CurrentlyLearning() {
   const t = useTranslations('currentlyLearning');
-  const locale = useLocale();
-  const learningItems = locale === 'pt' ? learningPt : learningEn;
+  const locale = useLocale() as 'pt' | 'en';
+  const learningItems = currentlyLearning;
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [selectedItem, setSelectedItem] = useState<typeof learningItems[0] | null>(null);
   const [animatedProgress, setAnimatedProgress] = useState<Record<string, number>>({});
@@ -106,7 +105,7 @@ export function CurrentlyLearning() {
                 'event-driven': 'Event-Driven',
                 'cloud': 'Cloud'
               };
-              return item.category === filterMap[activeFilter];
+              return item.category.en === filterMap[activeFilter];
             })
             .map((item) => {
               const IconComponent = (LucideIcons as any)[item.icon];
@@ -134,12 +133,12 @@ export function CurrentlyLearning() {
                       
                       {/* Title */}
                       <h3 className="text-base font-bold text-neutral-900 leading-tight min-h-[3rem]">
-                        {item.title}
+                        {item.title[locale]}
                       </h3>
-                      
+
                       {/* Description */}
                       <p className="text-sm text-neutral-600 leading-relaxed line-clamp-2 flex-grow">
-                        {item.description}
+                        {item.description[locale]}
                       </p>
                       
                       {/* Progress Bar */}
@@ -180,7 +179,7 @@ export function CurrentlyLearning() {
         <Modal
           isOpen={!!selectedItem}
           onClose={() => setSelectedItem(null)}
-          title={selectedItem.title}
+          title={selectedItem.title[locale]}
         >
           <div className="flex flex-col gap-6">
             {/* Description */}
@@ -189,7 +188,7 @@ export function CurrentlyLearning() {
                 <BookOpen className="w-4 h-4 text-primary-600" />
               </IconContainer>
               <p className="text-sm text-neutral-600 leading-relaxed">
-                {selectedItem.description}
+                {selectedItem.description[locale]}
               </p>
             </div>
 
