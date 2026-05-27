@@ -3,15 +3,13 @@
 import React from 'react';
 import { useLocale } from 'next-intl';
 import { Badge } from '@/components/ui/Badge';
-import { experience as experiencePt } from '@/data/experience/pt';
-import { experience as experienceEn } from '@/data/experience/en';
+import { experience } from '@/data/experience';
 import { competencies } from '@/data/skills';
 import { Briefcase, MapPin, Workflow, FlaskConical, Cloud, ShieldCheck, LucideIcon, Rocket, Code, Star, Award, CheckCircle } from 'lucide-react';
 import { IconContainer } from '@/components/ui/IconContainer';
 
 export function Timeline() {
-  const locale = useLocale();
-  const experience = locale === 'pt' ? experiencePt : experienceEn;
+  const locale = useLocale() as 'pt' | 'en';
 
   return (
     <div className="flex flex-col gap-8">
@@ -23,7 +21,7 @@ export function Timeline() {
         </div>
         <div className="flex items-center gap-2 text-neutral-500">
           <MapPin className="h-4 w-4" />
-          <span className="text-sm">{experience.location}</span>
+          <span className="text-sm">{experience.location[locale]}</span>
         </div>
       </div>
 
@@ -47,8 +45,8 @@ export function Timeline() {
                     {getLevelIcon(position.title)}
                     <h4 className="text-lg font-bold text-neutral-900">{position.title}</h4>
                   </div>
-                  <p className="text-xs text-neutral-500">{position.period}</p>
-                  <p className="text-sm text-neutral-600 leading-relaxed">{position.description}</p>
+                  <p className="text-xs text-neutral-500">{position.period[locale]}</p>
+                  <p className="text-sm text-neutral-600 leading-relaxed">{position.description[locale]}</p>
                 </div>
 
                 {/* Achievements Badges */}
@@ -66,7 +64,7 @@ export function Timeline() {
                 {/* Responsibilities */}
                 <div className="flex flex-col gap-2">
                   <ul className="flex flex-col gap-2 text-sm text-neutral-600">
-                    {position.responsibilities.map((resp, idx) => (
+                    {position.responsibilities[locale].map((resp, idx) => (
                       <li key={idx} className="flex items-start gap-2">
                         <span className="text-primary-500 mt-1">•</span>
                         <span>{resp}</span>
