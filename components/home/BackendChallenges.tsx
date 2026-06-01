@@ -427,11 +427,12 @@ export function BackendChallenges() {
 
                   {!rank && (
                     <div className="mb-6">
-                      <label className="block text-sm text-gray-400 mb-2 font-medium">
+                      <label htmlFor="leaderboard-nickname" className="block text-sm text-gray-400 mb-2 font-medium">
                         Nickname para o leaderboard
                       </label>
                       <div className="flex gap-2">
                         <input
+                          id="leaderboard-nickname"
                           type="text"
                           value={nickname}
                           onChange={(e) => setNickname(e.target.value.slice(0, 20))}

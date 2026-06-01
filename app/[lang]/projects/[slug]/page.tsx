@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { useTranslations } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { projects } from '@/data/projects';
@@ -11,6 +12,29 @@ interface ProjectPageProps {
     lang: string;
     slug: string;
   }>;
+}
+
+export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
+  const { lang, slug } = await params;
+  const project = projects.find((p) => p.slug === slug);
+  if (!project) return {};
+  const locale = lang as 'pt' | 'en';
+  return {
+    title: project.title[locale],
+    description: project.subtitle[locale],
+    alternates: {
+      canonical: `/${lang}/projects/${slug}`,
+      languages: {
+        pt: `/pt/projects/${slug}`,
+        en: `/en/projects/${slug}`,
+      },
+    },
+    openGraph: {
+      title: project.title[locale],
+      description: project.subtitle[locale],
+      type: 'article',
+    },
+  };
 }
 
 const categoryIcons = {
@@ -44,7 +68,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-textMuted">
             <Link href={`/${locale}`} className="hover:text-text">
-              Home
+              {locale === 'pt' ? 'Início' : 'Home'}
             </Link>
             <span>/</span>
             <Link href={`/${locale}/projects`} className="hover:text-text">

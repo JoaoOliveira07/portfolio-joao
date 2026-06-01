@@ -13,26 +13,42 @@ interface ModalProps {
 }
 
 export function Modal({ isOpen, onClose, title, children, className }: ModalProps) {
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const prevFocusRef = React.useRef<HTMLElement | null>(null);
+
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
 
     if (isOpen) {
+      prevFocusRef.current = document.activeElement as HTMLElement | null;
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
+      setTimeout(() => {
+        const first = contentRef.current?.querySelector<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        first?.focus();
+      }, 0);
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = '';
+      if (isOpen) prevFocusRef.current?.focus?.();
     };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-label={title ?? 'Dialog'}
+    >
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
@@ -40,7 +56,8 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
       />
       
       {/* Modal Content */}
-      <div 
+      <div
+        ref={contentRef}
         className={cn(
           "relative bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col border border-white/10",
           className

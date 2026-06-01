@@ -128,14 +128,14 @@ export function Stats() {
 
   return (
     <div className="w-full" ref={containerRef}>
-      <div className="max-w-7xl mx-auto px-8">
+      <div className="max-w-7xl mx-auto px-6 md:px-8">
         <div className="text-center mb-12">
           <span className="text-emerald-400 font-bold tracking-widest text-xs uppercase">GitHub Activity</span>
           <h2 className="text-4xl font-bold tracking-tight mt-4 text-white">{t('title')}</h2>
           <p className="text-gray-400 mt-4 max-w-2xl mx-auto">{t('subtitle')}</p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {stats.map((stat, index) => {
             const IconComponent = stat.icon;
             return (

@@ -87,7 +87,8 @@ export const testimonials: Testimonial[] = [
         en: 'Developer | Full-stack | Java, Spring Boot | React.js, Flutter'
       },
       company: '',
-      linkedin: 'https://www.linkedin.com/in/joaovargas',
+      avatar: '/avatars/vargas.jpeg',
+      linkedin: 'https://www.linkedin.com/in/vargxrz/',
     },
     date: {
       pt: '16 de abril de 2026',
@@ -112,7 +113,8 @@ export const testimonials: Testimonial[] = [
         en: 'Full-Stack Developer | Web, Mobile and PWA'
       },
       company: '',
-      linkedin: 'https://www.linkedin.com/in/felipebaer',
+      avatar: '/avatars/baer.jpeg',
+      linkedin: 'https://www.linkedin.com/in/flpbaer/?locale=pt',
     },
     date: {
       pt: '16 de abril de 2026',

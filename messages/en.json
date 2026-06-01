@@ -13,7 +13,7 @@
   "hero": {
     "role": "Backend Engineer",
     "tagline": "Backend Engineer focused on scalable systems and complex integrations.",
-    "description": "+4 years | Java / Spring Boot | AWS | Distributed Architecture",
+    "description": "+3 years | Java / Spring Boot | AWS | Distributed Architecture",
     "cta": {
       "projects": "View Projects",
       "contact": "Contact"
@@ -32,7 +32,12 @@
     "solution": "The Solution",
     "highlights": "Technical Highlights",
     "techStack": "Tech Stack",
-    "role": "My Role"
+    "role": "My Role",
+    "allProjects": "All Projects",
+    "home": "Home",
+    "previous": "Previous",
+    "next": "Next",
+    "professionalJourney": "Professional Journey"
   },
   "about": {
     "title": "About Me",

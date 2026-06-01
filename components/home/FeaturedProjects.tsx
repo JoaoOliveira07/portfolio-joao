@@ -62,9 +62,11 @@ export function FeaturedProjects() {
               className="overflow-hidden cursor-pointer h-full"
               gradientColor="#10b981"
             >
-              <div 
-                className="relative aspect-video overflow-hidden bg-neutral-800"
+              <button
+                type="button"
+                className="relative aspect-video overflow-hidden bg-neutral-800 w-full block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                 onClick={() => setSelectedProject(project)}
+                aria-label={`${project.title[locale]} — ${project.subtitle[locale]}`}
               >
                 <Image
                   src={projectImages[project.slug] || '/images/projects/iac_terraform_v1_1.png'}
@@ -73,7 +75,7 @@ export function FeaturedProjects() {
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent" />
-              </div>
+              </button>
               
               <div className="p-4 md:p-5">
                 <div className="flex flex-wrap gap-2 mb-3">
@@ -91,13 +93,14 @@ export function FeaturedProjects() {
                 <p className="text-sm text-gray-400 line-clamp-2">{project.subtitle[locale]}</p>
                 
                 <div className="mt-3 flex items-center justify-between">
-                  <div 
-                    className="flex items-center text-emerald-400 text-sm font-medium group-hover:translate-x-2 transition-transform duration-200 cursor-pointer"
+                  <button
+                    type="button"
+                    className="flex items-center text-emerald-400 text-sm font-medium group-hover:translate-x-2 transition-transform duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded"
                     onClick={() => setSelectedProject(project)}
                   >
-                    <span>View details</span>
+                    <span>{t('viewDetails')}</span>
                     <ArrowRight className="ml-1 h-4 w-4" />
-                  </div>
+                  </button>
                   {viewsMap[project.slug] !== undefined && (
                     <div className="flex items-center gap-1 text-gray-500 text-xs">
                       <Eye className="w-3 h-3" />

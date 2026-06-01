@@ -22,7 +22,20 @@ export function useScrollSpy(sectionIds: string[], rootMargin = '-20% 0px -70% 0
       if (el) observer.observe(el);
     }
 
-    return () => observer.disconnect();
+    const onScroll = () => {
+      const scrolled = window.innerHeight + window.scrollY;
+      const total = document.documentElement.scrollHeight;
+      if (total - scrolled < 4) {
+        setActiveId(sectionIds[sectionIds.length - 1]);
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', onScroll);
+    };
   }, [sectionIds, rootMargin]);
 
   return activeId;

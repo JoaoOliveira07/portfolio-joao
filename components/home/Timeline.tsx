@@ -39,17 +39,18 @@ export function Timeline() {
     <div className="w-full" ref={containerRef}>
       <div className="text-center mb-12">
         <span className="text-emerald-400 font-bold tracking-widest text-xs uppercase">
-          Professional Journey
+          {locale === 'pt' ? 'Jornada Profissional' : 'Professional Journey'}
         </span>
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mt-3">
           {t('experience')}
         </h2>
       </div>
 
-      <div className="relative max-w-4xl mx-auto px-4 md:px-0">
+      {/* No px-4 here — line and dots share the same reference box */}
+      <div className="relative max-w-4xl mx-auto">
         {/* Vertical line */}
-        <div className="absolute left-2 md:left-1/2 top-0 bottom-0 w-px bg-white/10 -translate-x-1/2">
-          <div 
+        <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-white/10 -translate-x-1/2">
+          <div
             className="absolute left-0 top-0 w-full bg-emerald-500 transition-all duration-500 ease-out"
             style={{
               height: `${(activeIndex / (reversedPositions.length - 1)) * 100}%`,
@@ -58,7 +59,7 @@ export function Timeline() {
           />
         </div>
 
-        <div className="space-y-12">
+        <div className="space-y-6 md:space-y-12">
           {reversedPositions.map((position, index) => {
             const isActive = index === activeIndex;
             const isLocked = position.isLocked;
@@ -69,55 +70,51 @@ export function Timeline() {
                 key={index}
                 data-timeline-item
                 className={cn(
-                  'relative flex items-center md:justify-between',
+                  'relative flex items-start md:items-center md:justify-between pl-12 md:pl-0',
                   !isLeft && 'md:flex-row-reverse'
                 )}
               >
-                {/* Dot on the line - centered */}
-                <div 
+                {/* Dot — left-8 matches the line above */}
+                <div
                   className={cn(
-                    'absolute left-2 md:left-1/2 w-4 h-4 rounded-full border-2 transition-all duration-300 z-10 -translate-x-1/2',
+                    'absolute left-8 md:left-1/2 top-5 w-3.5 h-3.5 rounded-full border-2 transition-all duration-300 z-10 -translate-x-1/2',
                     isActive && !isLocked
-                      ? 'bg-emerald-500 border-emerald-500 scale-125' 
+                      ? 'bg-emerald-500 border-emerald-500 scale-125'
                       : isLocked
                         ? 'bg-neutral-800 border-neutral-600'
                         : 'bg-neutral-900 border-white/30',
                   )}
                   style={{
-                    boxShadow: isActive && !isLocked ? '0 0 20px rgba(16, 185, 129, 0.8)' : 'none',
+                    boxShadow: isActive && !isLocked ? '0 0 16px rgba(16, 185, 129, 0.8)' : 'none',
                   }}
                 />
 
-                {/* Content left of line (or right on alternate) */}
-                <div 
+                {/* Card — sits in content area; gutter on parent holds line+dot outside */}
+                <div
                   className={cn(
-                    'ml-10 md:ml-0 md:w-[45%] p-4 rounded-xl transition-all duration-300',
+                    'px-4 py-4 md:w-[45%] rounded-xl transition-all duration-300 w-full',
                     isActive && !isLocked
-                      ? 'bg-emerald-950/30 border border-emerald-500/30' 
+                      ? 'bg-emerald-950/30 border border-emerald-500/30'
                       : isLocked
                         ? 'bg-neutral-900/30 border border-white/5 opacity-50'
                         : 'bg-neutral-900/50 border border-white/10'
                   )}
                 >
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs text-emerald-400 font-medium">
-                      {position.period[locale]}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-2">
+                  <span className="text-xs text-emerald-400 font-medium block mb-1">
+                    {position.period[locale]}
+                  </span>
+                  <h3 className="text-base md:text-lg font-bold text-white mb-1">
                     {position.title}
                   </h3>
-                  <div className="space-y-2">
-                    <p className="text-emerald-400/80 font-medium text-sm">
-                      {experience.company}
-                    </p>
-                    <p className="text-neutral-400 text-sm">
-                      {position.description[locale]}
-                    </p>
-                  </div>
+                  <p className="text-emerald-400/80 font-medium text-sm mb-1">
+                    {experience.company}
+                  </p>
+                  <p className="text-neutral-400 text-sm leading-relaxed">
+                    {position.description[locale]}
+                  </p>
                 </div>
 
-                {/* Empty space on the other side */}
+                {/* Empty space (desktop only) */}
                 <div className="hidden md:block md:w-[45%]" />
               </div>
             );

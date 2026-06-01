@@ -4,6 +4,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { TerminalWindow } from '@/components/ui/TerminalWindow';
 
 export function Hero() {
@@ -11,9 +12,40 @@ export function Hero() {
   const locale = useLocale();
   const [mounted, setMounted] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const spotlightRef = useRef<HTMLDivElement>(null);
+  const [hovering, setHovering] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    const spotlight = spotlightRef.current;
+    if (!section || !spotlight) return;
+
+    let frame = 0;
+    let targetX = 0;
+    let targetY = 0;
+
+    const onMove = (e: MouseEvent) => {
+      const rect = section.getBoundingClientRect();
+      targetX = e.clientX - rect.left;
+      targetY = e.clientY - rect.top;
+      if (!frame) {
+        frame = requestAnimationFrame(() => {
+          spotlight.style.background = `radial-gradient(600px circle at ${targetX}px ${targetY}px, rgba(16,185,129,0.15), transparent 40%)`;
+          frame = 0;
+        });
+      }
+    };
+
+    section.addEventListener('mousemove', onMove);
+    return () => {
+      section.removeEventListener('mousemove', onMove);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -29,7 +61,12 @@ export function Hero() {
   };
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen flex items-center overflow-hidden bg-neutral-950">
+    <section
+      ref={sectionRef}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+      className="relative min-h-screen flex items-center overflow-hidden bg-neutral-950"
+    >
       {/* Simple gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-950 to-neutral-900" />
       
@@ -41,6 +78,42 @@ export function Hero() {
 
       {/* Radial glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-500/5 rounded-full blur-3xl" />
+
+      {/* Animated gradient blobs (skipped if reduced motion) */}
+      {!reduceMotion && (
+        <>
+          <motion.div
+            className="absolute -top-20 -left-20 w-[480px] h-[480px] bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none"
+            animate={{ x: [0, 80, -40, 0], y: [0, 60, 100, 0], scale: [1, 1.15, 0.95, 1] }}
+            transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute bottom-0 right-0 w-[560px] h-[560px] bg-cyan-500/8 rounded-full blur-[120px] pointer-events-none"
+            animate={{ x: [0, -120, 60, 0], y: [0, -80, -40, 0], scale: [1, 0.9, 1.1, 1] }}
+            transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute top-1/3 right-1/4 w-[360px] h-[360px] bg-emerald-400/6 rounded-full blur-[90px] pointer-events-none"
+            animate={{ x: [0, 60, -80, 0], y: [0, 100, 40, 0], scale: [1, 1.2, 0.85, 1] }}
+            transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
+          />
+        </>
+      )}
+
+      {/* Cursor spotlight */}
+      <div
+        ref={spotlightRef}
+        className="absolute inset-0 pointer-events-none transition-opacity duration-500"
+        style={{ opacity: hovering ? 1 : 0 }}
+      />
+
+      {/* Scanline overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.04]"
+        style={{
+          backgroundImage: 'repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(16,185,129,0.6) 3px, rgba(16,185,129,0.6) 4px)',
+        }}
+      />
 
       <div className="relative z-10 pt-32 pb-20 px-6 md:px-8 max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">

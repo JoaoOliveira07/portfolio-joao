@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import { CheckCircle2 } from 'lucide-react';
 
 export function AboutSection() {
@@ -15,11 +16,14 @@ export function AboutSection() {
 
           {/* Left - Photo */}
           <div className="relative order-2 md:order-1">
-            <div className="aspect-[4/5] rounded-2xl overflow-hidden bg-neutral-800 shadow-2xl">
-              <img
+            <div className="aspect-[4/5] rounded-2xl overflow-hidden bg-neutral-800 shadow-2xl relative">
+              <Image
                 src="/avatars/eu.png"
                 alt="João Paulo Oliveira"
-                className="w-full h-full object-cover grayscale opacity-80"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover grayscale opacity-80"
+                priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/50 via-transparent to-transparent rounded-2xl" />
             </div>
