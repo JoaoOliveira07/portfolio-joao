@@ -25,16 +25,16 @@ export const competencies: Competency[] = [
     skills: ['Java 17', 'Spring Boot', 'Spring Integration', 'JPA / Hibernate', 'REST APIs', 'Node.js (Lambda)']
   },
   {
-    icon: 'Smartphone',
+    icon: 'Layers',
     title: {
-      pt: 'Mobile Offline-First',
-      en: 'Offline-First Mobile'
+      pt: 'Mobile & Frontend',
+      en: 'Mobile & Frontend'
     },
     description: {
-      pt: 'Flutter com Clean Architecture, Drift (SQLite) e SyncEngine + WorkManager para operação 100% offline.',
-      en: 'Flutter with Clean Architecture, Drift (SQLite) and SyncEngine + WorkManager for 100% offline operation.'
+      pt: 'Flutter offline-first com Clean Architecture + BLoC. React/Next.js com TypeScript, Vite e PWA.',
+      en: 'Offline-first Flutter with Clean Architecture + BLoC. React/Next.js with TypeScript, Vite and PWA.'
     },
-    skills: ['Flutter', 'Dart', 'BLoC / Cubit', 'Drift (SQLite)', 'WorkManager', 'GoRouter']
+    skills: ['Flutter', 'Dart', 'BLoC / Cubit', 'React', 'Next.js', 'TypeScript', 'Vite', 'Tailwind CSS']
   },
   {
     icon: 'Cloud',

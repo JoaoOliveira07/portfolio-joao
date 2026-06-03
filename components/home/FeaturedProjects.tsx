@@ -20,19 +20,6 @@ import { projects, type Project } from '@/data/projects';
 import { ProjectModal } from '@/components/ui/ProjectModal';
 import { MagicCard } from '@/components/ui/MagicCard';
 
-type CoverOrientation = 'portrait' | 'landscape';
-
-const projectImages: Record<string, { src: string; orientation: CoverOrientation }> = {
-  'ecommerce-front': { src: '/images/projects/ecommerce.png', orientation: 'portrait' },
-  'salesforce-mobile': { src: '/images/projects/salesforce-mobile.jpeg', orientation: 'portrait' },
-  'backoffice': { src: '/images/projects/backoffice.png', orientation: 'landscape' },
-  'register-flow': { src: '/images/projects/autocadastro.jpeg', orientation: 'portrait' },
-  'segalas-ecommerce': { src: '/images/projects/modular_monolith_v1_1.png', orientation: 'landscape' },
-  'integration-platform': { src: '/images/projects/hybrid_integration_v1_1.png', orientation: 'landscape' },
-  'offline-integrator': { src: '/images/projects/event_driven_pipeline_v1_1.png', orientation: 'landscape' },
-  'infra-terraform': { src: '/images/projects/iac_terraform_v1_1.png', orientation: 'landscape' },
-};
-
 const categoryIcons: Record<Project['category'], typeof Server> = {
   monolith: Server,
   frontend: Globe,
@@ -62,9 +49,7 @@ const fallbackIcon = Network;
 export function FeaturedProjects() {
   const t = useTranslations('projects');
   const locale = useLocale() as 'pt' | 'en';
-  const [selectedProject, setSelectedProject] = useState<
-    (Project & { coverImage?: string; coverOrientation?: CoverOrientation }) | null
-  >(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [viewsMap, setViewsMap] = useState<Record<string, number>>({});
 
   const fetchAllViews = useCallback(async () => {
@@ -88,12 +73,7 @@ export function FeaturedProjects() {
   }, [fetchAllViews]);
 
   const handleSelect = (project: Project) => {
-    const cover = projectImages[project.slug];
-    setSelectedProject({
-      ...project,
-      coverImage: cover?.src,
-      coverOrientation: cover?.orientation,
-    });
+    setSelectedProject(project);
   };
 
   return (
@@ -126,9 +106,7 @@ export function FeaturedProjects() {
                   {/* Header: icon + category + year */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-emerald-500/15 border border-emerald-500/25">
-                        <Icon className="w-4 h-4 text-emerald-400" aria-hidden />
-                      </span>
+                      <Icon className="w-5 h-5 text-emerald-400" aria-hidden />
                       <span className="text-[10px] font-bold tracking-widest bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded border border-emerald-500/20 uppercase">
                         {categoryLabels[project.category][locale]}
                       </span>

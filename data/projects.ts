@@ -21,16 +21,16 @@ export const projects: Project[] = [
   {
     slug: 'segalas-ecommerce',
     title: {
-      pt: 'Segalas E-commerce — Backend Monolítico',
-      en: 'Segalas E-commerce — Monolithic Backend'
+      pt: 'E-commerce — Backend Monolítico',
+      en: 'E-commerce — Monolithic Backend'
     },
     subtitle: {
-      pt: 'Monolito Spring Boot multi-tenant que alimenta register_flow, backoffice, ecommerce-front e salesforce-mobile',
-      en: 'Multi-tenant Spring Boot monolith powering register_flow, backoffice, ecommerce-front and salesforce-mobile'
+      pt: 'Monolito Spring Boot multi-tenant que alimenta register_flow, backoffice, ecommerce-front e field-sales app',
+      en: 'Multi-tenant Spring Boot monolith powering register_flow, backoffice, ecommerce-front and field-sales app'
     },
     description: {
-      pt: 'Backend central do ecossistema Segalas. API REST que serve o app de onboarding (register_flow), painel admin (backoffice), SPA web B2B (ecommerce-front) e app de força de vendas (salesforce-mobile). Layered + DDD, multi-tenant por parceiro, com event streaming via Kinesis.',
-      en: 'Central backend of the Segalas ecosystem. REST API powering the onboarding app (register_flow), admin panel (backoffice), B2B web SPA (ecommerce-front) and field-sales app (salesforce-mobile). Layered + DDD, partner-based multi-tenant, with event streaming via Kinesis.'
+      pt: 'Backend central do ecossistema B2B. API REST que serve o app de onboarding (register_flow), painel admin (backoffice), SPA web B2B (ecommerce-front) e app de força de vendas. Layered + DDD, multi-tenant por parceiro, com event streaming via Kinesis.',
+      en: 'Central backend of the B2B ecosystem. REST API powering the onboarding app (register_flow), admin panel (backoffice), B2B web SPA (ecommerce-front) and field-sales app. Layered + DDD, partner-based multi-tenant, with event streaming via Kinesis.'
     },
     problem: {
       pt: 'Unificar onboarding, pedidos B2B web/mobile e admin sob um único backend multi-tenant, sincronizando com ERP Oracle Winthor legado e mantendo consistência sob alta carga.',
@@ -74,7 +74,7 @@ export const projects: Project[] = [
     RF[register_flow<br/>Flutter onboarding] --> API[Spring Boot API<br/>Layered + DDD]
     BO[backoffice<br/>Next.js admin] --> API
     EF[ecommerce-front<br/>SPA B2B] --> API
-    SM[salesforce-mobile<br/>Flutter offline] --> API
+    SM[Field Sales App<br/>Flutter offline] --> API
 
     API --> Auth[Auth<br/>JWT + Passkey]
     API --> Purchase[Purchase]
@@ -200,7 +200,7 @@ export const projects: Project[] = [
     SPA --> UI[MUI v7 + Ant Design v5]
     SPA --> Anim[Framer Motion + React Spring]
 
-    SPA -->|Axios + retry| API[segalas-ecommerce API]
+    SPA -->|Axios + retry| API[E-commerce API]
 
     SPA --> SW[Service Worker<br/>Workbox]
     SW --> Cache[(PWA Cache)]
@@ -262,8 +262,8 @@ export const projects: Project[] = [
   {
     slug: 'salesforce-mobile',
     title: {
-      pt: 'Salesforce Mobile — App Offline-First',
-      en: 'Salesforce Mobile — Offline-First App'
+      pt: 'Field Sales Mobile — App Offline-First',
+      en: 'Field Sales Mobile — Offline-First App'
     },
     subtitle: {
       pt: 'Flutter multi-plataforma para força de vendas com Drift (SQLite) e sync em background',
@@ -390,8 +390,8 @@ export const projects: Project[] = [
       en: 'Next.js 16 + React 19 with Server Components, shadcn/ui and Vercel AI SDK'
     },
     description: {
-      pt: 'Painel admin moderno que substitui o segs-backoffice legado (CRA + Ant Design). Gestão de integrações, clientes, pedidos, PIX, banners e relatórios, com chat IA usando AWS Bedrock e OpenRouter via Vercel AI SDK.',
-      en: 'Modern admin panel replacing the legacy segs-backoffice (CRA + Ant Design). Manages integrations, customers, orders, PIX, banners and reports, with AI chat using AWS Bedrock and OpenRouter via the Vercel AI SDK.'
+      pt: 'Painel admin moderno que substitui o backoffice legado (CRA + Ant Design). Gestão de integrações, clientes, pedidos, PIX, banners e relatórios, com chat IA usando AWS Bedrock e OpenRouter via Vercel AI SDK.',
+      en: 'Modern admin panel replacing the legacy backoffice (CRA + Ant Design). Manages integrations, customers, orders, PIX, banners and reports, with AI chat using AWS Bedrock and OpenRouter via the Vercel AI SDK.'
     },
     problem: {
       pt: 'O backoffice legado em CRA + Ant Design tinha bundle pesado, build lento e dificuldade para ganhar features modernas como IA, audit logs e modo offline para uso em armazém.',
@@ -440,7 +440,7 @@ export const projects: Project[] = [
 
     SC --> Tan[TanStack Query]
     Tan --> API
-    API --> Spring[Spring Boot API<br/>segalas-ecommerce]
+    API --> Spring[Spring Boot API<br/>ecommerce]
 
     Next --> Chat[Chat IA<br/>Vercel AI SDK]
     Chat --> Bedrock[AWS Bedrock]
@@ -508,8 +508,8 @@ export const projects: Project[] = [
       en: 'Flutter onboarding app for sellers and customers with doc upload and geocoding'
     },
     description: {
-      pt: 'App de onboarding multi-step para o ecossistema Segalas. Cadastro de vendedores e clientes com upload de documentos, endereço com mapa, contatos e validações brasileiras (CPF/CNPJ, telefone). Feature flags alternam fluxo vendedor vs comprador.',
-      en: 'Multi-step onboarding app for the Segalas ecosystem. Seller and customer registration with document upload, address with map, contacts and Brazilian validations (CPF/CNPJ, phone). Feature flags switch seller vs buyer flows.'
+      pt: 'App de onboarding multi-step para o ecossistema B2B. Cadastro de vendedores e clientes com upload de documentos, endereço com mapa, contatos e validações brasileiras (CPF/CNPJ, telefone). Feature flags alternam fluxo vendedor vs comprador.',
+      en: 'Multi-step onboarding app for the B2B ecosystem. Seller and customer registration with document upload, address with map, contacts and Brazilian validations (CPF/CNPJ, phone). Feature flags switch seller vs buyer flows.'
     },
     problem: {
       pt: 'Onboarding de vendedores e clientes precisava sair de um formulário web pesado para um fluxo mobile guiado, multi-step, com upload de docs, geocoding e mapas — funcionando em Android, iOS, Web e desktop.',
@@ -563,7 +563,7 @@ export const projects: Project[] = [
 
     FF[Feature Flags<br/>vendedor vs comprador] -.-> Main
 
-    Done -->|POST| API[segalas-ecommerce<br/>Auth + Platform]
+    Done -->|POST| API[E-commerce API<br/>Auth + Platform]
 
     style Main fill:#01926D
     style API fill:#01926D
@@ -620,12 +620,12 @@ export const projects: Project[] = [
       en: 'Integration Platform — Client / Middleware / Orchestrator'
     },
     subtitle: {
-      pt: 'Bridge bidirecional Oracle Winthor ↔ cloud Segalas via 3 serviços Java',
-      en: 'Bidirectional bridge between Oracle Winthor and the Segalas cloud via 3 Java services'
+      pt: 'Bridge bidirecional Oracle Winthor ↔ plataforma B2B via 3 serviços Java',
+      en: 'Bidirectional bridge between Oracle Winthor and the B2B platform via 3 Java services'
     },
     description: {
-      pt: 'Conjunto de três serviços Java que mantém produtos, clientes, preços, estoque, pedidos e notificações fluindo entre o ERP Oracle Winthor (on-premise no parceiro) e a plataforma cloud Segalas. integration-client roda local, integration-middleware é o bus SQS central e integration-orchestrator coordena workflows complexos (crédito, PIX, liberação de pedidos, relatórios).',
-      en: 'Three-service Java set keeping products, customers, prices, stock, orders and notifications flowing between the Oracle Winthor ERP (on-premise at the partner) and the Segalas cloud. integration-client runs locally, integration-middleware is the central SQS bus, and integration-orchestrator coordinates complex workflows (credit, PIX, order release, reports).'
+      pt: 'Conjunto de três serviços Java que mantém produtos, clientes, preços, estoque, pedidos e notificações fluindo entre o ERP Oracle Winthor (on-premise no parceiro) e a plataforma B2B. integration-client roda local, integration-middleware é o bus SQS central e integration-orchestrator coordena workflows complexos (crédito, PIX, liberação de pedidos, relatórios).',
+      en: 'Three-service Java set keeping products, customers, prices, stock, orders and notifications flowing between the Oracle Winthor ERP (on-premise at the partner) and the B2B platform. integration-client runs locally, integration-middleware is the central SQS bus, and integration-orchestrator coordinates complex workflows (credit, PIX, order release, reports).'
     },
     problem: {
       pt: 'Plataforma cloud moderna precisa conviver com ERP Oracle Winthor de décadas, sem reescrita, mantendo dados do parceiro on-premise por segurança. Fluxo bidirecional precisa de contratos normalizados, retries, idempotência e rastreabilidade.',
@@ -675,7 +675,7 @@ export const projects: Project[] = [
     Orch --> Renderers[Renderers<br/>PDF · WhatsApp · Excel]
     Orch --> Senders[Senders<br/>Email · WhatsApp]
 
-    Mid --> Ecom[segalas-ecommerce]
+    Mid --> Ecom[E-commerce API]
     Mid --> Offline[offline-integrator]
 
     style Client fill:#01926D
@@ -729,16 +729,16 @@ export const projects: Project[] = [
   {
     slug: 'offline-integrator',
     title: {
-      pt: 'Offline Integrator — API do Salesforce Mobile',
-      en: 'Offline Integrator — Salesforce Mobile API'
+      pt: 'Offline Integrator — API do Field Sales App',
+      en: 'Offline Integrator — Field Sales API'
     },
     subtitle: {
       pt: 'Spring Boot 3.5 que gera jobs, executa queries no banco do parceiro e abastece o app offline',
       en: 'Spring Boot 3.5 that generates jobs, runs partner-DB queries and feeds the offline app'
     },
     description: {
-      pt: 'API dedicada ao salesforce-mobile. Gera jobs de sync, executa queries no banco SEGS do parceiro (read-only) e abastece o banco local Drift do app via S3. Arquitetura hexagonal/clean (core → application → infra), com primary PostgreSQL e secondary SEGS read-only. Infra dedicada em repositório Terraform separado.',
-      en: 'Dedicated API for salesforce-mobile. Generates sync jobs, runs queries on the partner SEGS database (read-only) and feeds the app local Drift DB via S3. Hexagonal/clean architecture (core → application → infra), with primary PostgreSQL and secondary SEGS read-only. Dedicated infra in a separate Terraform repo.'
+      pt: 'API dedicada ao field-sales app. Gera jobs de sync, executa queries no banco SEGS do parceiro (read-only) e abastece o banco local Drift do app via S3. Arquitetura hexagonal/clean (core → application → infra), com primary PostgreSQL e secondary SEGS read-only. Infra dedicada em repositório Terraform separado.',
+      en: 'Dedicated API for the field-sales app. Generates sync jobs, runs queries on the partner SEGS database (read-only) and feeds the app local Drift DB via S3. Hexagonal/clean architecture (core → application → infra), with primary PostgreSQL and secondary SEGS read-only. Dedicated infra in a separate Terraform repo.'
     },
     problem: {
       pt: 'App de força de vendas precisa de dataset offline completo e sempre atualizado, sem expor o banco do parceiro à internet nem inflar a malha de integração existente.',
@@ -754,7 +754,7 @@ export const projects: Project[] = [
         'Hexagonal/Clean: core → application → infra',
         'Multi-datasource: primary PostgreSQL + secondary SEGS read-only do parceiro',
         'Redis cache para resultados de queries pesadas',
-        'S3 para datasets grandes consumidos pelo salesforce-mobile',
+        'S3 para datasets grandes consumidos pelo field-sales app',
         'OAuth2 JWT em todas as rotas com context path /integrator',
         'Liquibase para migrations versionadas',
         'Testcontainers + JUnit 5 com cobertura mínima 80% (JaCoCo)',
@@ -766,7 +766,7 @@ export const projects: Project[] = [
         'Hexagonal/Clean: core → application → infra',
         'Multi-datasource: primary PostgreSQL + secondary partner SEGS read-only',
         'Redis cache for heavy query results',
-        'S3 for large datasets consumed by salesforce-mobile',
+        'S3 for large datasets consumed by the field-sales app',
         'OAuth2 JWT on every route with context path /integrator',
         'Liquibase for versioned migrations',
         'Testcontainers + JUnit 5 with min 80% coverage (JaCoCo)',
@@ -783,7 +783,7 @@ export const projects: Project[] = [
     year: 2026,
     complexity: 4,
     diagram: `graph LR
-    App[Salesforce Mobile] -->|OAuth2 JWT| API[Offline Integrator<br/>Spring Boot 3.5<br/>/integrator]
+    App[Field Sales App] -->|OAuth2 JWT| API[Offline Integrator<br/>Spring Boot 3.5<br/>/integrator]
     API --> Primary[(Primary PostgreSQL<br/>jobs · metadata)]
     API --> SEGS[(Secondary SEGS<br/>read-only · parceiro)]
     API --> Cache[(Redis cache)]
@@ -858,8 +858,8 @@ export const projects: Project[] = [
       en: 'Infra Terraform — Ecosystem AWS IaC'
     },
     subtitle: {
-      pt: 'Terraform versionando boa parte do ecommerce Segalas em test/hmg/prod/shared',
-      en: 'Terraform versioning most of the Segalas ecommerce across test/hmg/prod/shared'
+      pt: 'Terraform versionando boa parte do ecossistema ecommerce em test/hmg/prod/shared',
+      en: 'Terraform versioning most of the B2B ecommerce across test/hmg/prod/shared'
     },
     description: {
       pt: 'Infrastructure as Code abrangente do ecossistema ecommerce na AWS. Provisiona Lambdas + Layers, API Gateway, RDS, S3, VPC/Subnets/SGs, SSM Parameter Store e ECR. Multi-ambiente (test, hmg, prod, shared) com naming padronizado, state remoto em S3 e CI/CD em GitHub Actions.',

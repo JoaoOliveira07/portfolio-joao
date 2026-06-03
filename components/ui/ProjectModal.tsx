@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import Image from 'next/image';
 import { Modal } from '@/components/ui/Modal';
 import { MermaidDiagram } from '@/components/ui/MermaidDiagram';
 import { Badge } from '@/components/ui/Badge';
@@ -24,8 +23,6 @@ interface ProjectModalProps {
     highlights?: { pt: string[]; en: string[] };
     techStack: string[];
     diagram?: string;
-    coverImage?: string;
-    coverOrientation?: 'portrait' | 'landscape';
     technicalDecisions?: { pt: string[]; en: string[] };
     challenges?: { pt: string[]; en: string[] };
     results?: { pt: string[]; en: string[] };
@@ -61,35 +58,6 @@ export function ProjectModal({ isOpen, onClose, project }: ProjectModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={project.title[locale]}>
       <div className="flex flex-col gap-6">
-        {/* Cover image */}
-        {project.coverImage && (
-          project.coverOrientation === 'portrait' ? (
-            <div className="relative w-full overflow-hidden rounded-lg border border-white/10 bg-gradient-to-br from-neutral-900 to-neutral-950 -mt-2 flex items-center justify-center py-4">
-              <div className="relative w-[200px] h-[420px] md:w-[260px] md:h-[540px]">
-                <Image
-                  src={project.coverImage}
-                  alt={project.title[locale]}
-                  fill
-                  className="object-contain"
-                  sizes="260px"
-                  priority
-                />
-              </div>
-            </div>
-          ) : (
-            <div className="relative w-full aspect-video overflow-hidden rounded-lg border border-white/10 bg-neutral-900 -mt-2">
-              <Image
-                src={project.coverImage}
-                alt={project.title[locale]}
-                fill
-                className="object-contain"
-                sizes="(max-width: 768px) 100vw, 768px"
-                priority
-              />
-            </div>
-          )
-        )}
-
         {/* Subtitle */}
         <p className="text-lg text-gray-300">{project.subtitle[locale]}</p>
 

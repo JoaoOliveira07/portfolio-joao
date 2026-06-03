@@ -13,6 +13,9 @@ export function Competencies() {
       'FlaskConical': 'science',
       'Cloud': 'cloud_done',
       'ShieldCheck': 'verified_user',
+      'Smartphone': 'smartphone',
+      'Layers': 'devices',
+      'Activity': 'monitoring',
     };
     return icons[iconName] || 'code';
   };
