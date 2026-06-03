@@ -15,49 +15,49 @@ export const competencies: Competency[] = [
   {
     icon: 'Workflow',
     title: {
-      pt: 'Java & Spring Boot',
-      en: 'Java & Spring Boot'
+      pt: 'Backend & APIs',
+      en: 'Backend & APIs'
     },
     description: {
-      pt: 'Desenvolvimento com Java 17+, Spring Boot, JPA e Hibernate. APIs RESTful e aplicações robustas.',
-      en: 'Development with Java 17+, Spring Boot, JPA and Hibernate. RESTful APIs and robust applications.'
+      pt: 'Java 17 + Spring Boot e Spring Integration. APIs REST, JPA/Hibernate e mensageria assíncrona.',
+      en: 'Java 17 + Spring Boot and Spring Integration. REST APIs, JPA/Hibernate and async messaging.'
     },
-    skills: ['Java 17+', 'Spring Boot', 'JPA', 'Hibernate', 'REST APIs', 'Microservices']
+    skills: ['Java 17', 'Spring Boot', 'Spring Integration', 'JPA / Hibernate', 'REST APIs', 'Node.js (Lambda)']
   },
   {
-    icon: 'FlaskConical',
+    icon: 'Smartphone',
     title: {
-      pt: 'Banco de Dados',
-      en: 'Database'
+      pt: 'Mobile Offline-First',
+      en: 'Offline-First Mobile'
     },
     description: {
-      pt: 'PostgreSQL e MySQL. Modelagem de dados, queries otimizadas e migrations.',
-      en: 'PostgreSQL and MySQL. Data modeling, optimized queries and migrations.'
+      pt: 'Flutter com Clean Architecture, Drift (SQLite) e SyncEngine + WorkManager para operação 100% offline.',
+      en: 'Flutter with Clean Architecture, Drift (SQLite) and SyncEngine + WorkManager for 100% offline operation.'
     },
-    skills: ['PostgreSQL', 'MySQL', 'Data Modeling', 'SQL', 'Migrations']
+    skills: ['Flutter', 'Dart', 'BLoC / Cubit', 'Drift (SQLite)', 'WorkManager', 'GoRouter']
   },
   {
     icon: 'Cloud',
     title: {
-      pt: 'Git & Controle de Versão',
-      en: 'Git & Version Control'
+      pt: 'Cloud & IaC',
+      en: 'Cloud & IaC'
     },
     description: {
-      pt: 'Git, GitHub e GitHub Actions. Code reviews e boas práticas de branching.',
-      en: 'Git, GitHub and GitHub Actions. Code reviews and branching best practices.'
+      pt: 'AWS (ECS, RDS, SQS, S3, Lambda, ALB, VPC, IAM) provisionada via Terraform. CI/CD em GitHub Actions.',
+      en: 'AWS (ECS, RDS, SQS, S3, Lambda, ALB, VPC, IAM) provisioned via Terraform. CI/CD on GitHub Actions.'
     },
-    skills: ['Git', 'GitHub', 'GitHub Actions', 'Code Review', 'Branching']
+    skills: ['AWS ECS', 'AWS RDS', 'AWS SQS', 'AWS S3', 'AWS Lambda', 'Terraform', 'Docker', 'GitHub Actions']
   },
   {
-    icon: 'ShieldCheck',
+    icon: 'Activity',
     title: {
-      pt: 'Quality & Testing',
-      en: 'Quality & Testing'
+      pt: 'Dados & Observabilidade',
+      en: 'Data & Observability'
     },
     description: {
-      pt: 'Testes unitários com JUnit, código limpo e princípios SOLID.',
-      en: 'Unit testing with JUnit, clean code and SOLID principles.'
+      pt: 'PostgreSQL + Oracle Winthor (ERP legado). Stack Prometheus v3 + Grafana, Datadog, Sentry, CloudWatch.',
+      en: 'PostgreSQL + Oracle Winthor (legacy ERP). Prometheus v3 + Grafana stack, Datadog, Sentry, CloudWatch.'
     },
-    skills: ['JUnit', 'TDD', 'SOLID', 'Clean Code', 'Unit Tests']
+    skills: ['PostgreSQL', 'Oracle', 'Prometheus v3', 'Grafana', 'Datadog', 'Sentry', 'CloudWatch']
   }
 ];

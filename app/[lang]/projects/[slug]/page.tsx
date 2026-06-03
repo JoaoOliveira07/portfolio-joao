@@ -1,10 +1,24 @@
 import type { Metadata } from 'next';
 import { useTranslations } from 'next-intl';
 import { notFound } from 'next/navigation';
-import { projects } from '@/data/projects';
+import { projects, type Project } from '@/data/projects';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  Server,
+  Smartphone,
+  Globe,
+  LayoutDashboard,
+  Plug,
+  Workflow,
+  Cloud,
+  RefreshCw,
+  Bot,
+  Network,
+} from 'lucide-react';
 import Link from 'next/link';
 
 interface ProjectPageProps {
@@ -37,13 +51,16 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   };
 }
 
-const categoryIcons = {
-  iac: '🏗️',
-  'event-driven': '📐',
-  integration: '🔗',
-  sync: '🔄',
-  automation: '🤖',
-  monolith: '🏛️',
+const categoryIcons: Record<Project['category'], typeof Server> = {
+  monolith: Server,
+  frontend: Globe,
+  admin: LayoutDashboard,
+  mobile: Smartphone,
+  integration: Plug,
+  'event-driven': Workflow,
+  iac: Cloud,
+  sync: RefreshCw,
+  automation: Bot,
 };
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
@@ -81,7 +98,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           {/* Hero */}
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4">
-              <span className="text-6xl">{categoryIcons[project.category]}</span>
+              {(() => {
+                const Icon = categoryIcons[project.category] ?? Network;
+                return (
+                  <span className="flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500/15 border border-emerald-500/25">
+                    <Icon className="w-8 h-8 text-emerald-400" aria-hidden />
+                  </span>
+                );
+              })()}
               <div className="flex flex-col gap-2">
                 <h1 className="text-3xl md:text-4xl font-bold text-text">
                   {project.title[locale]}

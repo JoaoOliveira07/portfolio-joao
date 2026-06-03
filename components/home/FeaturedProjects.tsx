@@ -2,25 +2,69 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import Image from 'next/image';
-import { ArrowRight, Eye } from 'lucide-react';
+import {
+  ArrowRight,
+  Eye,
+  Server,
+  Smartphone,
+  Globe,
+  LayoutDashboard,
+  Plug,
+  Workflow,
+  Cloud,
+  RefreshCw,
+  Bot,
+  Network,
+} from 'lucide-react';
 import { projects, type Project } from '@/data/projects';
 import { ProjectModal } from '@/components/ui/ProjectModal';
 import { MagicCard } from '@/components/ui/MagicCard';
 
-const projectImages: Record<string, string> = {
-  'iac-terraform-aws': '/images/projects/iac_terraform_v1_1.png',
-  'pipeline-event-driven': '/images/projects/event_driven_pipeline_v1_1.png',
-  'arquitetura-integracao-hibrida': '/images/projects/hybrid_integration_v1_1.png',
-  'integradora-offline-online': '/images/projects/offline_online_sync_v1_1.png',
-  'sistema-cadastro-ocr': '/images/projects/ocr_automation_v1_1.png',
-  'sistema-rca-monolito': '/images/projects/modular_monolith_v1_1.png',
+type CoverOrientation = 'portrait' | 'landscape';
+
+const projectImages: Record<string, { src: string; orientation: CoverOrientation }> = {
+  'ecommerce-front': { src: '/images/projects/ecommerce.png', orientation: 'portrait' },
+  'salesforce-mobile': { src: '/images/projects/salesforce-mobile.jpeg', orientation: 'portrait' },
+  'backoffice': { src: '/images/projects/backoffice.png', orientation: 'landscape' },
+  'register-flow': { src: '/images/projects/autocadastro.jpeg', orientation: 'portrait' },
+  'segalas-ecommerce': { src: '/images/projects/modular_monolith_v1_1.png', orientation: 'landscape' },
+  'integration-platform': { src: '/images/projects/hybrid_integration_v1_1.png', orientation: 'landscape' },
+  'offline-integrator': { src: '/images/projects/event_driven_pipeline_v1_1.png', orientation: 'landscape' },
+  'infra-terraform': { src: '/images/projects/iac_terraform_v1_1.png', orientation: 'landscape' },
 };
+
+const categoryIcons: Record<Project['category'], typeof Server> = {
+  monolith: Server,
+  frontend: Globe,
+  admin: LayoutDashboard,
+  mobile: Smartphone,
+  integration: Plug,
+  'event-driven': Workflow,
+  iac: Cloud,
+  sync: RefreshCw,
+  automation: Bot,
+};
+
+const categoryLabels: Record<Project['category'], { pt: string; en: string }> = {
+  monolith: { pt: 'Monolito', en: 'Monolith' },
+  frontend: { pt: 'Frontend', en: 'Frontend' },
+  admin: { pt: 'Admin', en: 'Admin' },
+  mobile: { pt: 'Mobile', en: 'Mobile' },
+  integration: { pt: 'Integração', en: 'Integration' },
+  'event-driven': { pt: 'Event-Driven', en: 'Event-Driven' },
+  iac: { pt: 'IaC', en: 'IaC' },
+  sync: { pt: 'Sync', en: 'Sync' },
+  automation: { pt: 'Automação', en: 'Automation' },
+};
+
+const fallbackIcon = Network;
 
 export function FeaturedProjects() {
   const t = useTranslations('projects');
   const locale = useLocale() as 'pt' | 'en';
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedProject, setSelectedProject] = useState<
+    (Project & { coverImage?: string; coverOrientation?: CoverOrientation }) | null
+  >(null);
   const [viewsMap, setViewsMap] = useState<Record<string, number>>({});
 
   const fetchAllViews = useCallback(async () => {
@@ -43,6 +87,15 @@ export function FeaturedProjects() {
     fetchAllViews();
   }, [fetchAllViews]);
 
+  const handleSelect = (project: Project) => {
+    const cover = projectImages[project.slug];
+    setSelectedProject({
+      ...project,
+      coverImage: cover?.src,
+      coverOrientation: cover?.orientation,
+    });
+  };
+
   return (
     <section className="py-20 md:py-32" id="projects">
       <div className="max-w-7xl mx-auto px-6 md:px-8">
@@ -55,62 +108,78 @@ export function FeaturedProjects() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {projects.map((project) => (
-            <MagicCard
-              key={project.slug}
-              className="overflow-hidden cursor-pointer h-full"
-              gradientColor="#10b981"
-            >
-              <button
-                type="button"
-                className="relative aspect-video overflow-hidden bg-neutral-800 w-full block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
-                onClick={() => setSelectedProject(project)}
-                aria-label={`${project.title[locale]} — ${project.subtitle[locale]}`}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 auto-rows-fr">
+          {projects.map((project) => {
+            const Icon = categoryIcons[project.category] ?? fallbackIcon;
+            return (
+              <MagicCard
+                key={project.slug}
+                className="cursor-pointer h-full"
+                gradientColor="#10b981"
               >
-                <Image
-                  src={projectImages[project.slug] || '/images/projects/iac_terraform_v1_1.png'}
-                  alt={project.title[locale]}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent" />
-              </button>
-              
-              <div className="p-4 md:p-5">
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {project.techStack.slice(0, 3).map((tech) => (
-                    <span
-                      key={tech}
-                      className="text-[9px] font-bold tracking-widest bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded border border-emerald-500/30"
-                    >
-                      {tech.toUpperCase()}
-                    </span>
-                  ))}
-                </div>
-                
-                <h3 className="text-lg font-bold mb-1 text-white">{project.title[locale]}</h3>
-                <p className="text-sm text-gray-400 line-clamp-2">{project.subtitle[locale]}</p>
-                
-                <div className="mt-3 flex items-center justify-between">
-                  <button
-                    type="button"
-                    className="flex items-center text-emerald-400 text-sm font-medium group-hover:translate-x-2 transition-transform duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded"
-                    onClick={() => setSelectedProject(project)}
-                  >
-                    <span>{t('viewDetails')}</span>
-                    <ArrowRight className="ml-1 h-4 w-4" />
-                  </button>
-                  {viewsMap[project.slug] !== undefined && (
-                    <div className="flex items-center gap-1 text-gray-500 text-xs">
-                      <Eye className="w-3 h-3" />
-                      <span>{viewsMap[project.slug]}</span>
+                <button
+                  type="button"
+                  onClick={() => handleSelect(project)}
+                  aria-label={`${project.title[locale]} — ${project.subtitle[locale]}`}
+                  className="text-left p-5 md:p-6 w-full h-full flex flex-col gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-xl"
+                >
+                  {/* Header: icon + category + year */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-emerald-500/15 border border-emerald-500/25">
+                        <Icon className="w-4 h-4 text-emerald-400" aria-hidden />
+                      </span>
+                      <span className="text-[10px] font-bold tracking-widest bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded border border-emerald-500/20 uppercase">
+                        {categoryLabels[project.category][locale]}
+                      </span>
                     </div>
-                  )}
-                </div>
-              </div>
-            </MagicCard>
-          ))}
+                    <span className="text-[10px] font-mono text-gray-500">{project.year}</span>
+                  </div>
+
+                  {/* Title + subtitle (fixed heights) */}
+                  <div className="flex flex-col gap-1.5">
+                    <h3 className="text-lg md:text-xl font-bold text-white leading-tight line-clamp-2 min-h-[3.5rem]">
+                      {project.title[locale]}
+                    </h3>
+                    <p className="text-sm text-gray-400 line-clamp-2 leading-relaxed min-h-[2.5rem]">
+                      {project.subtitle[locale]}
+                    </p>
+                  </div>
+
+                  {/* Tech stack (capped at 4 + counter) */}
+                  <div className="flex flex-wrap gap-1.5 min-h-[3.25rem] content-start">
+                    {project.techStack.slice(0, 4).map((tech) => (
+                      <span
+                        key={tech}
+                        className="text-[9px] font-bold tracking-wider bg-emerald-500/15 text-emerald-400 px-2 py-1 rounded border border-emerald-500/25"
+                      >
+                        {tech.toUpperCase()}
+                      </span>
+                    ))}
+                    {project.techStack.length > 4 && (
+                      <span className="text-[9px] font-bold tracking-wider text-gray-500 px-2 py-1">
+                        +{project.techStack.length - 4}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Footer pinned bottom */}
+                  <div className="mt-auto pt-3 flex items-center justify-between border-t border-white/5">
+                    <span className="flex items-center text-emerald-400 text-sm font-medium">
+                      <span>{t('viewDetails')}</span>
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </span>
+                    {viewsMap[project.slug] !== undefined && (
+                      <div className="flex items-center gap-1 text-gray-500 text-xs">
+                        <Eye className="w-3 h-3" />
+                        <span>{viewsMap[project.slug]}</span>
+                      </div>
+                    )}
+                  </div>
+                </button>
+              </MagicCard>
+            );
+          })}
         </div>
       </div>
 

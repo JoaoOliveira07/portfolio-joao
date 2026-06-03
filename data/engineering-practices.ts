@@ -37,7 +37,7 @@ export const engineeringPractices: EngineeringPractice[] = [
         'Eventual consistency with Event Sourcing'
       ]
     },
-    relatedProjects: ['pipeline-event-driven', 'integradora-offline-online']
+    relatedProjects: ['offline-integrator', 'integration-platform']
   },
   {
     id: 'complex-integrations',
@@ -67,7 +67,7 @@ export const engineeringPractices: EngineeringPractice[] = [
         'Circuit Breaker to protect against unstable APIs'
       ]
     },
-    relatedProjects: ['arquitetura-integracao-hibrida', 'sistema-cadastro-ocr']
+    relatedProjects: ['integration-platform', 'segalas-ecommerce']
   },
   {
     id: 'performance',
@@ -97,7 +97,7 @@ export const engineeringPractices: EngineeringPractice[] = [
         'Profiling with Async Profiler to identify bottlenecks'
       ]
     },
-    relatedProjects: ['sistema-rca-monolito', 'pipeline-event-driven']
+    relatedProjects: ['segalas-ecommerce', 'offline-integrator']
   },
   {
     id: 'production-issues',
@@ -127,7 +127,7 @@ export const engineeringPractices: EngineeringPractice[] = [
         'Proactive alerting based on SLOs'
       ]
     },
-    relatedProjects: ['iac-terraform-aws', 'pipeline-event-driven']
+    relatedProjects: ['infra-terraform', 'offline-integrator']
   },
   {
     id: 'reliability',
@@ -157,7 +157,7 @@ export const engineeringPractices: EngineeringPractice[] = [
         'Automated rollback on problematic deployments'
       ]
     },
-    relatedProjects: ['pipeline-event-driven', 'integradora-offline-online']
+    relatedProjects: ['offline-integrator', 'salesforce-mobile']
   },
   {
     id: 'data-consistency',
@@ -187,7 +187,7 @@ export const engineeringPractices: EngineeringPractice[] = [
         'CDC for reliable data mirroring'
       ]
     },
-    relatedProjects: ['integradora-offline-online', 'arquitetura-integracao-hibrida']
+    relatedProjects: ['salesforce-mobile', 'integration-platform']
   },
   {
     id: 'cloud-native',
@@ -217,7 +217,7 @@ export const engineeringPractices: EngineeringPractice[] = [
         'Testable IaC with Terratest'
       ]
     },
-    relatedProjects: ['iac-terraform-aws']
+    relatedProjects: ['infra-terraform']
   },
   {
     id: 'quality',
@@ -247,6 +247,6 @@ export const engineeringPractices: EngineeringPractice[] = [
         'Contract testing for APIs'
       ]
     },
-    relatedProjects: ['sistema-rca-monolito', 'pipeline-event-driven']
+    relatedProjects: ['segalas-ecommerce', 'offline-integrator']
   }
 ];

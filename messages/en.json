@@ -69,6 +69,10 @@
   },
   "projectModal": {
     "description": "Description",
+    "role": "My Role",
+    "problem": "Problem",
+    "solution": "Solution",
+    "highlights": "Highlights",
     "architecture": "Architecture",
     "technicalDecisions": "Technical Decisions",
     "challenges": "Technical Challenges",

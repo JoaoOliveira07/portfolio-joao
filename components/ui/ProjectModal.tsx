@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
+import Image from 'next/image';
 import { Modal } from '@/components/ui/Modal';
 import { MermaidDiagram } from '@/components/ui/MermaidDiagram';
 import { Badge } from '@/components/ui/Badge';
-import { Target, Lightbulb, TrendingUp, Code, Sparkles } from 'lucide-react';
+import { Target, Lightbulb, TrendingUp, Code, Sparkles, User, AlertCircle, Wrench, Star } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useProjectViews, useProjectReactions } from '@/hooks/useProjectInteractions';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -17,8 +18,14 @@ interface ProjectModalProps {
     title: { pt: string; en: string };
     subtitle: { pt: string; en: string };
     description: { pt: string; en: string };
+    problem?: { pt: string; en: string };
+    solution?: { pt: string; en: string };
+    role?: { pt: string; en: string };
+    highlights?: { pt: string[]; en: string[] };
     techStack: string[];
     diagram?: string;
+    coverImage?: string;
+    coverOrientation?: 'portrait' | 'landscape';
     technicalDecisions?: { pt: string[]; en: string[] };
     challenges?: { pt: string[]; en: string[] };
     results?: { pt: string[]; en: string[] };
@@ -53,10 +60,50 @@ export function ProjectModal({ isOpen, onClose, project }: ProjectModalProps) {
   
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={project.title[locale]}>
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-6">
+        {/* Cover image */}
+        {project.coverImage && (
+          project.coverOrientation === 'portrait' ? (
+            <div className="relative w-full overflow-hidden rounded-lg border border-white/10 bg-gradient-to-br from-neutral-900 to-neutral-950 -mt-2 flex items-center justify-center py-4">
+              <div className="relative w-[200px] h-[420px] md:w-[260px] md:h-[540px]">
+                <Image
+                  src={project.coverImage}
+                  alt={project.title[locale]}
+                  fill
+                  className="object-contain"
+                  sizes="260px"
+                  priority
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="relative w-full aspect-video overflow-hidden rounded-lg border border-white/10 bg-neutral-900 -mt-2">
+              <Image
+                src={project.coverImage}
+                alt={project.title[locale]}
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 768px"
+                priority
+              />
+            </div>
+          )
+        )}
+
         {/* Subtitle */}
-        <p className="text-lg text-gray-300 -mt-2">{project.subtitle[locale]}</p>
-        
+        <p className="text-lg text-gray-300">{project.subtitle[locale]}</p>
+
+        {/* Role banner with credibility */}
+        {project.role && (
+          <div className="flex items-start gap-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-3">
+            <User className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-[10px] font-bold tracking-widest text-emerald-400 uppercase mb-1">{t('role')}</p>
+              <p className="text-sm text-gray-200 leading-relaxed">{project.role[locale]}</p>
+            </div>
+          </div>
+        )}
+
         {/* Tech Stack */}
         <div className="flex flex-wrap gap-2">
           {project.techStack.map((tech) => (
@@ -65,7 +112,7 @@ export function ProjectModal({ isOpen, onClose, project }: ProjectModalProps) {
             </Badge>
           ))}
         </div>
-        
+
         {/* Description */}
         <div className="bg-neutral-800/50 rounded-lg p-5 border border-white/10">
           <div className="flex items-center gap-2 mb-3">
@@ -74,6 +121,48 @@ export function ProjectModal({ isOpen, onClose, project }: ProjectModalProps) {
           </div>
           <p className="text-sm text-gray-400 leading-relaxed">{project.description[locale]}</p>
         </div>
+
+        {/* Problem + Solution grid */}
+        {(project.problem || project.solution) && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {project.problem && (
+              <div className="bg-rose-500/5 rounded-lg p-5 border border-rose-500/20">
+                <div className="flex items-center gap-2 mb-3">
+                  <AlertCircle className="w-5 h-5 text-rose-400" />
+                  <h3 className="text-base font-semibold text-white">{t('problem')}</h3>
+                </div>
+                <p className="text-sm text-gray-300 leading-relaxed">{project.problem[locale]}</p>
+              </div>
+            )}
+            {project.solution && (
+              <div className="bg-emerald-500/5 rounded-lg p-5 border border-emerald-500/20">
+                <div className="flex items-center gap-2 mb-3">
+                  <Wrench className="w-5 h-5 text-emerald-400" />
+                  <h3 className="text-base font-semibold text-white">{t('solution')}</h3>
+                </div>
+                <p className="text-sm text-gray-300 leading-relaxed">{project.solution[locale]}</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Highlights */}
+        {project.highlights && project.highlights[locale].length > 0 && (
+          <div className="bg-neutral-800/50 rounded-lg p-5 border border-white/10">
+            <div className="flex items-center gap-2 mb-3">
+              <Star className="w-5 h-5 text-emerald-400" />
+              <h3 className="text-base font-semibold text-white">{t('highlights')}</h3>
+            </div>
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+              {project.highlights[locale].map((item, idx) => (
+                <li key={idx} className="flex items-start gap-3 text-sm text-gray-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0 mt-2" />
+                  <span className="leading-relaxed">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Architecture Diagram */}
         {project.diagram && (

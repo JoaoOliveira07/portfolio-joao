@@ -69,6 +69,10 @@
   },
   "projectModal": {
     "description": "Descrição",
+    "role": "Meu Papel",
+    "problem": "Problema",
+    "solution": "Solução",
+    "highlights": "Destaques",
     "architecture": "Arquitetura",
     "technicalDecisions": "Decisões Técnicas",
     "challenges": "Desafios Técnicos",

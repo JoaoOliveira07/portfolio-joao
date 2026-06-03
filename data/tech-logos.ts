@@ -12,7 +12,7 @@ export interface TechLogo {
 }
 
 export const techLogos: TechLogo[] = [
-  // Core Backend
+  // Backend
   {
     name: 'Java',
     type: 'svg',
@@ -26,19 +26,39 @@ export const techLogos: TechLogo[] = [
     displayName: 'Spring Boot'
   },
   {
+    name: 'Node.js',
+    type: 'svg',
+    path: '/logos/nodejs.svg',
+    displayName: 'Node.js'
+  },
+
+  // Mobile
+  {
+    name: 'Flutter',
+    type: 'svg',
+    path: '/logos/flutter.svg',
+    displayName: 'Flutter'
+  },
+  {
+    name: 'Dart',
+    type: 'svg',
+    path: '/logos/dart.svg',
+    displayName: 'Dart'
+  },
+
+  // Databases
+  {
     name: 'PostgreSQL',
     type: 'svg',
     path: '/logos/postgresql.svg',
     displayName: 'PostgreSQL'
   },
   {
-    name: 'MySQL',
+    name: 'Oracle',
     type: 'svg',
-    path: '/logos/mysql.svg',
-    displayName: 'MySQL'
+    path: '/logos/oracle.svg',
+    displayName: 'Oracle'
   },
-
-  // Cloud & Infrastructure
 
   // Cloud & Infrastructure
   {
@@ -59,22 +79,14 @@ export const techLogos: TechLogo[] = [
     path: '/logos/docker.svg',
     displayName: 'Docker'
   },
-
-  // Quality & Practices
   {
-    name: 'TDD',
-    type: 'lucide',
-    icon: 'FlaskConical',
-    displayName: 'TDD'
-  },
-  {
-    name: 'Clean Code',
-    type: 'lucide',
-    icon: 'Sparkles',
-    displayName: 'Clean Code'
+    name: 'GitHub Actions',
+    type: 'svg',
+    path: '/logos/githubactions.svg',
+    displayName: 'GitHub Actions'
   },
 
-  // Observability & Monitoring
+  // Observability
   {
     name: 'Prometheus',
     type: 'svg',
@@ -94,22 +106,16 @@ export const techLogos: TechLogo[] = [
     displayName: 'Datadog'
   },
   {
-    name: 'New Relic',
+    name: 'Sentry',
     type: 'svg',
-    path: '/logos/newrelic.svg',
-    displayName: 'New Relic'
+    path: '/logos/sentry.svg',
+    displayName: 'Sentry'
   },
   {
-    name: 'ELK Stack',
+    name: 'Firebase',
     type: 'svg',
-    path: '/logos/elastic.svg',
-    displayName: 'ELK'
-  },
-  {
-    name: 'OpenTelemetry',
-    type: 'svg',
-    path: '/logos/opentelemetry.svg',
-    displayName: 'OpenTelemetry'
+    path: '/logos/firebase.svg',
+    displayName: 'Firebase'
   }
 ];
 
