@@ -51,6 +51,7 @@ export function FeaturedProjects() {
   const locale = useLocale() as 'pt' | 'en';
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [viewsMap, setViewsMap] = useState<Record<string, number>>({});
+  const [activeTab, setActiveTab] = useState<'professional' | 'personal'>('professional');
 
   const fetchAllViews = useCallback(async () => {
     try {
@@ -76,6 +77,8 @@ export function FeaturedProjects() {
     setSelectedProject(project);
   };
 
+  const filtered = projects.filter((p) => p.type === activeTab);
+
   return (
     <section className="py-20 md:py-32" id="projects">
       <div className="max-w-7xl mx-auto px-6 md:px-8">
@@ -88,8 +91,33 @@ export function FeaturedProjects() {
           </div>
         </div>
 
+        <div className="flex gap-1 mb-8 p-1 bg-white/5 rounded-lg w-fit border border-white/10">
+          <button
+            type="button"
+            onClick={() => setActiveTab('professional')}
+            className={`px-4 py-1.5 rounded-md text-sm font-semibold transition-all ${
+              activeTab === 'professional'
+                ? 'bg-emerald-500 text-white shadow'
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            {locale === 'pt' ? 'Profissional' : 'Professional'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('personal')}
+            className={`px-4 py-1.5 rounded-md text-sm font-semibold transition-all ${
+              activeTab === 'personal'
+                ? 'bg-emerald-500 text-white shadow'
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            {locale === 'pt' ? 'Pessoal' : 'Personal'}
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 auto-rows-fr">
-          {projects.map((project) => {
+          {filtered.map((project) => {
             const Icon = categoryIcons[project.category] ?? fallbackIcon;
             return (
               <MagicCard

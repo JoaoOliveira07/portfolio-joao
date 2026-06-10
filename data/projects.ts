@@ -11,6 +11,7 @@ export interface Project {
   category: 'iac' | 'event-driven' | 'integration' | 'sync' | 'automation' | 'monolith' | 'frontend' | 'mobile' | 'admin';
   year: number;
   complexity: 5 | 4 | 3;
+  type: 'professional' | 'personal';
   diagram?: string;
   challenges?: { pt: string[]; en: string[] };
   results?: { pt: string[]; en: string[] };
@@ -70,6 +71,7 @@ export const projects: Project[] = [
     category: 'monolith',
     year: 2026,
     complexity: 5,
+    type: 'professional',
     diagram: `graph TB
     RF[register_flow<br/>Flutter onboarding] --> API[Spring Boot API<br/>Layered + DDD]
     BO[backoffice<br/>Next.js admin] --> API
@@ -193,6 +195,7 @@ export const projects: Project[] = [
     category: 'frontend',
     year: 2026,
     complexity: 4,
+    type: 'professional',
     diagram: `graph TB
     Browser[Cliente / Representante<br/>Browser PWA] --> SPA[React 18 + Vite 5<br/>handlerpartner header]
 
@@ -313,6 +316,7 @@ export const projects: Project[] = [
     category: 'mobile',
     year: 2026,
     complexity: 5,
+    type: 'professional',
     diagram: `graph TB
     UI[Presentation<br/>Cubits + Screens] --> Domain[Domain<br/>UseCases + Entities]
     Domain --> Infra[Infra<br/>Repository Impl]
@@ -433,6 +437,7 @@ export const projects: Project[] = [
     category: 'admin',
     year: 2026,
     complexity: 4,
+    type: 'professional',
     diagram: `graph TB
     Browser[Admin Browser] --> Next[Next.js 16<br/>App Router · React 19]
     Next --> SC[Server Components]
@@ -549,6 +554,7 @@ export const projects: Project[] = [
     category: 'mobile',
     year: 2026,
     complexity: 4,
+    type: 'professional',
     diagram: `graph LR
     Start[Início] --> Step1[Step 1<br/>Identificação<br/>CPF/CNPJ]
     Step1 --> Step2[Step 2<br/>Contatos<br/>telefone + email]
@@ -667,6 +673,7 @@ export const projects: Project[] = [
     category: 'integration',
     year: 2026,
     complexity: 5,
+    type: 'professional',
     diagram: `graph LR
     Oracle[(Oracle Winthor<br/>on-premise)] <-->|JDBC| Client[integration-client<br/>Spring Boot 2.7]
     Client <-->|SQS| Mid[integration-middleware<br/>Spring Boot 2.5<br/>bus + log]
@@ -782,6 +789,7 @@ export const projects: Project[] = [
     category: 'event-driven',
     year: 2026,
     complexity: 4,
+    type: 'professional',
     diagram: `graph LR
     App[Field Sales App] -->|OAuth2 JWT| API[Offline Integrator<br/>Spring Boot 3.5<br/>/integrator]
     API --> Primary[(Primary PostgreSQL<br/>jobs · metadata)]
@@ -905,6 +913,7 @@ export const projects: Project[] = [
     category: 'iac',
     year: 2025,
     complexity: 4,
+    type: 'professional',
     diagram: `graph TB
     Dev[Developer] -->|PR| Repo[infra-terraform repo]
     Repo --> CI[GitHub Actions<br/>plan + apply]
@@ -964,6 +973,294 @@ export const projects: Project[] = [
         'Strict naming convention: devs find resources by pattern, no treasure hunt',
         'ECR = GitHub repo name: CI/CD integration by convention, no manual mapping',
         'Mandatory PR plan: reviewer sees impact before approval'
+      ]
+    }
+  },
+  {
+    slug: 'commitclock',
+    title: {
+      pt: 'CommitClock — Timesheet com IA',
+      en: 'CommitClock — AI-Powered Timesheet'
+    },
+    subtitle: {
+      pt: 'Envia foto do cartão ponto, Groq extrai os horários e gera entradas no Clockify cruzadas com commits do GitHub',
+      en: 'Upload your timesheet photo, Groq extracts the hours and generates Clockify entries cross-referenced with GitHub commits'
+    },
+    description: {
+      pt: 'Webapp que automatiza o preenchimento do Clockify. O usuário envia uma foto do cartão ponto físico; Groq Vision extrai os horários de entrada e saída; a API do GitHub busca os commits do período para enriquecer as descrições; e a API do Clockify cria as entradas de tempo automaticamente.',
+      en: 'Webapp that automates Clockify time tracking. The user uploads a photo of their physical timesheet; Groq Vision extracts clock-in/out times; the GitHub API fetches commits for that period to enrich entry descriptions; and the Clockify API creates the time entries automatically.'
+    },
+    problem: {
+      pt: 'Preencher manualmente o Clockify a partir de um cartão ponto físico é repetitivo e propenso a erros — exige comparar papel, commits e calendário toda semana.',
+      en: 'Manually filling Clockify from a physical timesheet is repetitive and error-prone — it requires comparing paper, commits and calendar every week.'
+    },
+    solution: {
+      pt: 'Pipeline de três etapas: (1) Groq Vision lê a foto e extrai os horários em JSON estruturado; (2) GitHub API busca commits do período para gerar descrições de tarefas; (3) Clockify API cria as entradas com horários e descrições preenchidos automaticamente.',
+      en: 'Three-stage pipeline: (1) Groq Vision reads the photo and extracts times into structured JSON; (2) GitHub API fetches commits for the period to generate task descriptions; (3) Clockify API creates the entries with times and descriptions filled automatically.'
+    },
+    techStack: ['TypeScript', 'Next.js', 'Groq AI', 'GitHub API', 'Clockify API'],
+    highlights: {
+      pt: [
+        'Groq Vision (LLaMA) faz OCR inteligente do cartão ponto físico',
+        'Saída estruturada em JSON: data, entrada, saída, total de horas',
+        'GitHub API busca commits do período para enriquecer descrições',
+        'Clockify API cria entradas de tempo com um clique',
+        'Interface minimalista: upload → preview → confirmar → pronto'
+      ],
+      en: [
+        'Groq Vision (LLaMA) performs intelligent OCR on the physical timesheet',
+        'Structured JSON output: date, clock-in, clock-out, total hours',
+        'GitHub API fetches commits from the period to enrich descriptions',
+        'Clockify API creates time entries with one click',
+        'Minimal interface: upload → preview → confirm → done'
+      ]
+    },
+    role: {
+      pt: 'Projeto solo — concepção, design e implementação completos',
+      en: 'Solo project — full conception, design and implementation'
+    },
+    category: 'automation',
+    year: 2026,
+    complexity: 3,
+    type: 'personal',
+    diagram: `graph LR
+    Photo[Foto do<br/>Cartão Ponto] -->|upload| App[CommitClock<br/>Next.js]
+    App -->|image| Groq[Groq Vision<br/>LLaMA]
+    Groq -->|JSON horários| App
+    App -->|período| GH[GitHub API<br/>commits]
+    GH -->|descrições| App
+    App -->|entries| CK[Clockify API]
+    CK --> Done[Entradas criadas]
+
+    style App fill:#01926D
+    style Groq fill:#A855F7
+    style CK fill:#01926D`,
+    challenges: {
+      pt: [
+        'Cartões ponto têm layouts variados — prompt do Groq precisa ser robusto a formatos distintos',
+        'Mapear commits do GitHub para as entradas de tempo corretas sem falsos positivos',
+        'Lidar com fotos de baixa qualidade ou com reflexo sem travar o pipeline'
+      ],
+      en: [
+        'Physical timesheets vary in layout — the Groq prompt must handle diverse formats',
+        'Mapping GitHub commits to the correct time entries without false positives',
+        'Handling low-quality or glare-affected photos without breaking the pipeline'
+      ]
+    },
+    results: {
+      pt: [
+        'Reduz o preenchimento semanal do Clockify de ~20 min para menos de 1 min',
+        'Descrições automáticas baseadas em commits eliminam entradas genéricas',
+        'Funciona com qualquer layout de cartão ponto físico'
+      ],
+      en: [
+        'Reduces weekly Clockify fill time from ~20 min to under 1 min',
+        'Automatic commit-based descriptions eliminate generic entries',
+        'Works with any physical timesheet layout'
+      ]
+    },
+    technicalDecisions: {
+      pt: [
+        'Groq sobre OpenAI Vision: latência menor e custo menor para extração simples de texto',
+        'Next.js full-stack: API routes evitam expor chaves de API no cliente',
+        'JSON estruturado no prompt: saída validável e tipada antes de chamar o Clockify'
+      ],
+      en: [
+        'Groq over OpenAI Vision: lower latency and cost for simple text extraction',
+        'Next.js full-stack: API routes avoid exposing API keys to the client',
+        'Structured JSON in the prompt: validatable, typed output before calling Clockify'
+      ]
+    }
+  },
+  {
+    slug: 'kira-semi-joias',
+    title: {
+      pt: 'Kira Semi Joias — Loja + Backoffice',
+      en: 'Kira Semi Joias — Store + Backoffice'
+    },
+    subtitle: {
+      pt: 'E-commerce Next.js com catálogo, checkout via WhatsApp e admin completo editável',
+      en: 'Next.js e-commerce with catalog, WhatsApp checkout and fully editable admin panel'
+    },
+    description: {
+      pt: 'Loja de semi-joias full-stack. Clientes navegam pelo catálogo filtrado por categoria, favoritar produtos e finalizam o pedido direto no WhatsApp. O backoffice permite ao operador editar qualquer campo do conteúdo — produtos, categorias, preços, banners, configurações e newsletter — com upload e crop de imagem e importação em massa via Excel.',
+      en: 'Full-stack semi-precious jewelry store. Customers browse the category-filtered catalog, favorite products and finalize orders directly on WhatsApp. The backoffice lets operators edit any content field — products, categories, prices, banners, settings and newsletter — with image upload/cropping and bulk Excel import.'
+    },
+    problem: {
+      pt: 'Loja física de semi-joias precisava de presença digital com catálogo atualizado e processo de pedido simples, sem complexidade de gateway de pagamento, e um painel admin que qualquer pessoa possa operar.',
+      en: 'A physical semi-jewelry store needed a digital presence with an up-to-date catalog and a simple order process — no payment gateway complexity — plus an admin panel anyone can operate.'
+    },
+    solution: {
+      pt: 'Next.js 16 App Router full-stack com Vercel KV para sessões e configurações, Vercel Blob para imagens de produtos, Zustand para estado do carrinho e favoritos, react-image-crop para upload com recorte, XLSX para importação em massa e bcryptjs para auth do backoffice.',
+      en: 'Full-stack Next.js 16 App Router with Vercel KV for sessions and settings, Vercel Blob for product images, Zustand for cart and favorites state, react-image-crop for upload with cropping, XLSX for bulk import, and bcryptjs for backoffice auth.'
+    },
+    techStack: ['TypeScript', 'Next.js 16', 'Tailwind CSS 4', 'Vercel KV', 'Vercel Blob', 'Zustand', 'XLSX', 'react-image-crop'],
+    highlights: {
+      pt: [
+        'Catálogo filtrado por categoria: Colares, Brincos, Pulseiras, Anéis',
+        'Checkout via WhatsApp: sem gateway de pagamento, fluxo familiar ao cliente',
+        'Backoffice completo: produtos, categorias, configs, newsletter — todos os campos editáveis',
+        'Upload de imagens com crop integrado (react-image-crop)',
+        'Importação em massa via Excel (XLSX) para atualizar catálogo rapidamente',
+        'Vercel Blob para storage de imagens e Vercel KV para sessão e settings',
+        'Zustand para carrinho e favoritos no cliente sem Redux boilerplate',
+        'Auth do admin com bcryptjs — sem dependência de provider externo'
+      ],
+      en: [
+        'Category-filtered catalog: Necklaces, Earrings, Bracelets, Rings',
+        'WhatsApp checkout: no payment gateway, familiar flow for customers',
+        'Full backoffice: products, categories, settings, newsletter — all fields editable',
+        'Image upload with integrated crop (react-image-crop)',
+        'Bulk Excel import (XLSX) for fast catalog updates',
+        'Vercel Blob for image storage and Vercel KV for session and settings',
+        'Zustand for client-side cart and favorites without Redux boilerplate',
+        'Admin auth with bcryptjs — no external provider dependency'
+      ]
+    },
+    role: {
+      pt: 'Projeto solo — produto completo do design ao deploy',
+      en: 'Solo project — full product from design to deploy'
+    },
+    category: 'frontend',
+    year: 2025,
+    complexity: 3,
+    type: 'personal',
+    diagram: `graph TB
+    Customer[Cliente<br/>Browser] --> Shop[Next.js<br/>Loja / Shop]
+    Admin[Operador<br/>Browser] --> BO[Next.js<br/>Backoffice]
+
+    Shop --> KV[(Vercel KV<br/>sessão · settings)]
+    Shop --> Blob[(Vercel Blob<br/>imagens)]
+    BO --> KV
+    BO --> Blob
+
+    Shop -->|pedido| WA[WhatsApp<br/>checkout]
+
+    style Shop fill:#01926D
+    style BO fill:#01926D
+    style WA fill:#A855F7`,
+    challenges: {
+      pt: [
+        'Manter catálogo atualizado sem que o operador precise de conhecimento técnico',
+        'Upload de imagens mobile com crop funcional em iOS e Android',
+        'Sincronizar estado do carrinho entre abas sem backend'
+      ],
+      en: [
+        'Keep the catalog updated without requiring technical knowledge from the operator',
+        'Mobile image upload with functional crop on iOS and Android',
+        'Sync cart state across tabs without a backend'
+      ]
+    },
+    results: {
+      pt: [
+        'Loja ativa com catálogo completo e processo de pedido simples via WhatsApp',
+        'Operador atualiza produtos e preços sem suporte técnico',
+        'Importação Excel permite atualizar dezenas de produtos em segundos'
+      ],
+      en: [
+        'Live store with full catalog and simple WhatsApp order process',
+        'Operator updates products and prices without technical support',
+        'Excel import lets you update dozens of products in seconds'
+      ]
+    },
+    technicalDecisions: {
+      pt: [
+        'WhatsApp checkout: elimina gateway de pagamento e fricção de cadastro para o cliente',
+        'Vercel KV + Blob: zero infra própria para storage e sessão no plano gratuito',
+        'Zustand sobre Context: estado de carrinho simples e performático sem boilerplate',
+        'bcryptjs local: auth do admin sem Clerk/Auth.js — menos dependência para um projeto pequeno'
+      ],
+      en: [
+        'WhatsApp checkout: eliminates payment gateway and registration friction for customers',
+        'Vercel KV + Blob: zero own infra for storage and session on the free tier',
+        'Zustand over Context: simple, performant cart state without boilerplate',
+        'Local bcryptjs: admin auth without Clerk/Auth.js — fewer dependencies for a small project'
+      ]
+    }
+  },
+  {
+    slug: 'finance-dashboard',
+    title: {
+      pt: 'Finance Dashboard — Controle Financeiro',
+      en: 'Finance Dashboard — Personal Finance Tracker'
+    },
+    subtitle: {
+      pt: 'API Spring Boot para categorização de gastos pessoais com frontend React em desenvolvimento',
+      en: 'Spring Boot API for personal expense categorization with React frontend in development'
+    },
+    description: {
+      pt: 'Side project de controle financeiro pessoal. Backend Spring Boot expõe API REST para registrar transações, categorizar gastos e agregar dados para visualizações. Frontend TypeScript/React consome a API e exibe dashboards com gráficos de gastos por categoria, evolução mensal e balanço.',
+      en: 'Personal finance side project. Spring Boot backend exposes a REST API to record transactions, categorize expenses and aggregate data for visualizations. TypeScript/React frontend consumes the API and displays dashboards with spending-by-category charts, monthly trends and balance.'
+    },
+    problem: {
+      pt: 'Planilhas manuais para controle de gastos são difíceis de manter e não oferecem visualizações automáticas. Precisava de uma solução própria para registrar e entender os gastos mensais.',
+      en: 'Manual spreadsheets for expense tracking are hard to maintain and offer no automatic visualizations. Needed a personal solution to record and understand monthly spending.'
+    },
+    solution: {
+      pt: 'API REST Spring Boot com PostgreSQL para persistência, categorias de gastos configuráveis e endpoints de agregação para os gráficos. Frontend React com charts para visualização de gastos por categoria e evolução temporal.',
+      en: 'REST Spring Boot API with PostgreSQL for persistence, configurable expense categories and aggregation endpoints for charts. React frontend with charts for spending-by-category and time-evolution visualization.'
+    },
+    techStack: ['Java 17', 'Spring Boot', 'PostgreSQL', 'TypeScript', 'React'],
+    highlights: {
+      pt: [
+        'API REST Spring Boot com persistência PostgreSQL',
+        'Categorias de gastos configuráveis (alimentação, transporte, lazer, etc.)',
+        'Endpoints de agregação para totais por categoria e por período',
+        'Frontend React com dashboards de gráficos',
+        'Projeto solo de aprendizado — Java backend + frontend TypeScript'
+      ],
+      en: [
+        'REST Spring Boot API with PostgreSQL persistence',
+        'Configurable expense categories (food, transport, leisure, etc.)',
+        'Aggregation endpoints for totals by category and period',
+        'React frontend with chart dashboards',
+        'Solo learning project — Java backend + TypeScript frontend'
+      ]
+    },
+    role: {
+      pt: 'Projeto solo — backend e frontend',
+      en: 'Solo project — backend and frontend'
+    },
+    category: 'monolith',
+    year: 2026,
+    complexity: 3,
+    type: 'personal',
+    diagram: `graph LR
+    React[React Frontend<br/>TypeScript] -->|REST| API[Spring Boot API<br/>Java 17]
+    API --> DB[(PostgreSQL<br/>transações · categorias)]
+    API --> Agg[Aggregations<br/>por categoria · por mês]
+    Agg --> React
+
+    style API fill:#01926D
+    style DB fill:#A855F7`,
+    challenges: {
+      pt: [
+        'Modelar categorias flexíveis sem engessar o schema para futuros tipos de transação',
+        'Agregar dados de forma eficiente no banco para não processar no frontend'
+      ],
+      en: [
+        'Model flexible categories without locking the schema for future transaction types',
+        'Aggregate data efficiently in the database to avoid processing on the frontend'
+      ]
+    },
+    results: {
+      pt: [
+        'Visibilidade clara de gastos mensais por categoria',
+        'Substituiu planilhas manuais por uma interface de dashboard'
+      ],
+      en: [
+        'Clear visibility into monthly spending by category',
+        'Replaced manual spreadsheets with a dashboard interface'
+      ]
+    },
+    technicalDecisions: {
+      pt: [
+        'Spring Boot para o backend: familiaridade com o stack do trabalho aplicada em projeto pessoal',
+        'PostgreSQL sobre H2: banco real desde o início evita surpresas na migração'
+      ],
+      en: [
+        'Spring Boot for the backend: applying work stack familiarity to a personal project',
+        'PostgreSQL over H2: real database from day one avoids migration surprises'
       ]
     }
   }
