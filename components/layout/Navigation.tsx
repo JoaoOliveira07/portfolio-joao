@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { LanguageToggle } from './LanguageToggle';
 import { useState, useRef } from 'react';
-import { Menu, X, Beaker } from 'lucide-react';
+import { Menu, X, Beaker, Gamepad2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
@@ -89,6 +89,13 @@ export function Navigation() {
             <Beaker className="w-3.5 h-3.5" />
             {t('lab')}
           </Link>
+          <a
+            href="/api/mode?mode=rpg"
+            className="flex items-center gap-1.5 pb-1 border-b-2 border-transparent text-gray-400 hover:text-emerald-400 hover:border-emerald-400 transition-colors whitespace-nowrap"
+          >
+            <Gamepad2 className="w-3.5 h-3.5" />
+            Modo RPG
+          </a>
         </div>
 
         {/* Right side */}
@@ -141,6 +148,13 @@ export function Navigation() {
                 <Beaker className="w-3.5 h-3.5" />
                 {t('lab')}
               </Link>
+              <a
+                href="/api/mode?mode=rpg"
+                className="flex items-center gap-1.5 text-sm font-medium py-1 text-gray-400 hover:text-emerald-400 transition-colors"
+              >
+                <Gamepad2 className="w-3.5 h-3.5" />
+                Modo RPG
+              </a>
             </div>
           </motion.div>
         )}

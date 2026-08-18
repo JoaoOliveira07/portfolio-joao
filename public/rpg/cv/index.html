@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>João Paulo Oliveira — Backend Engineer (CV)</title>
+<meta name="description" content="João Paulo Oliveira — Engenheiro backend (Java, Spring Boot, AWS, Terraform). Trajetória, stack, projetos e contato.">
+<style>
+  :root { color-scheme: dark light; }
+  * { box-sizing: border-box; }
+  body {
+    max-width: 720px; margin: 0 auto; padding: 40px 20px 80px;
+    font-family: 'Courier New', Courier, monospace; line-height: 1.7;
+    background: #050d18; color: #F0EBE1;
+  }
+  h1 { font-size: 28px; margin: 0 0 4px; color: #FFE600; }
+  h2 { font-size: 16px; letter-spacing: 0.15em; text-transform: uppercase; color: #2AFADF; margin: 40px 0 12px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 6px; }
+  p { margin: 0 0 12px; }
+  .role { color: #9fb0bd; margin-bottom: 20px; }
+  a { color: #FFE600; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 6px; }
+  .job { margin-bottom: 18px; }
+  .job .when { color: #9fb0bd; font-size: 13px; }
+  .job .what { font-weight: bold; }
+  .tags { margin-top: 6px; font-size: 12px; color: #9fb0bd; }
+  .proj { margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+  .proj .code { font-size: 11px; color: #9fb0bd; letter-spacing: 0.2em; }
+  .proj h3 { margin: 4px 0; font-size: 16px; }
+  footer { margin-top: 50px; font-size: 12px; color: #9fb0bd; }
+  .back { display: inline-block; margin-bottom: 20px; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<a class="back" href="../">← Voltar pro mapa interativo (JOPES.EXE)</a>
+
+<h1>João Paulo Oliveira</h1>
+<p class="role">Backend Engineer — Java, Spring Boot, AWS, Terraform — Blumenau, SC</p>
+
+<h2>Sobre</h2>
+<p>Engenheiro backend com foco em sistemas distribuídos e cloud-native. Cresci profissionalmente na Segalas, construindo plataformas que escalam.</p>
+<p>Gosto de código limpo, mas não de purismo. Prefiro soluções que funcionam em produção.</p>
+
+<h2>Trajetória</h2>
+<div class="job"><div class="when">AGO 2023 — PRESENTE</div><div class="what">Desenvolvedor Backend</div><div>Segalas · Blumenau SC</div></div>
+<div class="job"><div class="when">2022 — 2023</div><div class="what">Desenvolvedor Full Stack Jr</div><div>Freelance · Remoto</div></div>
+<div class="job"><div class="when">2021 — 2022</div><div class="what">Suporte & Automação</div><div>Prime Informática · Blumenau SC</div></div>
+<div class="job"><div class="when">2019 — 2021</div><div class="what">Técnico em TI</div><div>SENAI · Blumenau SC</div></div>
+<div class="job"><div class="when">2018 — 2019</div><div class="what">Estagiário de TI</div><div>Cooperativa local · SC</div></div>
+
+<h2>Stack</h2>
+<ul>
+  <li><strong>Backend:</strong> Java 17+, Spring Boot 3, Node.js, REST / GraphQL</li>
+  <li><strong>Mobile & Front:</strong> Flutter / Dart, React / Next.js, TypeScript</li>
+  <li><strong>Cloud & Infra:</strong> AWS (ECS/RDS/S3…), Terraform, Docker, GitHub Actions</li>
+  <li><strong>Data & Messaging:</strong> PostgreSQL, Oracle DB, Redis, Kafka / RabbitMQ</li>
+</ul>
+
+<h2>Projetos</h2>
+
+<div class="proj">
+  <div class="code">P/001 — MONOLITH — 2026</div>
+  <h3>E-commerce Monolithic Backend</h3>
+  <p>Arquitetura multi-tenant em Spring Boot 3 para e-commerce B2B. Módulos de pedido, estoque, pricing dinâmico, notificações e integração com AWS SQS/SNS/S3/Kinesis. Processamento assíncrono com filas, eventos de domínio e relatórios em tempo real.</p>
+  <div class="tags">Java 17 · Spring Boot 3 · PostgreSQL · Redis · AWS SQS/SNS/S3 · Kinesis</div>
+</div>
+
+<div class="proj">
+  <div class="code">P/002 — FRONTEND — 2026</div>
+  <h3>E-commerce Front — Multi-Tenant B2B SPA</h3>
+  <p>SPA em React + TypeScript para plataforma B2B multi-tenant. Catálogo de produtos, carrinho, checkout, painel do cliente e customização por tenant. Integração com backend via REST e WebSocket para notificações em tempo real.</p>
+  <div class="tags">React · TypeScript · Vite · TailwindCSS · WebSocket</div>
+</div>
+
+<div class="proj">
+  <div class="code">P/003 — MOBILE — 2026</div>
+  <h3>Field Sales Mobile — Offline-First App</h3>
+  <p>App Flutter para força de vendas em campo com modo offline completo. Sincronização bidirecional via queue local, compressão de dados e conflict resolution. Suporte a catálogo, pedidos e visitas sem conexão.</p>
+  <div class="tags">Flutter · Dart · SQLite · Hive · REST sync · Offline-first</div>
+</div>
+
+<div class="proj">
+  <div class="code">P/004 — ADMIN — 2026</div>
+  <h3>Backoffice — Admin Panel with AI Chat</h3>
+  <p>Painel administrativo fullstack com chat IA integrado (OpenAI GPT-4). CRUD de usuários, permissões, relatórios e dashboards. Chat contextual que entende os dados da plataforma e responde perguntas de negócio em linguagem natural.</p>
+  <div class="tags">React · Node.js · OpenAI GPT-4 · PostgreSQL · JWT · RBAC</div>
+</div>
+
+<div class="proj">
+  <div class="code">P/005 — MOBILE — 2026</div>
+  <h3>Register Flow — Multi-Step Onboarding</h3>
+  <p>Fluxo de cadastro multi-step para app mobile com validação em tempo real, upload de documentos, reconhecimento facial e integração com bureaus de crédito. UX fluida com progresso persistido.</p>
+  <div class="tags">Flutter · Dart · REST · Biometrics · Document OCR</div>
+</div>
+
+<div class="proj">
+  <div class="code">P/006 — INTEGRATION — 2026</div>
+  <h3>Integration Platform — 3-Service Bridge</h3>
+  <p>Middleware de integração conectando ERP, e-commerce e sistema de logística. Mapeamento bidirecional, retry com backoff exponencial, dead-letter queue e dashboard de monitoramento.</p>
+  <div class="tags">Java · Spring Integration · RabbitMQ · REST · SOAP · DLQ</div>
+</div>
+
+<div class="proj">
+  <div class="code">P/007 — EVENT-DRIVEN — 2026</div>
+  <h3>Offline Integrator — Field Sales API</h3>
+  <p>API event-driven para sincronização da força de vendas offline. Recebe batches de eventos do app mobile, processa de forma idempotente e propaga para sistemas downstream com auditoria.</p>
+  <div class="tags">Java 17 · Spring Boot · Kafka · PostgreSQL · Idempotency · AWS</div>
+</div>
+
+<div class="proj">
+  <div class="code">P/008 — IAC — 2025</div>
+  <h3>Infra Terraform — AWS IaC Ecosystem</h3>
+  <p>Ecosistema completo de infraestrutura como código para AWS. Módulos reutilizáveis para ECS, RDS, ElastiCache, ALB, Route53, WAF e VPC. Pipelines de CI/CD com GitHub Actions e deploy blue-green.</p>
+  <div class="tags">Terraform · AWS ECS · RDS · ElastiCache · GitHub Actions · Terragrunt</div>
+</div>
+
+<h2>Backend Lab</h2>
+<p>Ferramentas e experimentos: dashboard de métricas em tempo real, simulador de incidentes on-call, desafios de backend (algoritmos, design de sistemas, SQL) e notas técnicas do dia a dia.</p>
+<p>Mais em <a href="https://jopes.com.br" target="_blank">jopes.com.br</a>.</p>
+
+<h2>Contato</h2>
+<ul>
+  <li>Email: <a href="mailto:joao.oliveira@segalas.com.br">joao.oliveira@segalas.com.br</a></li>
+  <li>LinkedIn: <a href="https://linkedin.com/in/joao-paulo-oliveira-dev" target="_blank">linkedin.com/in/joao-paulo</a></li>
+  <li>GitHub: <a href="https://github.com/joaoPauloO" target="_blank">github.com/joaoPauloO</a></li>
+  <li>Portfolio completo: <a href="https://www.jopes.com.br/en" target="_blank">jopes.com.br/en</a></li>
+</ul>
+
+<footer>Esta é a versão em texto do portfólio. A versão completa é uma cidade isométrica navegável — <a href="../">explore aqui</a>.</footer>
+
+</body>
+</html>

@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "npm run generate:rpg-content && next dev",
+    "build": "npm run generate:rpg-content && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "generate:rpg-content": "tsx scripts/generate-rpg-content.ts"
   },
   "author": "João Paulo Oliveira",
   "license": "MIT",
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "@types/uuid": "^10.0.0",
-    "dotenv": "^17.4.0"
+    "dotenv": "^17.4.0",
+    "tsx": "^4.23.12"
   }
 }

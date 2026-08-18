@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>JOPES.EXE — João Paulo Oliveira</title>
+<meta name="description" content="João Paulo Oliveira — Backend Engineer (Java, Spring Boot, AWS, Terraform). Portfolio em forma de cidade isométrica navegável.">
+<link rel="alternate" href="cv/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23050d18'/%3E%3Ctext x='12' y='17' font-size='14' fill='%23FFE600' text-anchor='middle' font-family='monospace' font-weight='bold'%3EJ%3C/text%3E%3C/svg%3E">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #050d18;
+  --accent: #FFE600;
+  --accent2: #FF3CAC;
+  --accent3: #00FF88;
+  --cyan: #2AFADF;
+  --text: #F0EBE1;
+  --muted: #4a6070;
+  --panel: rgba(5,13,24,0.95);
+}
+
+body {
+  background: var(--bg);
+  overflow: hidden;
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--text);
+  user-select: none;
+}
+
+#cv-text-link {
+  position: fixed; bottom: 3px; left: 50%; transform: translateX(-50%);
+  z-index: 5; font-size: 9px; letter-spacing: 0.1em; color: var(--muted);
+  text-decoration: none;
+}
+#cv-text-link:hover { color: var(--text); }
+
+/* ── MAP LAYER ────────────────────────────────────
+   Flat 2D map image, bigger than the viewport. Panned in JS by translating
+   it opposite to the player — plain 2D scroller, no 3D/isometric camera. */
+#viewport { position: fixed; inset: 0; overflow: hidden; z-index: -1; }
+#mapLayer {
+  position: absolute; left: 0; top: 0;
+  background: url('assets/map/image.png') center center / 100% 100% no-repeat;
+  will-change: transform;
+}
+
+/* ── BOOT ─────────────────────────────────────── */
+#boot {
+  position: fixed; inset: 0; z-index: 100;
+  background: #000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px;
+}
+#boot-logo {
+  font-size: clamp(32px,6vw,80px); font-weight: 900;
+  letter-spacing: -0.02em; color: var(--accent); line-height: 1;
+}
+#boot-sub { font-size: clamp(10px,1.5vw,14px); letter-spacing: 0.4em; color: var(--muted); text-transform: uppercase; }
+#boot-line { width: min(400px,80vw); height: 2px; background: #111; margin: 24px 0 8px; position: relative; overflow: hidden; }
+#boot-line::after {
+  content: ''; position: absolute; inset: 0; background: var(--accent);
+  transform: scaleX(0); transform-origin: left; animation: boot-load 2.2s ease forwards 0.3s;
+}
+@keyframes boot-load { to { transform: scaleX(1); } }
+#boot-text { font-size: 11px; letter-spacing: 0.2em; color: var(--muted); min-height: 16px; }
+
+/* ── HUD ──────────────────────────────────────── */
+#hud { position: fixed; inset: 0; pointer-events: none; z-index: 20; }
+
+#hud-left {
+  position: absolute; top: 20px; left: 20px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+#player-card {
+  background: var(--panel); border: 1px solid rgba(255,230,0,0.35); padding: 14px 18px; min-width: 190px;
+}
+#player-card .label { font-size: 9px; color: var(--muted); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 4px; }
+#player-card .name { font-size: 15px; font-weight: 700; color: var(--accent); }
+#player-card .role { font-size: 10px; color: var(--muted); margin-top: 2px; letter-spacing: 0.15em; }
+#xp-wrap { margin-top: 10px; }
+#xp-label { font-size: 9px; color: var(--muted); display: flex; justify-content: space-between; margin-bottom: 4px; }
+#xp-bar { height: 3px; background: #111; }
+#xp-fill { height: 100%; background: var(--accent); transition: width 0.4s; width: 0%; }
+
+#quest-card {
+  background: var(--panel); border: 1px solid rgba(255,255,255,0.08);
+  padding: 12px 16px; min-width: 190px; max-height: 260px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--accent) transparent;
+}
+#quest-card .label { font-size: 9px; color: var(--muted); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 8px; }
+.quest-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding: 4px 0; font-size: 11px; color: var(--muted);
+}
+.quest-row.done { color: var(--text); }
+.quest-name { display: flex; align-items: center; gap: 7px; letter-spacing: 0.03em; }
+.quest-check {
+  width: 9px; height: 9px; border: 1px solid var(--muted); flex-shrink: 0;
+}
+.quest-row.done .quest-check { background: var(--accent3); border-color: var(--accent3); }
+.quest-xp { font-size: 10px; color: var(--muted); flex-shrink: 0; }
+.quest-row.done .quest-xp { color: var(--accent); }
+
+#zone-card {
+  position: absolute; top: 20px; right: 20px;
+  background: var(--panel); border: 1px solid rgba(255,255,255,0.08);
+  padding: 14px 18px; text-align: right; min-width: 160px;
+}
+#zone-name { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: 0.05em; }
+#zone-sub  { font-size: 9px; color: var(--muted); margin-top: 3px; letter-spacing: 0.2em; }
+
+/* ── QUICK ACTIONS (CV shortcut + mute) ─────────── */
+#quick-actions {
+  position: absolute; top: 86px; right: 20px; z-index: 21;
+  display: flex; gap: 8px; pointer-events: all;
+}
+.icon-btn {
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  background: var(--panel); border: 1px solid rgba(255,255,255,0.15);
+  color: var(--text); cursor: pointer; transition: border-color 0.2s, color 0.2s;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+.icon-btn svg { width: 16px; height: 16px; }
+#cv-btn { width: auto; padding: 0 12px; gap: 7px; font-size: 10px; letter-spacing: 0.15em; font-weight: 700; }
+#serious-mode-link { width: auto; padding: 0 12px; font-size: 10px; letter-spacing: 0.15em; font-weight: 700; text-decoration: none; }
+
+/* interact prompt */
+#interact-prompt {
+  position: fixed; bottom: 105px; left: 50%; transform: translateX(-50%);
+  background: rgba(255,230,0,0.12); border: 1px solid rgba(255,230,0,0.5);
+  color: var(--accent); padding: 10px 24px;
+  font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+  opacity: 0; transition: opacity 0.25s; pointer-events: none; z-index: 25;
+  white-space: nowrap;
+}
+#interact-prompt.visible { opacity: 1; }
+
+/* controls */
+#controls-hint {
+  position: absolute; bottom: 20px; left: 20px;
+  display: flex; flex-direction: column; gap: 12px;
+  background: var(--panel); border: 1px solid rgba(255,255,255,0.1);
+  padding: 12px 16px;
+  font-size: 11px; color: var(--text); letter-spacing: 0.1em;
+}
+.ctrl-section { display: flex; flex-direction: column; gap: 6px; }
+.ctrl-label { font-size: 9px; color: var(--muted); letter-spacing: 0.25em; text-transform: uppercase; }
+.ctrl-keys { display: flex; align-items: center; gap: 10px; }
+.hint-sep { color: var(--muted); }
+.wasd-cluster {
+  display: grid; grid-template-columns: repeat(3, 22px); grid-template-rows: repeat(2, 22px);
+  gap: 3px; margin-right: 4px;
+}
+.wasd-cluster .key { margin: 0; }
+.key-w { grid-column: 2; grid-row: 1; }
+.key-a { grid-column: 1; grid-row: 2; }
+.key-s { grid-column: 2; grid-row: 2; }
+.key-d { grid-column: 3; grid-row: 2; }
+.key {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 22px; padding: 0 5px; margin-right: 3px;
+  background: linear-gradient(to bottom, #2c3a48 0%, #17212c 100%);
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0 #000, inset 1px 1px 0 rgba(255,255,255,0.15);
+  border-radius: 0;
+  font-weight: 700; font-size: 11px; color: var(--accent);
+  image-rendering: pixelated;
+}
+.key svg { width: 10px; height: 10px; }
+
+/* minimap */
+#minimap {
+  position: absolute; bottom: 20px; right: 20px;
+  width: 110px; height: 110px;
+  background: rgba(5,13,24,0.85); border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* debug coords — used to map NPC/building/card positions onto the map art */
+#debug-coords {
+  position: absolute; bottom: 140px; right: 20px;
+  background: rgba(5,13,24,0.85); border: 1px solid rgba(255,230,0,0.35);
+  color: var(--accent); font-size: 11px; letter-spacing: 0.1em;
+  padding: 6px 10px; pointer-events: none;
+}
+
+/* on touch devices the D-pad/[E] button own the bottom corners */
+@media (pointer: coarse) {
+  #controls-hint { display: none; }
+  #minimap { bottom: 100px; }
+  #debug-coords { display: none; }
+
+  /* compact HUD so it doesn't eat the whole screen on phones */
+  #hud-left { top: 12px; left: 12px; gap: 8px; max-width: 58vw; }
+  #player-card { padding: 8px 10px; min-width: 0; }
+  #player-card .name { font-size: 12px; }
+  #player-card .role { font-size: 8px; }
+  #xp-wrap { margin-top: 6px; }
+
+  #quest-card { padding: 8px 10px; min-width: 0; max-height: 22vh; }
+  #quest-card .label { font-size: 8px; margin-bottom: 5px; }
+  .quest-row { font-size: 9px; gap: 6px; min-width: 0; padding: 3px 0; }
+  .quest-name { min-width: 0; white-space: normal; word-break: break-word; }
+  .quest-xp { font-size: 8px; }
+
+  #zone-card { top: 12px; right: 12px; padding: 8px 10px; min-width: 0; }
+  #zone-name { font-size: 11px; }
+  #zone-sub { font-size: 7px; }
+
+  #quick-actions { top: 50px; right: 12px; }
+  .icon-btn { width: 28px; height: 28px; }
+
+  #touch-controls { padding: 14px 14px calc(14px + env(safe-area-inset-bottom)) 14px; }
+
+  /* get the HUD out of the way while the player is actually walking */
+  #hud-left { transition: opacity 0.2s ease, transform 0.2s ease; transform-origin: top left; }
+  #zone-card { transition: opacity 0.2s ease, transform 0.2s ease; transform-origin: top right; }
+  body.is-moving #hud-left { opacity: 0.12; transform: scale(0.85); pointer-events: none; }
+  body.is-moving #zone-card { opacity: 0.2; transform: scale(0.9); }
+}
+
+/* player / NPC sprites */
+.sprite {
+  position: fixed; pointer-events: none; z-index: 6;
+  image-rendering: pixelated; image-rendering: crisp-edges;
+  transform: translate(-50%, -88%); width: 64px; height: 64px;
+}
+
+/* ── NPC DIALOG BOX ─────────────────────────────── */
+#npc-dialog {
+  position: fixed; left: 50%; bottom: 100px; transform: translateX(-50%);
+  width: min(720px, 90vw);
+  background: var(--panel); border: 3px solid var(--accent);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.6);
+  z-index: 30; display: none;
+  padding: 14px 20px 18px;
+}
+#npc-dialog.active { display: block; }
+#npc-dialog-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+#npc-dialog-portrait {
+  width: 44px; height: 44px; image-rendering: pixelated; image-rendering: crisp-edges;
+  border: 2px solid var(--accent); background: rgba(0,0,0,0.4); object-fit: cover;
+}
+#npc-dialog-name { font-size: 14px; font-weight: 700; color: var(--accent); letter-spacing: 0.08em; }
+#npc-dialog-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.15em; margin-top: 2px; }
+#npc-dialog-text {
+  font-size: 13px; line-height: 1.7; color: var(--text); min-height: 4.6em; white-space: pre-wrap;
+}
+#npc-dialog-text.question { color: var(--cyan); font-style: italic; }
+#npc-dialog-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+#npc-dialog-page { font-size: 9px; color: var(--muted); letter-spacing: 0.2em; }
+#npc-dialog-next { font-size: 10px; color: var(--accent); letter-spacing: 0.15em; animation: dialog-blink 1s infinite; }
+@keyframes dialog-blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+/* ── TOAST ───────────────────────────────────── */
+#toast {
+  position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #000;
+  padding: 10px 20px; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 9px;
+  opacity: 0; transition: opacity 0.3s; z-index: 40; pointer-events: none;
+  white-space: nowrap;
+}
+#toast .toast-icon { display: flex; flex-shrink: 0; }
+#toast .toast-icon svg { width: 15px; height: 15px; }
+
+/* toast/interact-prompt on mobile: narrow wrapping pill clear of the joystick,
+   not an edge-to-edge unreadable bar (must come after the base #toast rule
+   above — same specificity, source order decides, media condition doesn't) */
+@media (pointer: coarse) {
+  #toast, #interact-prompt {
+    bottom: 150px; max-width: 82vw; white-space: normal; text-align: center;
+    font-size: 9px; letter-spacing: 0.12em; padding: 8px 14px; line-height: 1.5;
+  }
+  #toast { justify-content: center; flex-wrap: wrap; }
+}
+
+/* ── COMPLETION CELEBRATION ─────────────────────── */
+#completion-flash {
+  position: fixed; inset: 0; z-index: 45; pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(255,230,0,0.35), transparent 70%);
+  opacity: 0;
+}
+#completion-flash.active { animation: completion-pulse 1.8s ease; }
+@keyframes completion-pulse {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+#quest-card.all-done { border-color: rgba(255,230,0,0.7); box-shadow: 0 0 20px rgba(255,230,0,0.25); }
+
+/* ── TOUCH CONTROLS (mobile) ────────────────────── */
+#touch-controls {
+  display: none; position: fixed; inset: auto 0 0 0; z-index: 22;
+  justify-content: space-between; align-items: flex-end; padding: 18px; pointer-events: none;
+}
+@media (pointer: coarse) { #touch-controls { display: flex; } }
+.tbtn {
+  background: linear-gradient(to bottom, #2c3a48 0%, #17212c 100%);
+  border: 2px solid #000; box-shadow: 3px 3px 0 rgba(0,0,0,0.6);
+  color: var(--accent); display: flex; align-items: center; justify-content: center;
+  touch-action: none; -webkit-tap-highlight-color: transparent; user-select: none;
+  font-family: inherit; font-weight: 900;
+}
+.tbtn svg { width: 22px; height: 22px; }
+.tbtn:active { background: rgba(255,230,0,0.25); }
+#touch-e {
+  width: 68px; height: 68px; border-radius: 50%; pointer-events: all;
+  background: rgba(255,230,0,0.15); border: 2px solid var(--accent); box-shadow: 3px 3px 0 rgba(0,0,0,0.6);
+  color: var(--accent); font-size: 20px;
+}
+
+/* circular virtual joystick */
+#touch-joystick { width: 116px; height: 116px; pointer-events: none; }
+#joy-base {
+  width: 100%; height: 100%; border-radius: 50%; position: relative;
+  background: rgba(23,33,44,0.55); border: 2px solid rgba(255,230,0,0.35);
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.5), inset 0 0 12px rgba(0,0,0,0.4);
+  pointer-events: all; touch-action: none; -webkit-tap-highlight-color: transparent;
+}
+#joy-stick {
+  width: 48px; height: 48px; border-radius: 50%; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(to bottom, #2c3a48 0%, #17212c 100%);
+  border: 2px solid var(--accent); box-shadow: 0 0 10px rgba(255,230,0,0.35);
+  pointer-events: none; transition: transform 0.08s linear;
+}
+#joy-base.active #joy-stick { transition: none; }
+
+/* ── INTRO MODAL ─────────────────────────────────── */
+#intro-modal {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(0,0,0,0.85);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+#intro-modal.active { display: flex; }
+#intro-inner {
+  background: var(--panel); border: 1px solid rgba(255,230,0,0.4);
+  max-width: 480px; width: 100%; padding: 32px 30px; text-align: center;
+}
+#intro-title { font-size: 30px; font-weight: 900; color: var(--accent); letter-spacing: -0.02em; }
+#intro-sub { font-size: 11px; color: var(--muted); letter-spacing: 0.15em; margin-top: 6px; }
+#intro-body { font-size: 13px; line-height: 2; color: var(--text); margin: 22px 0; }
+#intro-body .key { margin: 0 2px; }
+#intro-actions { display: flex; flex-direction: column; gap: 10px; }
+.intro-btn {
+  font-family: inherit; font-size: 12px; font-weight: 700; letter-spacing: 0.15em;
+  padding: 12px; cursor: pointer; background: none; color: var(--text);
+  border: 1px solid rgba(255,255,255,0.15); transition: border-color 0.2s, color 0.2s;
+}
+.intro-btn:hover { border-color: var(--accent); color: var(--accent); }
+.intro-btn.primary { background: var(--accent); color: #000; border-color: var(--accent); }
+.intro-btn.primary:hover { opacity: 0.9; }
+
+/* ── OVERLAY ──────────────────────────────────── */
+#overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(0,0,0,0.92);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+#overlay.active { display: flex; }
+#overlay-inner {
+  background: #080f1c; border: 1px solid rgba(255,255,255,0.1);
+  max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto;
+  padding: 40px; position: relative;
+  scrollbar-width: thin; scrollbar-color: var(--accent) transparent;
+}
+#overlay-close {
+  position: absolute; top: 20px; right: 20px;
+  background: none; border: none; color: var(--muted);
+  font-family: inherit; font-size: 11px; letter-spacing: 0.2em; cursor: pointer; pointer-events: all;
+}
+#overlay-close:hover { color: var(--text); }
+.ov-id { font-size: 10px; color: var(--muted); letter-spacing: 0.4em; margin-bottom: 8px; }
+.ov-title { font-size: clamp(28px,5vw,56px); font-weight: 900; letter-spacing: -0.02em; line-height: 1.0; margin-bottom: 6px; color: var(--text); white-space: pre-line; }
+.ov-sub { font-size: 12px; color: var(--muted); letter-spacing: 0.2em; margin-bottom: 24px; }
+.ov-body { font-size: 13px; line-height: 1.85; color: #b0c4d4; margin-bottom: 24px; white-space: pre-wrap; }
+.ov-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 24px 0; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.tag { font-size: 10px; letter-spacing: 0.15em; padding: 4px 10px; border: 1px solid rgba(255,230,0,0.4); color: var(--accent); text-transform: uppercase; }
+.tag.cyan { border-color: rgba(42,250,223,0.4); color: var(--cyan); }
+.proj-nav { display: flex; justify-content: space-between; margin-top: 32px; pointer-events: all; }
+.proj-nav button { background: none; border: 1px solid rgba(255,255,255,0.1); color: var(--muted); font-family: inherit; font-size: 11px; letter-spacing: 0.2em; padding: 8px 16px; cursor: pointer; }
+.proj-nav button:hover { border-color: var(--accent); color: var(--accent); }
+.timeline { display: flex; flex-direction: column; gap: 20px; }
+.tl-item { border-left: 2px solid rgba(255,230,0,0.3); padding-left: 16px; position: relative; }
+.tl-item::before { content: ''; position: absolute; left: -5px; top: 4px; width: 7px; height: 7px; background: var(--accent); }
+.tl-date { font-size: 10px; color: var(--muted); letter-spacing: 0.2em; margin-bottom: 4px; }
+.tl-role { font-size: 14px; font-weight: 700; }
+.tl-company { font-size: 11px; color: var(--cyan); margin-top: 2px; }
+.tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 16px; margin-top: 16px; }
+.tech-cat { border: 1px solid rgba(255,255,255,0.07); padding: 16px; }
+.tech-cat-name { font-size: 10px; letter-spacing: 0.3em; color: var(--muted); margin-bottom: 10px; }
+.tech-item { font-size: 12px; color: var(--text); margin-bottom: 5px; }
+.lab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 16px; margin-top: 16px; }
+.lab-card { border: 1px solid rgba(42,250,223,0.2); padding: 20px; }
+.lab-card-icon { margin-bottom: 10px; color: var(--cyan); }
+.lab-card-icon svg { width: 24px; height: 24px; }
+.lab-card-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.lab-card-body { font-size: 11px; color: var(--muted); line-height: 1.6; }
+.contact-links { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.contact-link { display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,0.08); padding: 14px 18px; text-decoration: none; color: var(--text); font-size: 13px; pointer-events: all; transition: border-color 0.2s; }
+.contact-link:hover { border-color: var(--accent); color: var(--accent); }
+.contact-link-icon { display: flex; align-items: center; color: var(--accent); }
+.contact-link-icon svg { width: 18px; height: 18px; }
+.contact-link-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* ── BUILDING LABELS ────────────────────────────── */
+#building-labels { position: fixed; inset: 0; pointer-events: none; z-index: 15; }
+.blabel {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  background: rgba(5,13,24,0.88);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 5px 10px;
+  transition: opacity 0.3s, border-color 0.3s;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.blabel.near {
+  border-color: rgba(255,230,0,0.6);
+}
+.blabel.flash {
+  animation: blabel-flash 0.5s ease;
+}
+@keyframes blabel-flash {
+  0%   { background: rgba(255,230,0,0.35); border-color: rgba(255,230,0,1); box-shadow: 0 0 16px rgba(255,230,0,0.6); }
+  100% { background: rgba(5,13,24,0.88); }
+}
+.blabel-id { font-size: 8px; color: var(--muted); letter-spacing: 0.3em; margin-bottom: 2px; }
+.blabel-name { font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 0.05em; }
+.blabel-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  display: inline-block; margin-right: 6px; vertical-align: middle;
+}
+
+/* ── NPC NAMEPLATES ─────────────────────────────── */
+.npc-name {
+  position: fixed; z-index: 7; pointer-events: none;
+  transform: translate(-50%, -100%);
+  color: #fff; font-family: 'Courier New', Courier, monospace;
+  font-weight: 700; font-size: 12px; letter-spacing: 0.08em;
+  white-space: nowrap;
+  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 2px 3px rgba(0,0,0,0.8);
+}
+</style>
+</head>
+<body>
+
+<noscript>
+  <h1>João Paulo Oliveira — Backend Engineer</h1>
+  <p>Java, Spring Boot, AWS, Terraform — Blumenau, SC.</p>
+  <p>Este site é um mapa interativo que precisa de JavaScript. Veja a <a href="cv/">versão em texto (CV)</a> ou o <a href="https://www.jopes.com.br/en">portfolio completo</a>.</p>
+</noscript>
+
+<a id="cv-text-link" href="cv/">versão texto (cv)</a>
+
+<div id="viewport"><div id="mapLayer"></div></div>
+
+<div id="boot">
+  <div id="boot-logo">JOPES.EXE</div>
+  <div id="boot-sub">Backend Engineer · Blumenau SC</div>
+  <div id="boot-line"></div>
+  <div id="boot-text">Initializing city…</div>
+</div>
+
+<div id="building-labels"></div>
+
+<div id="intro-modal">
+  <div id="intro-inner">
+    <div id="intro-title">JOPES.EXE</div>
+    <div id="intro-sub">Bem-vindo à cidade de João Paulo Oliveira</div>
+    <div id="intro-body">
+      Isso aqui é um mapa navegável. Anda com <span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> ou as setas, chega perto de um prédio ou personagem e aperta <span class="key">E</span> pra interagir.
+    </div>
+    <div id="intro-actions">
+      <button id="intro-play" class="intro-btn primary">COMEÇAR A EXPLORAR</button>
+      <button id="intro-skip" class="intro-btn">PULAR PRO CV →</button>
+    </div>
+  </div>
+</div>
+
+<div id="quick-actions">
+  <a id="serious-mode-link" class="icon-btn" href="/api/mode?mode=serious" title="Voltar pro portfolio sério">← SÉRIO</a>
+  <button id="mute-btn" class="icon-btn" title="Som"></button>
+  <button id="cv-btn" class="icon-btn" title="CV / LinkedIn / GitHub"><span id="cv-btn-icon"></span><span>CV</span></button>
+</div>
+
+<div id="hud">
+  <div id="hud-left">
+    <div id="player-card">
+      <div class="label">Developer</div>
+      <div class="name">João Paulo Oliveira</div>
+      <div class="role">Backend · Java · Spring · AWS</div>
+      <div id="xp-wrap">
+        <div id="xp-label"><span id="lvl-txt">LVL 1 — EXPLORADOR</span><span id="xp-txt">0 XP</span></div>
+        <div id="xp-bar"><div id="xp-fill"></div></div>
+      </div>
+    </div>
+    <div id="quest-card">
+      <div class="label">Missões</div>
+      <div id="quest-list"></div>
+    </div>
+  </div>
+  <div id="zone-card">
+    <div id="zone-name">CITY CENTER</div>
+    <div id="zone-sub">EXPLORE A CIDADE</div>
+  </div>
+  <div id="controls-hint">
+    <div class="ctrl-section">
+      <span class="ctrl-label">Mover</span>
+      <div class="ctrl-keys">
+        <div class="wasd-cluster">
+          <span class="key key-w" id="key-up"></span>
+          <span class="key key-a" id="key-left"></span>
+          <span class="key key-s" id="key-down"></span>
+          <span class="key key-d" id="key-right"></span>
+        </div>
+        <span class="hint-sep">/</span>
+        <div class="wasd-cluster">
+          <span class="key key-w">W</span>
+          <span class="key key-a">A</span>
+          <span class="key key-s">S</span>
+          <span class="key key-d">D</span>
+        </div>
+      </div>
+    </div>
+    <div class="ctrl-section">
+      <span class="ctrl-label">Entrar / Conversar</span>
+      <div class="ctrl-keys">
+        <span class="key">E</span>
+      </div>
+    </div>
+  </div>
+  <canvas id="minimap"></canvas>
+  <div id="debug-coords">X: 0 &nbsp; Y: 0</div>
+</div>
+
+<div id="interact-prompt">[ E ] ENTRAR</div>
+
+<div id="npc-dialog">
+  <div id="npc-dialog-head">
+    <img id="npc-dialog-portrait" src="" alt="">
+    <div>
+      <div id="npc-dialog-name"></div>
+      <div id="npc-dialog-sub"></div>
+    </div>
+  </div>
+  <div id="npc-dialog-text"></div>
+  <div id="npc-dialog-foot">
+    <span id="npc-dialog-page"></span>
+    <span id="npc-dialog-next">[ E ] CONTINUAR</span>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div id="completion-flash"></div>
+
+<div id="touch-controls">
+  <div id="touch-joystick"><div id="joy-base"><div id="joy-stick"></div></div></div>
+  <button id="touch-e" class="tbtn">E</button>
+</div>
+
+<div id="overlay">
+  <div id="overlay-inner">
+    <button id="overlay-close">[ ESC ] FECHAR</button>
+    <div id="overlay-content"></div>
+  </div>
+</div>
+
+<script type="module">
+'use strict';
+
+// Conteúdo dinâmico (projetos, timeline, stack, depoimentos) gerado a partir
+// de data/*.ts do portfolio sério via `npm run generate:rpg-content` —
+// ver /scripts/generate-rpg-content.ts. Mantém este arquivo como única fonte
+// de verdade para layout/mecânica do jogo; nunca edite content.json à mão.
+const content = await fetch('content.json').then(r => r.json());
+
+/* ════════════════════════════════════════════════
+   ICONS — inline SVG, no emoji, no external assets
+   ════════════════════════════════════════════════ */
+const ICONS = {
+  trophy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 4h10v3a5 5 0 0 1-5 5 5 5 0 0 1-5-5V4Z"/><path d="M7 5H4a2 2 0 0 0 2 4"/><path d="M17 5h3a2 2 0 0 1-2 4"/><path d="M12 12v3"/><path d="M8 20h8"/><path d="M10 16h4v4h-4z"/></svg>',
+  flame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2s5 4.7 5 10a5 5 0 1 1-10 0c0-1.1.3-2.1 1-3 .2 1 1 2 2 2 0-3-2-4-2-7 1 0 2.7 1 4 4Z"/></svg>',
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>',
+  city: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M5 21V9l4-3 4 3v12"/><path d="M13 21V6l4-2 4 2v15"/></svg>',
+  monitor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="1"/><path d="M8 21h8M12 17v4"/></svg>',
+  alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17h.01"/></svg>',
+  zap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>',
+  notebook: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 3v18M4 8h2M4 12h2M4 16h2"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 6 9 7 9-7"/></svg>',
+  linkedin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM3 9h4v12H3zM9 9h3.7v1.7h.05c.5-1 1.8-1.9 3.6-1.9 3.9 0 4.65 2.4 4.65 5.6V21h-4v-5.7c0-1.4 0-3.1-1.9-3.1-1.9 0-2.2 1.5-2.2 3v5.8H9z"/></svg>',
+  github: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.2-3.37-1.2-.46-1.15-1.11-1.46-1.11-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.93 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.83-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.75c0 .26.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>',
+  globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>',
+  star: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.6 7.2.9-5.3 4.9 1.5 7.1L12 17.9 5.5 21.5l1.5-7.1L1.7 9.5l7.2-.9L12 2Z"/></svg>',
+  arrowUp: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4 4 20h16Z"/></svg>',
+  arrowDown: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20 4 4h16Z"/></svg>',
+  arrowLeft: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 12 20 4v16Z"/></svg>',
+  arrowRight: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 12 4 4v16Z"/></svg>',
+  volumeOn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6h4l5 5V4L8 9H4Z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a9 9 0 0 1 0 12"/></svg>',
+  volumeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6h4l5 5V4L8 9H4Z"/><path d="m16 9 5 6M21 9l-5 6"/></svg>',
+  cv: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
+};
+
+document.getElementById('key-up').innerHTML = ICONS.arrowUp;
+document.getElementById('key-down').innerHTML = ICONS.arrowDown;
+document.getElementById('key-left').innerHTML = ICONS.arrowLeft;
+document.getElementById('key-right').innerHTML = ICONS.arrowRight;
+
+/* ════════════════════════════════════════════════
+   SAVE — localStorage persistence (XP, quests, intro seen)
+   ════════════════════════════════════════════════ */
+const SAVE_KEY = 'jopes_save_v1';
+function loadSave() {
+  try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || {}; } catch { return {}; }
+}
+function writeSave() {
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      xp, level,
+      revealedZones: [...revealedZones],
+      talkedNPCs: [...talkedNPCs],
+      allMissionsDone,
+      introSeen,
+      audioMuted,
+    }));
+  } catch {}
+}
+const save = loadSave();
+let introSeen = save.introSeen || false;
+
+/* ════════════════════════════════════════════════
+   SFX — short procedural blips on interaction, no ambient drone.
+   No external file; each call synthesizes one short envelope. The
+   AudioContext is created lazily on first real call, which is always
+   already inside a user-gesture handler (keydown/click), satisfying
+   the browser autoplay policy.
+   ════════════════════════════════════════════════ */
+let audioCtx = null, masterGain = null;
+let audioMuted = save.audioMuted || false;
+
+function ensureAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = audioMuted ? 0 : 0.3;
+  masterGain.connect(audioCtx.destination);
+}
+
+function playTone(freq, delay, dur, type) {
+  const t = audioCtx.currentTime + delay;
+  const osc = audioCtx.createOscillator();
+  osc.type = type || 'square';
+  osc.frequency.value = freq;
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(1, t + 0.008);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  osc.connect(g);
+  g.connect(masterGain);
+  osc.start(t);
+  osc.stop(t + dur + 0.02);
+}
+
+function playSfx(name) {
+  ensureAudio();
+  if (name === 'interact')  playTone(520, 0, 0.07);
+  if (name === 'talk')      playTone(660, 0, 0.08, 'triangle');
+  if (name === 'reveal')    { playTone(440, 0, 0.09); playTone(660, 0.08, 0.12); }
+  if (name === 'levelup')   { playTone(523, 0, 0.09); playTone(659, 0.08, 0.09); playTone(784, 0.16, 0.14); }
+  if (name === 'complete')  { playTone(392, 0, 0.1); playTone(523, 0.1, 0.1); playTone(659, 0.2, 0.1); playTone(784, 0.3, 0.22); }
+}
+
+function updateMuteBtn() {
+  document.getElementById('mute-btn').innerHTML = audioMuted ? ICONS.volumeOff : ICONS.volumeOn;
+}
+function toggleMute() {
+  audioMuted = !audioMuted;
+  if (masterGain) masterGain.gain.value = audioMuted ? 0 : 0.3;
+  updateMuteBtn();
+  writeSave();
+}
+updateMuteBtn();
+document.getElementById('mute-btn').addEventListener('click', toggleMute);
+
+/* ════════════════════════════════════════════════
+   CONTENT
+   ════════════════════════════════════════════════ */
+const PROJECTS = content.projects;
+
+const ZONE_CONTENT = {
+  main: { id:'BOOT', title:'MAIN\nHALL', sub:'Backend Engineer — Blumenau, SC',
+    body:'Oi, sou o João Paulo — engenheiro backend apaixonado por sistemas distribuídos, APIs bem desenhadas e código que escala.\n\nTrabalho com Java + Spring Boot como stack principal, mas navego por Flutter, React e Terraform quando o problema pede.\n\nEste site é uma cidade. Explore os prédios pressionando E.',
+    tags:['Backend Engineer','Java · Spring','AWS · Terraform','Blumenau SC'] },
+  projects: { id:'PROJ', title:'PROJETOS', sub: `${content.projects.length} projetos reais · 2025–2026`, body:null },
+  lab: { id:'LAB', title:'BACKEND\nLAB', sub:'Ferramentas e experimentos',
+    body:'Um espaço para ferramentas, experimentos e coisas que construo enquanto aprendo.',
+    labCards:[
+      { icon:'monitor', title:'System Monitor', body:'Dashboard em tempo real para métricas de sistemas distribuídos' },
+      { icon:'alert', title:'On-Call Simulator', body:'Simulador de incidentes para praticar runbooks e postmortems' },
+      { icon:'zap', title:'Backend Challenges', body:'Desafios de código: algoritmos, design de sistemas, SQL avançado' },
+      { icon:'notebook', title:'Today I Learned', body:'Notas técnicas do dia a dia — Kafka, DDD, arquitetura' },
+    ], link:'https://jopes.com.br' },
+  about: { id:'SOBRE', title:'SOBRE\nMIM', sub:'Trajetória · valores · forma de trabalhar',
+    body:'Engenheiro backend com foco em sistemas distribuídos e cloud-native. Cresci profissionalmente na Segalas, construindo plataformas que escalam.\n\nGosto de código limpo, mas não de purismo. Prefiro soluções que funcionam em produção.',
+    timeline: content.experienceTimeline },
+  stack: { id:'TECH', title:'TECH\nSTACK', sub:'Tecnologias do dia a dia',
+    body:'Stack principal em backend Java/Spring, com incursões em Node.js, Flutter e infra AWS.',
+    techGrid: content.techGrid },
+  contact: { id:'CONTATO', title:'VAMOS\nCONSTRUIR?', sub:'Aberto a projetos, freelas e conversas',
+    body:'Se você tem um problema de backend interessante — um sistema que não escala, uma integração que não integra — me conta.',
+    links:[
+      { icon:'mail', label:'joao.oliveira@segalas.com.br', sub:'Email principal', href:'mailto:joao.oliveira@segalas.com.br' },
+      { icon:'linkedin', label:'linkedin.com/in/joao-paulo', sub:'LinkedIn', href:'https://linkedin.com/in/joao-paulo-oliveira-dev' },
+      { icon:'github', label:'github.com/joaoPauloO', sub:'GitHub', href:'https://github.com/joaoPauloO' },
+      { icon:'globe', label:'jopes.com.br', sub:'Portfolio & Lab', href:'https://jopes.com.br' },
+    ] },
+  secret: { id:'???', title:'ARQUIVO\n.ENV', sub:'Você não devia estar aqui…',
+    body:'→ Estudando agora: Designing Data-Intensive Applications (DDIA)\n→ Próximo objetivo: Kafka internals + stream processing\n→ Coffee consumed in 2026: ~847 cups\n→ Tabs abertas agora: 47\n→ Último commit message: "fix: finally"\n→ Playlist de código: lo-fi + synthwave em loop\n→ Debug preferido: console.log e oração',
+    tags:['SECRET FILE','.ENV','EASTER EGG','// TODO: hide better'] },
+};
+
+/* ════════════════════════════════════════════════
+   MAP — flat 2D image, camera is just a clamped scroll offset.
+   No 3D, no isometric projection. Everything below lives in "map
+   pixel space": (0,0) is the image's top-left corner, MAP_PX is its
+   scaled width/height. Tune MAP_SCALE to zoom the whole game in/out.
+   ════════════════════════════════════════════════ */
+const IMG_NATIVE = 1254;       // native size of assets/map/image.png
+const MAP_SCALE = 2.2;         // display scale — bigger = more room to pan
+const MAP_PX = IMG_NATIVE * MAP_SCALE;
+const EDGE_MARGIN = 70;        // how close to the true image edge the player can get
+
+// Convert a pixel position eyeballed on the native 1254×1254 art into map space.
+function mp(nativeX, nativeY) { return { x: nativeX * MAP_SCALE, y: nativeY * MAP_SCALE }; }
+
+const viewport = document.getElementById('viewport');
+const mapLayerEl = document.getElementById('mapLayer');
+mapLayerEl.style.width = MAP_PX + 'px';
+mapLayerEl.style.height = MAP_PX + 'px';
+
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+/* ════════════════════════════════════════════════
+   BUILDING FACTORY
+   ════════════════════════════════════════════════ */
+const BUILDINGS = []; // { zone, x, y, radius, hex, label, sublabel }
+
+// An isometric cube's silhouette is a hexagon: a roof diamond fused to a
+// straight-walled body, then narrowing back to a point at the floor corner
+// — NOT two diamonds meeting tip-to-tip (that pinches into a bowtie/X,
+// which doesn't match a box). hex = { dyTop, hw, roofH, wallH }:
+//   dyTop  = offset from the building anchor up to the roof's top point
+//   hw     = half-width at the shoulder/foot (the straight vertical walls)
+//   roofH  = height from top point down to the shoulder (mirrored at the
+//            bottom, from foot back down to the floor-corner point)
+//   wallH  = height of the straight-sided middle section (shoulder→foot)
+function insideHex(dx, ry, hex) {
+  const total = 2 * hex.roofH + hex.wallH;
+  if (ry < 0 || ry > total) return false;
+  let allowedHw;
+  if (ry <= hex.roofH) allowedHw = hex.hw * (ry / hex.roofH);
+  else if (ry <= hex.roofH + hex.wallH) allowedHw = hex.hw;
+  else allowedHw = hex.hw * (1 - (ry - hex.roofH - hex.wallH) / hex.roofH);
+  return Math.abs(dx) <= allowedHw;
+}
+
+// Registers a building hotspot: label anchor + proximity radius for the [E]
+// prompt, plus a hexagonal collision footprint that blocks the player from
+// walking on top of the art. Keep every hex vertex within `radius` so the
+// player stopped at a collision edge is always still in interact range.
+function registerBuilding({ zone, pos, radius = 90, hex, label, sublabel }) {
+  const h = hex || { dyTop: -55, hw: 80, roofH: 30, wallH: 25 };
+  BUILDINGS.push({ zone, x: pos.x, y: pos.y, radius, hex: h, label, sublabel });
+}
+
+// Coordinates are eyeballed pixel positions on the 1254×1254 map art (via mp()).
+// Starting point, not final: walk up to a building, read the X/Y in the HUD,
+// and report it back if a hotspot doesn't line up with the art.
+registerBuilding({ zone:'main', pos: mp(725, 375), radius:155,
+  hex: { dyTop: -125, hw: 130, roofH: 55, wallH: 135 },
+  label:'MAIN HQ', sublabel:'João Paulo Oliveira' });
+registerBuilding({ zone:'projects', pos: mp(210, 350), radius:155,
+  hex: { dyTop: -125, hw: 130, roofH: 55, wallH: 155 },
+  label:'PROJETOS', sublabel:'8 projetos reais' });
+registerBuilding({ zone:'lab', pos: mp(1090, 430), radius:155,
+  hex: { dyTop: -125, hw: 130, roofH: 55, wallH: 135 },
+  label:'BACKEND LAB', sublabel:'Ferramentas & experimentos' });
+registerBuilding({ zone:'about', pos: mp(375, 670), radius:155,
+  hex: { dyTop: -125, hw: 130, roofH: 55, wallH: 135 },
+  label:'SOBRE MIM', sublabel:'Trajetória & valores' });
+registerBuilding({ zone:'stack', pos: mp(685, 890), radius:155,
+  hex: { dyTop: -125, hw: 130, roofH: 55, wallH: 155 },
+  label:'TECH STACK', sublabel:'Stack do dia a dia' });
+registerBuilding({ zone:'contact', pos: mp(960, 700), radius:155,
+  hex: { dyTop: -125, hw: 115, roofH: 55, wallH: 180 },
+  label:'CONTATO', sublabel:'Vamos conversar?' });
+registerBuilding({ zone:'secret', pos: mp(540, 190), radius:155,
+  hex: { dyTop: -125, hw: 130, roofH: 55, wallH: 135 },
+  label:'???', sublabel:'Arquivo .env' });
+
+const B = {}; // quick zone → building lookup, used to place NPCs relative to buildings
+BUILDINGS.forEach(b => { B[b.zone] = b; });
+
+/* ════════════════════════════════════════════════
+   XP / LEVEL
+   ════════════════════════════════════════════════ */
+const LEVELS = [[0,'EXPLORADOR'],[100,'JÚNIOR'],[250,'MID-LEVEL'],[500,'SÊNIOR'],[800,'STAFF']];
+let xp = save.xp || 0, level = save.level || 1;
+
+function addXP(amount) {
+  xp += amount;
+  const newLevel = LEVELS.filter(([r]) => xp >= r).length;
+  if (newLevel > level) { level = newLevel; showToast('NÍVEL ' + LEVELS[level-1][1] + ' DESBLOQUEADO', 'trophy'); playSfx('levelup'); }
+  updateHUD();
+  writeSave();
+}
+
+function updateHUD() {
+  const [req, name] = LEVELS[level-1];
+  const next = LEVELS[level] ? LEVELS[level][0] : req;
+  const pct = level >= LEVELS.length ? 100 : Math.min(100, (xp-req)/(next-req)*100);
+  document.getElementById('lvl-txt').textContent = 'LVL ' + level + ' — ' + name;
+  document.getElementById('xp-txt').textContent = xp + ' XP';
+  document.getElementById('xp-fill').style.width = pct + '%';
+}
+
+/* ════════════════════════════════════════════════
+   ZONE REVEAL SYSTEM
+   ════════════════════════════════════════════════ */
+const revealedZones = new Set(save.revealedZones || []);
+
+function revealZone(zone) {
+  if (revealedZones.has(zone)) return;
+  revealedZones.add(zone);
+  addXP(zone === 'secret' ? 200 : 60);
+  playSfx('reveal');
+  showToast('ZONA REVELADA: ' + (ZONE_CONTENT[zone]?.title || zone).replace('\n',' '), 'flame');
+  renderQuestList();
+  writeSave();
+}
+
+const talkedNPCs = new Set(save.talkedNPCs || []);
+function talkToNPC(npc) {
+  if (!talkedNPCs.has(npc.def.key)) {
+    talkedNPCs.add(npc.def.key);
+    addXP(40);
+    showToast('CONVERSOU COM ' + npc.def.name, 'chat');
+    renderQuestList();
+    writeSave();
+  }
+  openNPCDialog(npc);
+}
+
+/* ════════════════════════════════════════════════
+   PLAYER
+   ════════════════════════════════════════════════ */
+const SPRITE_DIR = 'assets/player/Idle';
+const SPRITE_DIRS = ['south','south-east','east','north-east','north','north-west','west','south-west'];
+const WALK_FRAMES = 6;
+
+const spritePaths = {};
+SPRITE_DIRS.forEach(d => {
+  spritePaths[`idle_${d}`] = `${SPRITE_DIR}/rotations/${d}.png`;
+  spritePaths[`walk_${d}`] = [];
+  for (let i = 0; i < WALK_FRAMES; i++) {
+    spritePaths[`walk_${d}`].push(`${SPRITE_DIR}/animations/Walk/${d}/frame_${String(i).padStart(3,'0')}.png`);
+  }
+});
+Object.values(spritePaths).flat().forEach(src => { new Image().src = src; });
+
+const playerImgEl = document.createElement('img');
+playerImgEl.className = 'sprite';
+playerImgEl.src = spritePaths['idle_south'];
+document.body.appendChild(playerImgEl);
+
+let spriteDir = 'south';
+let spriteFrame = 0;
+let spriteAnimTime = 0;
+const SPRITE_FPS = 8;
+
+// Plain 2D direction → one of the 8 sprite facings (no isometric remapping —
+// the sprites just face the screen direction the player is walking).
+function getSpriteDir(dx, dy) {
+  if (dx === 0 && dy === 0) return spriteDir;
+  if (dx === 0) return dy < 0 ? 'north' : 'south';
+  if (dy === 0) return dx < 0 ? 'west' : 'east';
+  if (dx < 0) return dy < 0 ? 'north-west' : 'south-west';
+  return dy < 0 ? 'north-east' : 'south-east';
+}
+
+const playerSpawn = { x: B.main.x, y: B.main.y + 170 };
+let playerPos = { x: playerSpawn.x, y: playerSpawn.y };
+
+/* ════════════════════════════════════════════════
+   NPCS
+   ════════════════════════════════════════════════ */
+// sub/answer vêm de content.testimonials (gerado a partir de data/testimonials.ts) — ver topo do arquivo.
+const testimonialByKey = Object.fromEntries(content.testimonials.map(t => [t.npcKey, t]));
+const NPC_DEFS = [
+  { key:'kauan', pos: { x: 1356, y: 774 }, imgPath:'assets/npcs/kauan/Idle/rotations/south.png',
+    name:'KAUAN', sub: testimonialByKey.kauan.sub,
+    question:'O que acha de João Paulo?',
+    answer: testimonialByKey.kauan.answer },
+  { key:'vargas', pos: { x: 1976, y: 1721 }, imgPath:'assets/npcs/vargas/Idle/rotations/south.png',
+    name:'VARGAS', sub: testimonialByKey.vargas.sub,
+    question:'O que acha de João Paulo?',
+    answer: testimonialByKey.vargas.answer },
+  { key:'fernando', pos: { x: 2465, y: 1073 }, imgPath:'assets/npcs/fernando/Idle/rotations/south.png',
+    name:'FERNANDO', sub: testimonialByKey.fernando.sub,
+    question:'O que acha de João Paulo?',
+    answer: testimonialByKey.fernando.answer },
+];
+
+const NPCS = NPC_DEFS.map(def => {
+  const imgEl = document.createElement('img');
+  imgEl.className = 'sprite';
+  imgEl.src = def.imgPath;
+  document.body.appendChild(imgEl);
+  const nameEl = document.createElement('div');
+  nameEl.className = 'npc-name';
+  nameEl.textContent = def.name;
+  document.body.appendChild(nameEl);
+  return { def, imgEl, nameEl };
+});
+
+/* ════════════════════════════════════════════════
+   QUEST LIST
+   ════════════════════════════════════════════════ */
+const MISSIONS = [
+  ...BUILDINGS.map(b => ({ type:'zone', key:b.zone, label:b.label, xp: b.zone==='secret' ? 200 : 60 })),
+  ...NPCS.map(n => ({ type:'npc', key:n.def.key, label:'Conversar com ' + n.def.name, xp:40 })),
+];
+const questListEl = document.getElementById('quest-list');
+const questCardEl = document.getElementById('quest-card');
+let allMissionsDone = save.allMissionsDone || false;
+if (allMissionsDone) questCardEl.classList.add('all-done');
+
+function renderQuestList() {
+  let doneCount = 0;
+  questListEl.innerHTML = MISSIONS.map(m => {
+    const done = m.type === 'zone' ? revealedZones.has(m.key) : talkedNPCs.has(m.key);
+    if (done) doneCount++;
+    return `<div class="quest-row${done?' done':''}"><span class="quest-name"><span class="quest-check"></span>${m.label}</span><span class="quest-xp">+${m.xp} XP</span></div>`;
+  }).join('');
+
+  if (doneCount === MISSIONS.length && !allMissionsDone) {
+    allMissionsDone = true;
+    questCardEl.classList.add('all-done');
+    addXP(300);
+    playSfx('complete');
+    showToast('CIDADE 100% EXPLORADA — +300 XP BÔNUS', 'star');
+    const flash = document.getElementById('completion-flash');
+    flash.classList.remove('active');
+    void flash.offsetWidth;
+    flash.classList.add('active');
+    writeSave();
+    setTimeout(showCompletionOverlay, 900);
+  }
+}
+renderQuestList();
+updateHUD();
+
+// MAIN HQ starts already known (it's where the player spawns) — everything
+// else reveals by walking up and pressing E.
+revealZone('main');
+
+/* ════════════════════════════════════════════════
+   INPUT
+   ════════════════════════════════════════════════ */
+const keys = {};
+function handleInteract() {
+  if (npcDialogOpen) { advanceNPCDialog(); return; }
+  if (overlayOpen) return;
+  if (nearNPC) { playSfx('talk'); talkToNPC(nearNPC); return; }
+  if (nearBuilding) { playSfx('interact'); flashBuildingLabel(nearBuilding.zone); revealZone(nearBuilding.zone); openZone(nearBuilding.zone); }
+}
+
+window.addEventListener('keydown', e => {
+  keys[e.key] = true;
+  if (e.key === 'e' || e.key === 'E') handleInteract();
+  if (e.key === 'Escape') { closeNPCDialog(); closeOverlay(); }
+});
+window.addEventListener('keyup', e => { keys[e.key] = false; });
+
+window.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive:false });
+document.addEventListener('gesturestart', e => e.preventDefault());
+
+// mobile: real on-screen D-pad + [E] button (wired up in the TOUCH CONTROLS section below)
+
+/* ════════════════════════════════════════════════
+   MOVEMENT
+   ════════════════════════════════════════════════ */
+const SPEED = 260; // map-space px/sec
+const NPC_COLLIDE_RADIUS = 28;
+
+// Diamond footprint for buildings (matches the isometric art), circle for NPCs.
+function collidesAt(x, y) {
+  for (const b of BUILDINGS) {
+    if (insideHex(x - b.x, (y - b.y) - b.hex.dyTop, b.hex)) return true;
+  }
+  for (const npc of NPCS) {
+    if (Math.hypot(x - npc.def.pos.x, y - npc.def.pos.y) < NPC_COLLIDE_RADIUS) return true;
+  }
+  return false;
+}
+
+let nearBuilding = null;
+let nearNPC = null;
+let overlayOpen = false;
+let moving = false;
+
+function updatePlayer(dt) {
+  const up    = keys['ArrowUp']    || keys['w'] || keys['W'];
+  const down  = keys['ArrowDown']  || keys['s'] || keys['S'];
+  const left  = keys['ArrowLeft']  || keys['a'] || keys['A'];
+  const right = keys['ArrowRight'] || keys['d'] || keys['D'];
+
+  let dx = 0, dy = 0;
+  if (up) dy -= 1;
+  if (down) dy += 1;
+  if (left) dx -= 1;
+  if (right) dx += 1;
+
+  moving = dx !== 0 || dy !== 0;
+  document.body.classList.toggle('is-moving', moving);
+
+  if (moving) {
+    const len = Math.hypot(dx, dy);
+    const nx = clamp(playerPos.x + (dx/len) * SPEED * dt, EDGE_MARGIN, MAP_PX - EDGE_MARGIN);
+    const ny = clamp(playerPos.y + (dy/len) * SPEED * dt, EDGE_MARGIN, MAP_PX - EDGE_MARGIN);
+    // if already stuck inside a collider (bad coords, tuning slip), never hard-lock —
+    // let this frame's move through so the player can always walk back out
+    const alreadyStuck = collidesAt(playerPos.x, playerPos.y);
+    if (alreadyStuck || !collidesAt(nx, playerPos.y)) playerPos.x = nx;
+    if (alreadyStuck || !collidesAt(playerPos.x, ny)) playerPos.y = ny;
+
+    spriteDir = getSpriteDir(dx, dy);
+    spriteAnimTime += dt;
+    if (spriteAnimTime >= 1 / SPRITE_FPS) {
+      spriteAnimTime = 0;
+      spriteFrame = (spriteFrame + 1) % WALK_FRAMES;
+    }
+    playerImgEl.src = spritePaths[`walk_${spriteDir}`][spriteFrame];
+  } else {
+    spriteFrame = 0;
+    spriteAnimTime = 0;
+    playerImgEl.src = spritePaths[`idle_${spriteDir}`];
+  }
+
+  // NPC proximity — closest NPC within range
+  nearNPC = null;
+  {
+    let closestDist = Infinity;
+    for (const npc of NPCS) {
+      const dist = Math.hypot(playerPos.x - npc.def.pos.x, playerPos.y - npc.def.pos.y);
+      if (dist < 70 && dist < closestDist) { closestDist = dist; nearNPC = npc; }
+    }
+  }
+
+  // find nearest building (revealed or not — E reveals+opens in one step)
+  nearBuilding = null;
+  if (!nearNPC) {
+    let closestDist = Infinity;
+    for (const b of BUILDINGS) {
+      const dist = Math.hypot(playerPos.x - b.x, playerPos.y - b.y);
+      if (dist < b.radius && dist < closestDist) { closestDist = dist; nearBuilding = b; }
+    }
+  }
+}
+
+/* ════════════════════════════════════════════════
+   MINIMAP
+   ════════════════════════════════════════════════ */
+const mmCanvas = document.getElementById('minimap');
+const mmCtx = mmCanvas.getContext('2d');
+mmCanvas.width = 110; mmCanvas.height = 110;
+const MM_SCALE = 100 / MAP_PX;
+
+const ZONE_COLORS = {
+  main:'#FFE600', projects:'#FF3CAC', lab:'#2AFADF',
+  about:'#7B61FF', stack:'#00FF88', contact:'#FF8C00', secret:'#ff3333'
+};
+
+function drawMinimap() {
+  mmCtx.clearRect(0,0,110,110);
+  mmCtx.fillStyle='rgba(5,13,24,0.9)'; mmCtx.fillRect(0,0,110,110);
+
+  BUILDINGS.forEach(b => {
+    mmCtx.fillStyle = ZONE_COLORS[b.zone] || '#ffffff';
+    mmCtx.globalAlpha = 0.8;
+    mmCtx.fillRect(5 + b.x*MM_SCALE - 3, 5 + b.y*MM_SCALE - 3, 6, 6);
+    mmCtx.globalAlpha = 1;
+  });
+
+  mmCtx.fillStyle='#ffffff';
+  mmCtx.beginPath();
+  mmCtx.arc(5 + playerPos.x*MM_SCALE, 5 + playerPos.y*MM_SCALE, 3, 0, Math.PI*2);
+  mmCtx.fill();
+}
+
+/* ════════════════════════════════════════════════
+   HUD
+   ════════════════════════════════════════════════ */
+const interactPrompt = document.getElementById('interact-prompt');
+const zoneName = document.getElementById('zone-name');
+const zoneSub = document.getElementById('zone-sub');
+const debugCoords = document.getElementById('debug-coords');
+
+function updateZoneHUD() {
+  if (npcDialogOpen) { interactPrompt.classList.remove('visible'); return; }
+  if (nearNPC) {
+    zoneName.textContent = nearNPC.def.name;
+    zoneSub.textContent = nearNPC.def.sub;
+    interactPrompt.textContent = '[ E ] CONVERSAR COM ' + nearNPC.def.name;
+    interactPrompt.classList.add('visible');
+  } else if (nearBuilding) {
+    zoneName.textContent = nearBuilding.label;
+    zoneSub.textContent = nearBuilding.sublabel;
+    interactPrompt.textContent = '[ E ] ENTRAR';
+    interactPrompt.classList.add('visible');
+  } else {
+    zoneName.textContent = 'CITY CENTER';
+    zoneSub.textContent = 'EXPLORE A CIDADE';
+    interactPrompt.classList.remove('visible');
+  }
+}
+
+/* ════════════════════════════════════════════════
+   OVERLAY
+   ════════════════════════════════════════════════ */
+const overlay = document.getElementById('overlay');
+const overlayContent = document.getElementById('overlay-content');
+let currentProjIdx = 0;
+
+const npcDialogEl = document.getElementById('npc-dialog');
+const npcDialogPortrait = document.getElementById('npc-dialog-portrait');
+const npcDialogName = document.getElementById('npc-dialog-name');
+const npcDialogSub = document.getElementById('npc-dialog-sub');
+const npcDialogText = document.getElementById('npc-dialog-text');
+const npcDialogPage = document.getElementById('npc-dialog-page');
+const npcDialogNext = document.getElementById('npc-dialog-next');
+
+let npcDialogOpen = false;
+let npcDialogPages = [];
+let npcDialogIdx = 0;
+
+function openNPCDialog(npc) {
+  const { name, sub, question, answer, imgPath } = npc.def;
+  npcDialogPortrait.src = imgPath;
+  npcDialogName.textContent = name;
+  npcDialogSub.textContent = sub;
+  npcDialogPages = [{ text: `Você: "${question}"`, question: true }, ...answer.split('\n\n').map(text => ({ text }))];
+  npcDialogIdx = 0;
+  npcDialogOpen = true;
+  renderNPCDialogPage();
+  npcDialogEl.classList.add('active');
+}
+
+function renderNPCDialogPage() {
+  const page = npcDialogPages[npcDialogIdx];
+  npcDialogText.textContent = page.text;
+  npcDialogText.classList.toggle('question', !!page.question);
+  npcDialogPage.textContent = (npcDialogIdx + 1) + ' / ' + npcDialogPages.length;
+  npcDialogNext.textContent = npcDialogIdx < npcDialogPages.length - 1 ? '[ E ] CONTINUAR' : '[ E ] FECHAR';
+}
+
+function advanceNPCDialog() {
+  if (npcDialogIdx < npcDialogPages.length - 1) {
+    npcDialogIdx++;
+    renderNPCDialogPage();
+  } else {
+    closeNPCDialog();
+  }
+}
+
+function closeNPCDialog() {
+  npcDialogOpen = false;
+  npcDialogEl.classList.remove('active');
+}
+
+function openZone(zone) {
+  const data = ZONE_CONTENT[zone];
+  if (!data) return;
+  if (zone === 'projects') { currentProjIdx = 0; renderProjectOverlay(); }
+  else overlayContent.innerHTML = buildOverlayHTML(data, zone);
+  overlay.classList.add('active');
+  overlayOpen = true;
+}
+
+function showCompletionOverlay() {
+  if (overlayOpen) return;
+  overlayContent.innerHTML = `
+    <div class="ov-id">FINAL SECRETO</div>
+    <div class="ov-title">CIDADE\n100% EXPLORADA</div>
+    <div class="ov-sub">Você desbloqueou tudo que a JOPES.EXE tinha pra mostrar</div>
+    <hr class="ov-divider">
+    <div class="ov-body">Conversou com todo mundo, entrou em cada prédio e até achou o arquivo .env escondido. Por isso o bônus de +300 XP.
+
+Se quiser ir além do mapa, o histórico completo e mais projetos estão em:</div>
+    <div class="contact-links">
+      <a class="contact-link" href="https://www.jopes.com.br/en" target="_blank"><span class="contact-link-icon">${ICONS.globe}</span><div><div>jopes.com.br/en</div><div class="contact-link-sub">Portfolio completo</div></div></a>
+    </div>
+  `;
+  overlay.classList.add('active');
+  overlayOpen = true;
+}
+
+function buildOverlayHTML(data, zone) {
+  let h = `<div class="ov-id">${data.id}</div>`;
+  h += `<div class="ov-title">${data.title}</div>`;
+  if (data.sub) h += `<div class="ov-sub">${data.sub}</div>`;
+  h += `<hr class="ov-divider">`;
+  if (data.body) h += `<div class="ov-body">${data.body}</div>`;
+  if (zone==='about' && data.timeline) {
+    h += `<div class="ov-id" style="margin-top:8px">TIMELINE</div><div class="timeline">`;
+    data.timeline.forEach(t => h += `<div class="tl-item"><div class="tl-date">${t.date}</div><div class="tl-role">${t.role}</div><div class="tl-company">${t.company}</div></div>`);
+    h += `</div>`;
+  }
+  if (zone==='stack' && data.techGrid) {
+    h += `<div class="tech-grid">`;
+    data.techGrid.forEach(cat => {
+      h += `<div class="tech-cat"><div class="tech-cat-name">${cat.cat}</div>`;
+      cat.items.forEach(i => h += `<div class="tech-item">→ ${i}</div>`);
+      h += `</div>`;
+    });
+    h += `</div>`;
+  }
+  if (zone==='lab' && data.labCards) {
+    h += `<div class="lab-grid">`;
+    data.labCards.forEach(c => h += `<div class="lab-card"><div class="lab-card-icon">${ICONS[c.icon]}</div><div class="lab-card-title">${c.title}</div><div class="lab-card-body">${c.body}</div></div>`);
+    h += `</div>`;
+    if (data.link) h += `<div style="margin-top:24px"><a href="${data.link}" target="_blank" class="contact-link" style="display:inline-flex"><span class="contact-link-icon">${ICONS.globe}</span><div><div>${data.link}</div><div class="contact-link-sub">Abrir Backend Lab</div></div></a></div>`;
+  }
+  if (zone==='contact' && data.links) {
+    h += `<div class="contact-links">`;
+    data.links.forEach(l => h += `<a class="contact-link" href="${l.href}" target="_blank"><span class="contact-link-icon">${ICONS[l.icon]}</span><div><div>${l.label}</div><div class="contact-link-sub">${l.sub}</div></div></a>`);
+    h += `</div>`;
+  }
+  if (data.tags) {
+    h += `<div class="tags">`;
+    data.tags.forEach(t => h += `<span class="tag">${t}</span>`);
+    h += `</div>`;
+  }
+  return h;
+}
+
+function renderProjectOverlay() {
+  const p = PROJECTS[currentProjIdx];
+  let h = `<div class="ov-id">${p.code} — ${currentProjIdx+1} / ${PROJECTS.length}</div>`;
+  h += `<div class="ov-title">${p.type}</div><div class="ov-sub">${p.title}</div>`;
+  h += `<hr class="ov-divider"><div class="ov-body">${p.body}</div>`;
+  h += `<div class="tags">` + p.tags.map(t=>`<span class="tag cyan">${t}</span>`).join('') + `</div>`;
+  h += `<div class="proj-nav">`;
+  h += `<button onclick="prevProj()" ${currentProjIdx===0?'disabled':''}>← ANTERIOR</button>`;
+  h += `<button onclick="nextProj()" ${currentProjIdx===PROJECTS.length-1?'disabled':''}>PRÓXIMO →</button>`;
+  h += `</div>`;
+  overlayContent.innerHTML = h;
+}
+
+window.prevProj = () => { if (currentProjIdx>0) { currentProjIdx--; renderProjectOverlay(); } };
+window.nextProj = () => { if (currentProjIdx<PROJECTS.length-1) { currentProjIdx++; renderProjectOverlay(); } };
+
+function closeOverlay() {
+  overlay.classList.remove('active');
+  overlayOpen = false;
+}
+document.getElementById('overlay-close').addEventListener('click', closeOverlay);
+overlay.addEventListener('click', e => { if (e.target===overlay) closeOverlay(); });
+
+/* ── TOAST ──────────────────────────────────────── */
+var toastTimer;
+function showToast(msg, icon) {
+  const el = document.getElementById('toast');
+  el.innerHTML = (icon ? `<span class="toast-icon">${ICONS[icon]}</span>` : '') + msg;
+  el.style.opacity = '1';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.style.opacity='0', 3000);
+}
+
+/* ════════════════════════════════════════════════
+   BOOT SEQUENCE
+   ════════════════════════════════════════════════ */
+const bootLines = ['Booting JOPES.EXE…','Carregando o mapa…','Explore a cidade…','Boa sorte.'];
+let bootIdx = 0;
+const bootText = document.getElementById('boot-text');
+(function tick() { if (bootIdx<bootLines.length) { bootText.textContent=bootLines[bootIdx++]; setTimeout(tick,420); } })();
+
+setTimeout(() => {
+  const boot = document.getElementById('boot');
+  boot.style.transition='opacity 0.8s'; boot.style.opacity='0';
+  setTimeout(()=>boot.remove(),800);
+  if (!introSeen) {
+    document.getElementById('intro-modal').classList.add('active');
+  } else {
+    showToast('CHEGUE PERTO DE UM PRÉDIO E APERTE [ E ]', 'city');
+  }
+}, 2600);
+
+
+/* ════════════════════════════════════════════════
+   INTRO MODAL + CV SHORTCUT
+   ════════════════════════════════════════════════ */
+function closeIntro() {
+  introSeen = true;
+  writeSave();
+  document.getElementById('intro-modal').classList.remove('active');
+}
+function goToCV() {
+  revealZone('contact');
+  openZone('contact');
+}
+document.getElementById('intro-play').addEventListener('click', () => { closeIntro(); });
+document.getElementById('intro-skip').addEventListener('click', () => { closeIntro(); goToCV(); });
+document.getElementById('cv-btn-icon').innerHTML = ICONS.cv;
+document.getElementById('cv-btn').addEventListener('click', goToCV);
+
+/* ════════════════════════════════════════════════
+   TOUCH CONTROLS (mobile joystick + [E] button)
+   ════════════════════════════════════════════════ */
+const joyBase = document.getElementById('joy-base');
+const joyStick = document.getElementById('joy-stick');
+const JOY_RADIUS = 38;   // max stick travel, px
+const JOY_DEADZONE = 14; // px before a direction registers
+let joyPointerId = null;
+
+function resetJoyKeys() {
+  keys['ArrowUp'] = keys['ArrowDown'] = keys['ArrowLeft'] = keys['ArrowRight'] = false;
+}
+// 8-way sectors of 45°, screen coords (dy>0 = down), reuses the same digital
+// movement flags as WASD so it drives updatePlayer()/getSpriteDir() untouched.
+function applyJoyDirection(dx, dy, dist) {
+  if (dist < JOY_DEADZONE) { resetJoyKeys(); return; }
+  const deg = (Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360;
+  const sector = Math.round(deg / 45) % 8;
+  const RIGHT=0, LEFT=1, UP=2, DOWN=3;
+  const table = [
+    [1,0,0,0], [1,0,0,1], [0,0,0,1], [0,1,0,1],
+    [0,1,0,0], [0,1,1,0], [0,0,1,0], [1,0,1,0],
+  ][sector];
+  keys['ArrowRight'] = !!table[RIGHT];
+  keys['ArrowLeft']  = !!table[LEFT];
+  keys['ArrowUp']    = !!table[UP];
+  keys['ArrowDown']  = !!table[DOWN];
+}
+function updateJoy(clientX, clientY) {
+  const rect = joyBase.getBoundingClientRect();
+  const dx = clientX - (rect.left + rect.width / 2);
+  const dy = clientY - (rect.top + rect.height / 2);
+  const dist = Math.hypot(dx, dy);
+  const clamped = Math.min(dist, JOY_RADIUS);
+  const angle = Math.atan2(dy, dx);
+  joyStick.style.transform = `translate(calc(-50% + ${Math.cos(angle) * clamped}px), calc(-50% + ${Math.sin(angle) * clamped}px))`;
+  applyJoyDirection(dx, dy, dist);
+}
+function endJoy(e) {
+  if (e.pointerId !== joyPointerId) return;
+  joyPointerId = null;
+  joyBase.classList.remove('active');
+  joyStick.style.transform = 'translate(-50%, -50%)';
+  resetJoyKeys();
+}
+joyBase.addEventListener('pointerdown', e => {
+  e.preventDefault();
+  joyPointerId = e.pointerId;
+  joyBase.classList.add('active');
+  joyBase.setPointerCapture(e.pointerId);
+  updateJoy(e.clientX, e.clientY);
+});
+joyBase.addEventListener('pointermove', e => { if (e.pointerId === joyPointerId) updateJoy(e.clientX, e.clientY); });
+joyBase.addEventListener('pointerup', endJoy);
+joyBase.addEventListener('pointercancel', endJoy);
+
+document.getElementById('touch-e').addEventListener('pointerdown', e => { e.preventDefault(); handleInteract(); });
+
+/* ════════════════════════════════════════════════
+   BUILDING LABELS
+   ════════════════════════════════════════════════ */
+const labelContainer = document.getElementById('building-labels');
+const ZONE_COLORS_HEX = ZONE_COLORS;
+
+const buildingLabelEls = BUILDINGS.map(b => {
+  const div = document.createElement('div');
+  div.className = 'blabel';
+  div.innerHTML = `<div class="blabel-id"><span class="blabel-dot" style="background:${ZONE_COLORS_HEX[b.zone]||'#fff'}"></span>${b.sublabel}</div><div class="blabel-name">${b.label}</div>`;
+  labelContainer.appendChild(div);
+  return { el: div, b };
+});
+const buildingLabelByZone = {};
+buildingLabelEls.forEach(({ el, b }) => { buildingLabelByZone[b.zone] = el; });
+
+function flashBuildingLabel(zone) {
+  const el = buildingLabelByZone[zone];
+  if (!el) return;
+  el.classList.remove('flash');
+  void el.offsetWidth; // restart animation
+  el.classList.add('flash');
+}
+
+/* ════════════════════════════════════════════════
+   GAME LOOP
+   ════════════════════════════════════════════════ */
+let lastT = performance.now();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const now = performance.now();
+  const dt = Math.min((now - lastT) / 1000, 0.05);
+  lastT = now;
+
+  if (!overlayOpen && !npcDialogOpen) updatePlayer(dt);
+
+  // camera: clamp so the viewport never shows past the map's real edge
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const camX = clamp(playerPos.x - vw/2, 0, Math.max(0, MAP_PX - vw));
+  const camY = clamp(playerPos.y - vh/2, 0, Math.max(0, MAP_PX - vh));
+  mapLayerEl.style.transform = `translate(${-camX}px, ${-camY}px)`;
+
+  playerImgEl.style.left = (playerPos.x - camX) + 'px';
+  playerImgEl.style.top  = (playerPos.y - camY) + 'px';
+
+  for (const npc of NPCS) {
+    npc.imgEl.style.left = (npc.def.pos.x - camX) + 'px';
+    npc.imgEl.style.top  = (npc.def.pos.y - camY) + 'px';
+    npc.nameEl.style.left = (npc.def.pos.x - camX) + 'px';
+    npc.nameEl.style.top  = (npc.def.pos.y - camY - 58) + 'px';
+  }
+
+  buildingLabelEls.forEach(({ el, b }) => {
+    el.style.left = (b.x - camX) + 'px';
+    el.style.top  = (b.y - camY - 70) + 'px';
+    el.classList.toggle('near', nearBuilding === b);
+  });
+
+  updateZoneHUD();
+  drawMinimap();
+  debugCoords.textContent = `X: ${Math.round(playerPos.x)}   Y: ${Math.round(playerPos.y)}`;
+}
+animate();
+</script>
+</body>
+</html>
