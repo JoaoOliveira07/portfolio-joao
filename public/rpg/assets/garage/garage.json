@@ -37,13 +37,15 @@
     "length": 69.5,
     "traffic": true,
     "credit": "“2019 Chevrolet Corvette C8 Stingray” por Hari (Sketchfab) · CC BY 4.0",
-    "rotY": -1.5708
+    "rotY": -1.5708,
+    "brake": "Brake.?Lights|Taillights"
   },
   "porsche": {
     "file": "porsche.glb",
     "length": 66.9,
     "traffic": true,
-    "credit": "“Porsche” por Batman KNIGHTs (Sketchfab) · CC BY 4.0"
+    "credit": "“Porsche” por Batman KNIGHTs (Sketchfab) · CC BY 4.0",
+    "brake": "^(Bottom_Rear_Brake_Light|Rear_Light)$"
   },
   "ferrari": {
     "file": "ferrari.glb",
@@ -55,21 +57,24 @@
     "file": "jetta.glb",
     "length": 70.5,
     "traffic": true,
-    "credit": "“2019 Volkswagen Jetta” por Ddiaz Design (Sketchfab) · CC BY-NC-SA 4.0"
+    "credit": "“2019 Volkswagen Jetta” por Ddiaz Design (Sketchfab) · CC BY-NC-SA 4.0",
+    "brake": "^BACKLIGHT$"
   },
   "passat": {
     "file": "passat.glb",
     "length": 73.0,
     "traffic": true,
     "credit": "“2022 Volkswagen Passat PHEV” por Ddiaz Design (Sketchfab) · CC BY-NC-SA 4.0",
-    "hide": "^83_hub"
+    "hide": "^83_hub",
+    "brake": "Taillight_glass"
   },
   "a45": {
     "file": "a45.glb",
     "length": 65.0,
     "traffic": true,
     "credit": "“Mercedes-Benz A45 AMG 2018” por Lexyc16 (Sketchfab) · CC BY-NC 4.0",
-    "rotY": -1.5708
+    "rotY": -1.5708,
+    "brake": "^backlight_glass"
   },
   "civic": {
     "file": "civic.glb",

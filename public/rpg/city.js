@@ -1177,7 +1177,7 @@ function build({ mapPx, groundEl, worldEl }) {
   }
   function placeTrain() {
     train.forEach((o, k) => {
-      const v = metro.v + (k - 1) * 78 * metro.dir, sp = S(MU, v);
+      const v = metro.v + (k - 1) * 100 * metro.dir, sp = S(MU, v);   // car spacing = the real-train car length
       o.u = MU; o.v = v; o.x = sp.x; o.y = sp.y;
       o.el.style.left = (sp.x + TRAIN_VB.x) + 'px'; o.el.style.top = (sp.y + TRAIN_VB.y) + 'px';
       o.bbox = { x0: sp.x - 60, y0: sp.y - 150, x1: sp.x + 60, y1: sp.y - 40 };
@@ -1300,6 +1300,7 @@ function build({ mapPx, groundEl, worldEl }) {
     }
     { plane.innerHTML = ''; const cv = document.createElement('canvas'); cv.width = Math.round(gl.W * gl.DPR); cv.height = Math.round(gl.H * gl.DPR); cv.className = 'veh-canvas'; plane.appendChild(cv); gl.drawPlane(cv); plane.cv = cv; }
     // new light → redraw every vehicle (vehicles.js already switched its lights)
+    window.addEventListener('train:model', () => train.forEach(o => gl.drawTrain(o)));
     window.addEventListener('city:period', () => { cars.forEach(o => gl.drawCar(o)); gl.drawHeli(heli); gl.drawPlane(plane.cv); train.forEach(o => gl.drawTrain(o)); peds.forEach(o => { o.heading = -1; }); gl.clearPedCache?.(); });
     document.body.classList.add('gl-vehicles');
   }

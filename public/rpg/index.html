@@ -1042,7 +1042,7 @@ body.debug #debug-coords { display: block; bottom: 220px; }
   </div>
 </div>
 
-<script src="city.js?v=20"></script>
+<script src="city.js?v=23"></script>
 <script>
 'use strict';
 
@@ -1572,7 +1572,7 @@ function preloadGarageNear() {
   const light = matchMedia('(pointer: coarse)').matches || navigator.connection?.saveData || /2g|3g/.test(navigator.connection?.effectiveType || '');
   if (!light) addEventListener('keydown', function idle() {
     removeEventListener('keydown', idle);
-    setTimeout(() => (window.requestIdleCallback || setTimeout)(() => { if (!garagePreloaded) { garagePreloaded = true; window.JOPES_GARAGE?.loadModels?.(); } }), 6000);
+    setTimeout(() => { const go = () => { if (!garagePreloaded) { garagePreloaded = true; window.JOPES_GARAGE?.loadModels?.(); } }; window.requestIdleCallback ? requestIdleCallback(go, { timeout: 2000 }) : go(); }, 4000);   // the game loop is never idle: the timeout makes sure it runs
   });
 }
 let nearNPC = null;
@@ -2353,11 +2353,16 @@ function applyGarageCar() {
 }
 window.addEventListener('garage:ready', applyGarageCar);
 window.addEventListener('garage:models', applyGarageCar);
+// on desktop the old placeholder cars stay hidden until the real models arrive (a few seconds in)
+if (!(matchMedia('(pointer: coarse)').matches || navigator.connection?.saveData)) {
+  const hideOld = () => CITY.cars.forEach(c => { if (c !== CITY.playerCar && !c.model) c.el.style.visibility = 'hidden'; });
+  hideOld(); window.addEventListener('garage:ready', hideOld);
+}
 // traffic: once the downloaded cars are in, every car on the street (and parked) becomes one of them
 window.addEventListener('garage:models', () => {
   const ids = window.JOPES_GARAGE.traffic?.() || [];
   if (!ids.length || !CITY.gl) return;
-  let n = 0; CITY.cars.filter(c => c !== CITY.playerCar && !c.model).forEach(c => { c.model = ids[n++ % ids.length]; CITY.redraw(c); });
+  let n = 0; CITY.cars.filter(c => c !== CITY.playerCar && !c.model).forEach(c => { c.model = ids[n++ % ids.length]; CITY.redraw(c); c.el.style.visibility = ''; });
 });
 if (window.JOPES_GARAGE) applyGarageCar();
 function openGarage() {
@@ -2927,7 +2932,7 @@ animate();
 </script>
 <!-- 3D vehicles: three.js is vendored in assets/vendor (MIT), nothing loads from outside -->
 <script type="importmap">{ "imports": { "three": "./assets/vendor/three.module.min.js" } }</script>
-<script type="module" src="vehicles.js?v=30"></script>
-<script type="module" src="world3d.js?v=17"></script>
+<script type="module" src="vehicles.js?v=35"></script>
+<script type="module" src="world3d.js?v=18"></script>
 </body>
 </html>

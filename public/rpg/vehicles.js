@@ -433,10 +433,10 @@ function boot() {
     }
     if (cfg.brake) {
       const B = new RegExp(cfg.brake, 'i');
-      g.traverse(o => { if (!o.isMesh || !B.test(o.material.name)) return;
+      g.traverse(o => { if (!o.isMesh || !(B.test(o.material.name) || B.test(o.name))) return;
         const m = o.material = o.material.clone();                     // own copy per car (braking is per car)
         m.emissive = new THREE.Color(0xff1a1a); if (!m.emissiveMap) m.emissiveMap = m.map;
-        const set = on => { m.emissiveIntensity = on ? 2.4 : 0.35; };
+        const em = m.emissiveMap, set = on => { const map = on ? null : em; if (m.emissiveMap !== map) { m.emissiveMap = map; m.needsUpdate = true; } m.emissiveIntensity = on ? 3.2 : 0.35; };   // braking: a solid red glow over the whole lens
         set(false); o.userData.brake = set; tails.push(o); });
     }
     g.userData = { wheels, tails, tail: tails[0], glb: true, moto: !!cfg.moto };
@@ -955,6 +955,16 @@ function boot() {
     return g;
   }
   const trainModels = { cab: buildTrain(true), mid: buildTrain(false) };
+  /* the real train: a CPTM Série 9000 car (assets/models/train.glb) replaces the boxes once loaded.
+     Each car ~2x a car's length; the underframe/platform props that came with the model are hidden. */
+  const TRAIN = { file: 'assets/models/train.glb', length: 130, deck: 71,
+    hide: '^(Cubo00[1-35689]_0|Cubo01[02356]_0|Cilindro_0|corte_porta_0|Plano_0|Plano001_0)$' };
+  new GLTFLoader().loadAsync(TRAIN.file).then(g => {
+    const w = normalizeGLB(g.scene, 'train', { length: TRAIN.length, rotY: window.TRAIN_ROTY ?? Math.PI / 2, hide: TRAIN.hide, env: 1.2 });
+    w.position.y = TRAIN.deck;
+    for (const m of [trainModels.cab, trainModels.mid]) { m.userData.body = null; m.clear(); m.add(m === trainModels.cab ? w : w.clone(true)); }
+    window.dispatchEvent(new Event('train:model'));
+  }).catch(e => console.warn('[train] modelo não carregou', e));
   function drawTrain(o) {
     const m = o.cab ? trainModels.cab : trainModels.mid;
     // the front car's cab faces the direction of travel, the rear one faces backwards
