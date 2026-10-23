@@ -6,6 +6,8 @@
 <title>JOPES.EXE — João Paulo Oliveira</title>
 <meta name="description" content="João Paulo Oliveira — Backend Engineer (Java, Spring Boot, AWS, Terraform). Portfolio em forma de cidade isométrica navegável.">
 <link rel="alternate" href="cv/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23050d18'/%3E%3Ctext x='12' y='17' font-size='14' fill='%23FFE600' text-anchor='middle' font-family='monospace' font-weight='bold'%3EJ%3C/text%3E%3C/svg%3E">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,15 +38,16 @@ body {
 }
 #cv-text-link:hover { color: var(--text); }
 
-/* ── MAP LAYER ────────────────────────────────────
-   Flat 2D map image, bigger than the viewport. Panned in JS by translating
-   it opposite to the player — plain 2D scroller, no 3D/isometric camera. */
-#viewport { position: fixed; inset: 0; overflow: hidden; z-index: -1; }
-#mapLayer {
-  position: absolute; left: 0; top: 0;
-  background: url('assets/map/image.png') center center / 100% 100% no-repeat;
-  will-change: transform;
-}
+/* ── MAP LAYERS ───────────────────────────────────
+   The city is drawn by city.js as SVG. Two layers, both panned by the camera:
+     #mapLayer  — the ground (roads, sidewalks, lamps), always underneath
+     #worldPan  — everything with height (buildings, trees, cars) plus the
+                  player/NPC sprites, z-sorted so you can walk behind things */
+#viewport { position: fixed; inset: 0; overflow: hidden; z-index: -1; background: #07090d; }
+#mapLayer { position: absolute; left: 0; top: 0; will-change: transform; transform-origin: 0 0; }
+#mapLayer svg { display: block; }
+#world { position: fixed; inset: 0; overflow: hidden; z-index: 6; pointer-events: none; }
+#worldPan { position: absolute; left: 0; top: 0; will-change: transform; transform-origin: 0 0; }
 
 /* ── BOOT ─────────────────────────────────────── */
 #boot {
@@ -125,7 +128,6 @@ body {
 .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
 .icon-btn svg { width: 16px; height: 16px; }
 #cv-btn { width: auto; padding: 0 12px; gap: 7px; font-size: 10px; letter-spacing: 0.15em; font-weight: 700; }
-#serious-mode-link { width: auto; padding: 0 12px; font-size: 10px; letter-spacing: 0.15em; font-weight: 700; text-decoration: none; }
 
 /* interact prompt */
 #interact-prompt {
@@ -225,7 +227,7 @@ body {
 .sprite {
   position: fixed; pointer-events: none; z-index: 6;
   image-rendering: pixelated; image-rendering: crisp-edges;
-  transform: translate(-50%, -88%); width: 64px; height: 64px;
+  transform: translate(-50%, -88%); width: 48px; height: 48px;   /* native pixel-art size: in scale with cars & buildings */
 }
 
 /* ── NPC DIALOG BOX ─────────────────────────────── */
@@ -408,6 +410,71 @@ body {
 .contact-link-icon svg { width: 18px; height: 18px; }
 .contact-link-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
+/* ── PROJECT SHEET (real data from portfolio-joao) ── */
+.proj-head { display: grid; grid-template-columns: minmax(180px, 300px) 1fr; gap: 24px; align-items: start; margin-bottom: 22px; }
+.proj-media { border: 1px solid rgba(255,255,255,0.1); background: #05080c; aspect-ratio: 1 / 1; overflow: hidden; }
+.proj-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.proj-title { font-size: clamp(22px, 3.4vw, 36px) !important; white-space: normal !important; }
+.proj-role { font-size: 11px; color: var(--accent); line-height: 1.6; margin-top: 10px; letter-spacing: 0.03em; }
+.proj-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.proj-badge { font-size: 9px; letter-spacing: 0.2em; padding: 3px 8px; border: 1px solid rgba(255,255,255,0.15); color: var(--muted); text-transform: uppercase; }
+.proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 14px 0; }
+.proj-sec { border: 1px solid rgba(255,255,255,0.07); padding: 14px 16px; }
+.proj-sec h4, .proj-h { font-size: 10px; letter-spacing: 0.3em; color: var(--muted); margin: 0 0 8px; font-weight: 700; }
+.proj-sec p { font-size: 12.5px; line-height: 1.75; color: #b0c4d4; }
+.proj-list { list-style: none; margin: 0 0 18px; padding: 0; }
+.proj-list li { font-size: 12.5px; line-height: 1.7; color: #b0c4d4; padding-left: 16px; position: relative; margin-bottom: 4px; }
+.proj-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+.proj-link { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--accent); color: var(--accent); padding: 8px 14px; font-size: 11px; letter-spacing: 0.2em; text-decoration: none; }
+.proj-link:hover { background: rgba(255,230,0,0.12); }
+@media (max-width: 640px) { .proj-head, .proj-grid { grid-template-columns: 1fr; } .proj-media { max-width: 260px; } }
+body.pick-hover, body.pick-hover * { cursor: pointer; }
+
+/* ── TOUR ── */
+#tour-card { position: fixed; left: 50%; bottom: 34px; transform: translate(-50%, 20px); width: min(640px, 92vw); z-index: 35;
+  background: var(--panel); border: 1px solid rgba(255,230,0,0.5); box-shadow: 0 0 30px rgba(255,230,0,0.12); padding: 16px 20px 14px;
+  opacity: 0; pointer-events: none; transition: opacity .35s, transform .35s; }
+body.touring #tour-card { opacity: 1; transform: translate(-50%, 0); pointer-events: all; }
+#tour-step { font-size: 9px; letter-spacing: .35em; color: var(--muted); }
+#tour-title { font-size: 18px; font-weight: 900; color: var(--accent); margin: 6px 0 6px; letter-spacing: .02em; }
+#tour-text { font-size: 12.5px; line-height: 1.7; color: #c7d4df; min-height: 3.4em; }
+#tour-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; gap: 10px; }
+#tour-dots { display: flex; gap: 5px; } #tour-dots i { width: 14px; height: 3px; background: #1d2a36; display: block; } #tour-dots i.on { background: var(--accent); }
+.tour-btn { font-family: inherit; font-size: 10px; letter-spacing: .15em; font-weight: 700; background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text); padding: 6px 10px; margin-left: 6px; cursor: pointer; }
+.tour-btn:hover { border-color: var(--accent); color: var(--accent); }
+body.touring #hud-left, body.touring #controls-hint, body.touring #interact-prompt, body.touring #touch-controls, body.touring #zone-card { opacity: 0 !important; pointer-events: none !important; }
+
+/* ── TIME OF DAY + WEATHER ── */
+.icon-btn.wide { width: auto; padding: 0 10px; gap: 6px; font-size: 10px; letter-spacing: .12em; font-weight: 700; }
+@media (pointer: coarse) { .icon-btn.wide .lbl { display: none; } }
+#sky, #fog, #rain, #flash { position: fixed; inset: 0; pointer-events: none; }
+#sky { z-index: 14; transition: background 2s; }
+body[data-period=night] #sky { background: radial-gradient(ellipse at 50% -20%, rgba(90,120,220,.10), transparent 60%), rgba(8,16,40,.10); }
+body[data-period=dusk]  #sky { background: linear-gradient(180deg, rgba(255,120,60,.16), rgba(130,60,150,.10) 70%, rgba(40,20,60,.10)); }
+body[data-period=dawn]  #sky { background: linear-gradient(180deg, rgba(255,175,195,.14), rgba(150,175,255,.07)); }
+body[data-period=day]   #sky { background: radial-gradient(ellipse at 20% -10%, rgba(255,245,215,.10), transparent 60%); }
+body[data-period=day] #viewport { background: #3a4452; }
+/* lights matter less by day */
+body[data-period=day] .ground-fx ellipse:not(.halo):not(.g-ring):not(.g-ring-dash) { opacity: .12; }
+body[data-period=day] .ground-fx .halo.lit { opacity: .45; }
+body[data-period=day] .ground-fx .g-lamp { opacity: .3; }
+body[data-period=day] .obj.car.ai-car .headbeam { display: none; }
+body[data-period=day] #worldPan .obj .fx .glow, body[data-period=day] #worldPan .obj .fx .beam { opacity: .45; }
+body[data-period=dawn] .obj.car.ai-car .headbeam, body[data-period=dusk] .obj.car.ai-car .headbeam { opacity: .4; }
+/* rain: wet, darker, more reflective ground */
+#rain { z-index: 16; }
+body[data-weather=rain] #mapLayer { filter: brightness(.8) saturate(1.15) contrast(1.06); }
+body[data-weather=rain] .ground-fx { filter: brightness(1.5); }
+body[data-weather=rain] #sky { box-shadow: inset 0 0 0 100vmax rgba(20,30,45,.18); }
+#flash { z-index: 17; background: #dfe9ff; opacity: 0; }
+#flash.on { animation: flash 0.9s ease-out; }
+@keyframes flash { 0% { opacity: .35; } 8% { opacity: .03; } 14% { opacity: .25; } 100% { opacity: 0; } }
+/* fog */
+#fog { z-index: 15; opacity: 0; transition: opacity 3s;
+  background: radial-gradient(ellipse at 50% 50%, transparent 25%, rgba(170,185,200,.32) 75%), linear-gradient(180deg, rgba(190,200,215,.18), rgba(150,165,185,.10)); }
+body[data-weather=fog] #fog { opacity: 1; }
+body[data-weather=fog] #mapLayer, body[data-weather=fog] #world { filter: saturate(.75) brightness(1.04); }
+
 /* ── BUILDING LABELS ────────────────────────────── */
 #building-labels { position: fixed; inset: 0; pointer-events: none; z-index: 15; }
 .blabel {
@@ -446,6 +513,397 @@ body {
   white-space: nowrap;
   text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 0 2px 3px rgba(0,0,0,0.8);
 }
+
+/* ── CITY ART (generated by city.js) ────────────── */
+.g-road { fill: #07090d; }
+.g-grid { fill: none; stroke: rgba(150,175,200,0.06); stroke-width: 1; }
+.g-lane { stroke: rgba(200,215,230,0.15); stroke-width: 2; stroke-dasharray: 16 22; }
+.g-cross { fill: none; stroke: rgba(200,215,230,0.07); stroke-width: 1; }
+.g-zebra { stroke: rgba(200,215,230,0.09); stroke-width: 5; }
+.g-block { fill: #0d1118; stroke: rgba(190,210,230,0.34); stroke-width: 1.2; }
+.g-curb-l { fill: #0a0d13; stroke: rgba(190,210,230,0.2); stroke-width: 1; }
+.g-curb-r { fill: #06080c; stroke: rgba(190,210,230,0.2); stroke-width: 1; }
+.g-inner { fill: #0a0e14; stroke: rgba(190,210,230,0.16); stroke-width: 1; stroke-dasharray: 3 5; }
+.g-park { fill: #08110d; }
+.g-dash { stroke: rgba(190,210,230,0.10); stroke-width: 1.2; stroke-linecap: round; }
+.g-grass { stroke: rgba(80,200,140,0.18); stroke-width: 1.2; stroke-linecap: round; }
+.g-ring { fill: none; stroke: rgba(255,230,0,0.25); stroke-width: 1.2; }
+.g-ring-dash { fill: none; stroke: rgba(255,230,0,0.2); stroke-width: 1.2; stroke-dasharray: 4 7; }
+.g-path { stroke: rgba(190,210,230,0.18); stroke-width: 1; stroke-dasharray: 2 6; }
+.g-park-line { stroke: rgba(200,215,230,0.2); stroke-width: 1.5; }
+.g-post { stroke: rgba(190,210,230,0.45); stroke-width: 1.5; }
+.g-lamp.warm { fill: #ffb060; } .g-lamp.cool { fill: #8cc8ff; }
+.halo { opacity: 0.3; transition: opacity 1s; } .halo.lit { opacity: 1; }
+
+#worldPan .obj { position: absolute; overflow: visible; transition: opacity 0.25s; }
+#worldPan .obj.xray { opacity: 0.35; }
+.obj polygon, .obj line { stroke-linejoin: round; stroke-linecap: round; }
+.obj .ft { fill: #161c26; stroke: rgba(215,228,240,0.62); stroke-width: 1.1; }
+.obj .fl { fill: #0f141b; stroke: rgba(215,228,240,0.62); stroke-width: 1.1; }
+.obj .fr { fill: #0a0e14; stroke: rgba(215,228,240,0.62); stroke-width: 1.1; }
+.filler .ft, .filler .fl, .filler .fr { stroke: rgba(215,228,240,0.38); }
+.obj .fc { fill: #0c1118; stroke: rgba(215,228,240,0.62); stroke-width: 1.1; }
+.obj .lip { fill: none; stroke: rgba(215,228,240,0.22); stroke-width: 1; }
+.filler .fc { stroke: rgba(215,228,240,0.38); }
+.obj polygon.band.fc { fill: currentColor; fill-opacity: 0.6; stroke: none; }
+.obj polygon.box-lit.fc { fill: currentColor; fill-opacity: 0.45; stroke: none; }
+.obj .container.fc { stroke: rgba(255,60,172,0.55); }
+.obj .planter.fc { fill: #1a1430; stroke: rgba(155,123,255,0.6); }
+.obj .tshadow { fill: rgba(0,0,0,0.35); stroke: none; }
+.obj .leafc { fill: #0c1c15; stroke: rgba(110,220,160,0.55); stroke-width: 1.1; }
+.obj .leaf-hl { fill: none; stroke: rgba(160,255,200,0.35); stroke-width: 1.4; stroke-linecap: round; }
+.obj .flower { fill: #ff7ac8; }
+.obj .shopfront { fill-opacity: 0.45; }
+.obj .fan { fill: #06080c; stroke: rgba(215,228,240,0.45); stroke-width: 0.8; }
+.obj .wheel { fill: #05070a; stroke: rgba(215,228,240,0.5); stroke-width: 1; }
+.obj.car .car-glass { fill: rgba(140,200,255,0.16); }
+.obj.car .car-win { fill: #0b1820; }
+.obj.car .car-roof { fill: #121a24; }
+.obj.car.ai-car .headbeam { display: inline; opacity: 0.6; }
+.obj .sig { opacity: 0.15; filter: url(#city-glow); }
+.obj .sig-r { fill: #ff4040; animation: sig-r 9s steps(1) infinite; }
+.obj .sig-a { fill: #ffb000; animation: sig-a 9s steps(1) infinite; }
+.obj .sig-g { fill: #39ff88; animation: sig-g 9s steps(1) infinite; }
+.obj .sig2-r { fill: #ff4040; animation: sig2-r 9s steps(1) infinite; }
+.obj .sig2-a { fill: #ffb000; animation: sig2-a 9s steps(1) infinite; }
+.obj .sig2-g { fill: #39ff88; animation: sig2-g 9s steps(1) infinite; }
+@keyframes sig2-r { 0% { opacity: 1; } 55%, 100% { opacity: 0.15; } }
+@keyframes sig2-g { 0% { opacity: 0.15; } 55% { opacity: 1; } 92%, 100% { opacity: 0.15; } }
+@keyframes sig2-a { 0% { opacity: 0.15; } 92% { opacity: 1; } }
+.obj .lamp-glow { filter: url(#city-glow); opacity: .95; }
+.obj .lamp-glow.warm { fill: #ffc27a; } .obj .lamp-glow.cool { fill: #a9d8ff; }
+body[data-period=day] .obj .lamp-glow { opacity: 0; }
+body[data-period=dusk] .obj .lamp-glow, body[data-period=dawn] .obj .lamp-glow { opacity: .6; }
+@keyframes sig-g { 0% { opacity: 1; } 45%, 100% { opacity: 0.15; } }
+@keyframes sig-a { 0% { opacity: 0.15; } 45% { opacity: 1; } 55%, 100% { opacity: 0.15; } }
+@keyframes sig-r { 0% { opacity: 0.15; } 55%, 100% { opacity: 1; } }
+.obj .hatch { stroke: rgba(215,228,240,0.14); stroke-width: 1; }
+.obj .win { fill: #06080c; stroke: rgba(215,228,240,0.22); stroke-width: 0.8; }
+.obj .win-lit { fill: currentColor; stroke: none; }
+.obj .mast { stroke: rgba(215,228,240,0.62); stroke-width: 1.4; fill: none; }
+.obj .mast.thin { stroke-width: 0.8; stroke: rgba(215,228,240,0.4); }
+.obj .neon-edge { stroke: currentColor; stroke-width: 2; }
+.obj .beacon, .obj .beacon-c { fill: currentColor; }
+.obj .beacon { animation: city-blink 1.6s steps(1) infinite; }
+.obj .sign, .obj .sign-sub { fill: currentColor; font-family: 'Courier New', Courier, monospace; }
+.obj .sign-sub { opacity: 0.9; }
+.obj .sign-dark { fill: rgba(255,90,90,0.55); font-family: 'Courier New', Courier, monospace; }
+.obj .panel { fill: #06080c; stroke: none; }
+.obj .panel-frame { fill: none; stroke: currentColor; stroke-width: 1.6; }
+.obj polygon.band { fill: currentColor; stroke: none; }
+.obj polygon.band.fl { fill-opacity: 0.75; } .obj polygon.band.fr { fill-opacity: 0.45; }
+.obj .led-line { stroke: currentColor; stroke-width: 2; }
+.obj .led { animation: city-flicker 2.2s steps(2) infinite; }
+.obj .ring { fill: none; stroke: currentColor; stroke-width: 1.5; transform-box: fill-box; transform-origin: center; animation: city-ring 2.4s ease-out infinite; }
+.obj .hazard { fill: rgba(255,51,51,0.35); stroke: none; }
+.obj .leaf.ft { fill: #0f2019; stroke: rgba(110,220,160,0.5); }
+.obj .leaf.fl { fill: #0b1813; stroke: rgba(110,220,160,0.5); }
+.obj .leaf.fr { fill: #08120e; stroke: rgba(110,220,160,0.5); }
+.obj .trunk { stroke: rgba(215,228,240,0.45); stroke-width: 2; }
+.obj .head { fill: #ffd27a; }
+.obj .dim-lit .win-lit { fill: #ffd9a0; opacity: 0.32; }
+.obj .gem { stroke: currentColor; stroke-width: 1.2; }
+.obj .gem-l { fill: rgba(255,230,0,0.28); } .obj .gem-r { fill: rgba(255,230,0,0.12); }
+.obj .bob { animation: city-bob 3s ease-in-out infinite; }
+.obj .cursor { animation: city-blink 1.1s steps(1) infinite; }
+
+/* zone glow: dim until the zone is visited, pulses when you're at the door */
+.obj .glow { filter: url(#city-glow); }
+.bld .glow { opacity: 0.5; transition: opacity 0.8s; }
+.bld.lit .glow { opacity: 1; }
+.bld.near .glow { animation: city-pulse 0.9s ease-in-out infinite alternate; }
+.bld-secret .glow { animation: city-flicker-dim 3s steps(3) infinite; }
+.bld-secret.lit .glow { opacity: 1; animation: none; }
+@keyframes city-blink { 50% { opacity: 0.15; } }
+@keyframes city-flicker { 0%,100% { opacity: 1; } 40% { opacity: 0.45; } }
+@keyframes city-flicker-dim { 0%,100% { opacity: 0.18; } 40% { opacity: 0.06; } }
+@keyframes city-pulse { from { opacity: 0.75; } to { opacity: 1; } }
+@keyframes city-bob { 50% { transform: translateY(-8px); } }
+@keyframes city-ring { from { transform: scale(0.3); opacity: 1; } to { transform: scale(3.4); opacity: 0; } }
+#worldPan .sprite { position: absolute; z-index: auto; }
+/* 3D world (world3d.js): ground canvas under the SVG light layer; objects = canvas + animated fx SVG */
+#mapLayer > svg, #mapLayer > canvas { position: absolute; left: 0; top: 0; }
+#worldPan .obj.ped { position: absolute; pointer-events: none; }
+#worldPan .char3d { position: absolute; width: 60px; height: 72px; transform: translate(-50%, -91.67%); pointer-events: none; }
+#worldPan .obj.ped .ped-canvas { width: 40px; height: 48px; }
+#worldPan .obj.train .train-canvas { width: 260px; height: 205px; }
+#worldPan .obj.g3 .g3-canvas { position: absolute; left: 0; top: 0; pointer-events: none; }
+#worldPan .obj.g3 > svg.fx { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+/* over the 3D renders the SVG glow details only need to be accents */
+#worldPan .obj.g3 .fx polygon.box-lit.ft { fill-opacity: 0.45; } #worldPan .obj.g3 .fx polygon.box-lit.fl { fill-opacity: 0.3; } #worldPan .obj.g3 .fx polygon.box-lit.fr { fill-opacity: 0.2; }
+#worldPan .obj.g3 .fx .beam { opacity: 0.75; }
+/* 3D vehicles (vehicles.js): ground layer SVG + rendered canvas, same 260×170 box */
+.obj.gl .veh-canvas, .obj.plane-air .veh-canvas { position: absolute; left: 0; top: 0; width: 260px; height: 170px; pointer-events: none; }
+.obj.gl .car-under { position: absolute; left: 0; top: 0; overflow: visible; }
+
+/* ── city v2: building details & animations ── */
+.zone-pad { fill: rgba(255,255,255,0.025); stroke: currentColor; stroke-opacity: 0.25; stroke-width: 1; stroke-dasharray: 6 6; }
+.hazard-pad { fill: url(#hazard); stroke: rgba(42,250,223,0.35); stroke-width: 1; }
+.rail { stroke: rgba(200,215,230,0.35); stroke-width: 2; }
+.lawn { fill: rgba(60,180,120,0.06); stroke: none; }
+.fence { fill: none; stroke: rgba(200,215,230,0.35); stroke-width: 1.2; stroke-dasharray: 2 4; }
+.stone { fill: rgba(200,215,230,0.08); stroke: rgba(200,215,230,0.3); stroke-width: 0.8; }
+.g-lamp.tl-lamp { fill: #b9a4ff; animation: city-flicker 3s ease-in-out infinite; }
+.obj .shaft { fill: rgba(255,230,0,0.06); stroke: rgba(255,230,0,0.35); stroke-width: 1; }
+.obj .elev { animation: city-elev 9s ease-in-out infinite; }
+.obj .elev-front { fill: #ffe9a0; filter: url(#city-glow); }
+.obj .elev-side { fill: #c9a440; } .obj .elev-top { fill: #8a7330; }
+.obj .elev-door { stroke: rgba(60,45,0,.55); stroke-width: .8; }
+.obj .elev-cable { stroke: rgba(30,34,40,.85); stroke-width: .7; }
+.g3 .shaft { display: none; }
+body[data-period=day] .obj .elev-front { fill: #fff3c8; filter: none; }
+.obj .pad { fill: none; stroke: rgba(255,230,0,0.45); stroke-width: 1.4; stroke-dasharray: 5 4; }
+.obj .sign-dim { fill: rgba(255,230,0,0.5); font-family: 'Courier New', Courier, monospace; }
+.obj .beam { stroke: none; filter: url(#soft); }
+.obj .beam-y { fill: url(#beam-y); }
+.obj .beam-r { fill: url(#beam-r); }
+.obj .sweep { animation: city-sweep 6s ease-in-out infinite alternate; }
+.obj .spin { animation: city-spin 2.2s linear infinite; }
+.bld:not(.lit) .beam-y { opacity: 0.4; }
+.obj .container.fl, .obj .container.fr { stroke: rgba(255,60,172,0.55); }
+.obj polygon.box-lit { fill: currentColor; stroke: none; }
+.obj polygon.box-lit.fl { fill-opacity: 0.55; } .obj polygon.box-lit.fr { fill-opacity: 0.35; } .obj polygon.box-lit.ft { fill-opacity: 0.8; }
+.obj .crane { animation: city-crane 14s ease-in-out infinite; }
+.obj .door-dark { fill: #05070a; stroke: rgba(215,228,240,0.4); stroke-width: 1; }
+.obj .glass-roof { fill-opacity: 0.32; stroke: currentColor; stroke-width: 1; stroke-opacity: 0.8; }
+.obj .glass { fill: rgba(42,250,223,0.05); stroke: rgba(215,228,240,0.55); stroke-width: 1.1; }
+.obj .liquid { fill: currentColor; fill-opacity: 0.28; stroke: none; }
+.obj .liquid-top { fill: currentColor; fill-opacity: 0.6; stroke: none; }
+.obj .bubble { fill: #dffff9; transform-box: fill-box; animation: city-bubble 2.6s linear infinite; }
+.obj .pipe { fill: none; stroke: rgba(215,228,240,0.6); stroke-width: 3; stroke-linejoin: round; }
+.obj .crate { animation: city-crate 6s linear infinite; }
+.obj .planter.fl, .obj .planter.fr, .obj .planter.ft { fill: #1a1430; stroke: rgba(155,123,255,0.6); }
+.obj .flag { fill: #ff4b4b; stroke: none; }
+.obj .packet { fill: currentColor; animation: city-packet 3.6s linear infinite; }
+.obj .plane { fill: #fff3e0; stroke: none; animation: city-plane 4.2s ease-out infinite; }
+.obj .puff { fill: rgba(205,218,232,0.55); stroke: none; transform-box: fill-box; transform-origin: center; animation: city-puff 3.2s ease-out infinite; }
+.obj .red-blink { fill: #ff4040; animation: city-blink 1.4s steps(1) infinite; }
+.bld-stack .layer { transition: transform 0.6s cubic-bezier(.2,.8,.2,1); }
+.bld-stack.near .layer { transform: translateY(calc(var(--k) * -16px)); }
+@keyframes city-elev { 0%,8% { transform: translateY(0); } 45%,55% { transform: translateY(-202px); } 92%,100% { transform: translateY(0); } }
+@keyframes city-sweep { from { transform: rotate(-38deg); } to { transform: rotate(38deg); } }
+@keyframes city-spin { to { transform: rotate(360deg); } }
+@keyframes city-crane { 0%,100% { transform: translate(-100px,-50px); } 50% { transform: translate(100px,50px); } }
+@keyframes city-bubble { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(var(--rise)); opacity: 0; } }
+@keyframes city-crate { 0% { transform: translate(0,0); opacity: 0; } 8% { opacity: 1; } 88% { opacity: 1; } 100% { transform: translate(-96px,48px); opacity: 0; } }
+@keyframes city-packet { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(-250px); opacity: 0; } }
+@keyframes city-plane { 0% { transform: translate(0,0) scale(0.6); opacity: 0; } 12% { opacity: 1; } 100% { transform: translate(var(--dx),var(--dy)) scale(1.1); opacity: 0; } }
+@keyframes city-puff { 0% { transform: translate(0,0) scale(0.5); opacity: 0.85; } 100% { transform: translate(14px,-64px) scale(calc(2.6 * var(--s))); opacity: 0; } }
+
+/* ── cars ── */
+.obj.car polygon { stroke: currentColor; stroke-opacity: 0.8; stroke-width: 1.1; }
+.obj.car .ft.car-body { fill: currentColor; fill-opacity: 0.22; }
+.obj.car .car-cab.fl, .obj.car .car-cab.fr { fill: #0b1820; }
+.obj.car .car-cab.ft { fill: #10161e; }
+.obj.car .hl { fill: #fff6c8; }
+.obj.car .tl { fill: #ff4b4b; }
+.obj.car .roof-light { fill: #FFE600; animation: city-blink 1.2s steps(1) infinite; }
+.obj.car .headbeam { stroke: none; display: none; filter: url(#soft); }
+.obj.car.driving .headbeam { display: inline; }
+.obj.car.driving .hl { filter: url(#city-glow); }
+.obj.car.near-car polygon { stroke-opacity: 1; stroke-width: 1.6; }
+.obj.car.honked .tl, .obj.car.honked .hl { filter: url(#city-glow); }
+/* ── helicopter & plane ── */
+.obj.heli polygon { stroke: currentColor; stroke-opacity: 0.85; stroke-width: 1.1; }
+.obj.heli .ft.heli-body { fill: currentColor; fill-opacity: 0.25; }
+.obj.heli .car-glass { fill: rgba(255,230,0,0.18); }
+.obj.heli .skid { stroke: rgba(215,228,240,0.75); stroke-width: 1.6; stroke-linecap: round; }
+.obj.heli .rotor rect { fill: rgba(215,228,240,0.75); }
+.obj.heli .rotor { animation: city-spin 2.4s linear infinite; }
+.obj.heli.spinning .rotor { animation-duration: 0.16s; }
+.obj.heli .rotor-disc { fill: none; stroke: none; }
+.obj.heli.spinning .rotor-disc { fill: rgba(215,228,240,0.07); stroke: rgba(215,228,240,0.18); stroke-width: 0.8; }
+.obj.heli .tail-rotor { fill: rgba(215,228,240,0.08); stroke: rgba(215,228,240,0.5); stroke-width: 0.8; }
+.obj .nav-g { fill: #39ff88; filter: url(#city-glow); }
+.obj .nav-r { fill: #ff4040; filter: url(#city-glow); }
+.obj .strobe { fill: #fff; animation: city-blink 1s steps(1) infinite; filter: url(#city-glow); }
+.obj.plane-air .plane-body.fl, .obj.plane-air .plane-body.fr { fill: #10151c; stroke: rgba(225,235,245,0.8); stroke-width: 1; }
+.obj.plane-air .plane-body.ft { fill: #1a222c; stroke: rgba(225,235,245,0.8); stroke-width: 1; }
+.obj.plane-air .porthole { fill: #ffe9b0; }
+.obj.plane-air { pointer-events: none; }
+.heli-shadow { position: absolute; pointer-events: none; overflow: visible; }
+.heli-shadow ellipse { fill: rgba(0,0,0,0.5); filter: url(#soft); }
+body.flying #building-labels { opacity: 0.2; transition: opacity 0.4s; }
+#fade { position: fixed; inset: 0; background: #000; opacity: 0; pointer-events: none; z-index: 90; transition: opacity 0.35s; }
+#fade.on { opacity: 1; }
+#touch-f { display: none; width: 52px; height: 52px; border-radius: 50%; pointer-events: all; margin-right: 12px;
+  background: rgba(255,230,0,0.1); border: 2px solid var(--accent); color: var(--accent); font-size: 16px; }
+@media (pointer: coarse) { body.can-fly #touch-f { display: flex; } }
+.obj.car.braking .tl { fill: #ff2a2a; r: 3px; filter: url(#city-glow); }
+#touch-h { display: none; width: 52px; height: 52px; border-radius: 50%; pointer-events: all; margin-right: 12px;
+  background: rgba(255,230,0,0.1); border: 2px solid var(--accent); color: var(--accent); font-size: 16px; }
+@media (pointer: coarse) { body.driving #touch-h { display: flex; } }
+#touch-right { display: flex; align-items: flex-end; }
+
+/* ════════════════ HUD v2 — glass panels ════════════════ */
+:root { --glass: rgba(9,14,24,.72); --glass-b: rgba(255,255,255,.09); --glass-hi: rgba(255,255,255,.05); --r: 12px;
+  --mono: 'JetBrains Mono', 'Courier New', monospace; --display: 'Space Grotesk', 'JetBrains Mono', sans-serif; --dim: #7d8fa3; }
+body { font-family: var(--mono); }
+.glass { background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,0) 40%), var(--glass);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3); backdrop-filter: blur(14px) saturate(1.3);
+  border: 1px solid var(--glass-b); border-radius: var(--r);
+  box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 var(--glass-hi); }
+kbd, .key { font-family: var(--mono); display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 6px;
+  border-radius: 6px; background: linear-gradient(180deg, #2a3646, #1a2330); border: 1px solid rgba(255,255,255,.12); border-bottom-width: 3px; border-bottom-color: #0b1018;
+  color: var(--accent); font-size: 11px; font-weight: 700; line-height: 1; box-shadow: none; margin: 0 1px; image-rendering: auto; }
+kbd.wide { padding: 0 8px; font-size: 10px; letter-spacing: .04em; }
+
+#hud-left { top: 18px; left: 18px; gap: 10px; width: 272px; }
+/* player */
+#player-card { padding: 14px 14px 13px; min-width: 0; }
+.pc-top { display: flex; align-items: center; gap: 11px; }
+.pc-avatar { width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0; overflow: hidden; position: relative;
+  background: radial-gradient(circle at 50% 30%, rgba(255,230,0,.22), rgba(255,230,0,0) 70%), #121b28; border: 1px solid rgba(255,230,0,.35); }
+.pc-avatar img { position: absolute; left: 50%; top: 56%; width: 64px; height: 64px; transform: translate(-50%,-50%); image-rendering: pixelated; }
+.pc-id { min-width: 0; flex: 1; }
+.pc-name { font-family: var(--display); font-weight: 700; font-size: 15px; color: #fff; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pc-role { font-size: 9.5px; color: var(--dim); margin-top: 3px; letter-spacing: .02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pc-lvl { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 10px;
+  background: var(--accent); color: #0a0d12; box-shadow: 0 0 18px rgba(255,230,0,.25); line-height: 1; }
+.pc-lvl span { font-size: 8px; font-weight: 800; letter-spacing: .12em; }
+.pc-lvl b { font-size: 16px; font-weight: 800; margin-top: 1px; }
+#xp-wrap { margin-top: 12px; }
+#xp-label { font-size: 10px; color: var(--dim); letter-spacing: .08em; margin-bottom: 6px; }
+#xp-label #lvl-txt { color: var(--text); font-weight: 700; }
+#xp-bar { height: 6px; background: rgba(255,255,255,.07); border-radius: 99px; overflow: hidden; }
+#xp-fill { border-radius: 99px; background: linear-gradient(90deg, #ffb800, var(--accent)); box-shadow: 0 0 10px rgba(255,230,0,.5); transition: width .6s cubic-bezier(.2,.8,.2,1); }
+
+/* quests */
+#quest-card { padding: 0; min-width: 0; max-height: none; overflow: hidden; pointer-events: all; display: flex; flex-direction: column; }
+#quest-head { all: unset; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 12px 14px 8px; font-family: var(--mono); }
+.qh-title { font-size: 11px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--text); flex: 1; }
+#quest-count { font-size: 11px; font-weight: 700; color: var(--accent); }
+.qh-chev { width: 12px; height: 12px; color: var(--dim); transition: transform .25s; }
+#quest-card.collapsed .qh-chev { transform: rotate(-90deg); }
+#quest-prog { height: 3px; margin: 0 14px 6px; background: rgba(255,255,255,.07); border-radius: 99px; overflow: hidden; }
+#quest-prog-fill { display: block; height: 100%; width: 0; background: var(--accent3); border-radius: 99px; transition: width .6s; box-shadow: 0 0 8px rgba(0,255,136,.5); }
+#quest-list { max-height: min(300px, calc(100vh - 330px)); overflow-y: auto; padding: 2px 8px 10px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.15) transparent; }
+#quest-card.collapsed #quest-list { display: none; }
+#quest-card.collapsed #quest-prog { margin-bottom: 12px; }
+.q-group { font-size: 9px; font-weight: 700; letter-spacing: .25em; text-transform: uppercase; color: var(--dim); opacity: .75; padding: 9px 6px 4px; }
+.quest-row { gap: 9px; padding: 6px 6px; font-size: 11.5px; color: var(--text); border-radius: 8px; letter-spacing: 0; }
+.quest-row:hover { background: rgba(255,255,255,.04); }
+.quest-name { gap: 9px; min-width: 0; }
+.quest-name .qn { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.quest-check { width: 16px; height: 16px; border-radius: 5px; border: 1.5px solid rgba(255,255,255,.22); display: flex; align-items: center; justify-content: center; background: none; }
+.quest-check svg { width: 10px; height: 10px; opacity: 0; }
+.quest-row.done { color: var(--dim); }
+.quest-row.done .qn { text-decoration: line-through; text-decoration-color: rgba(255,255,255,.18); }
+.quest-row.done .quest-check { background: var(--accent3); border-color: var(--accent3); box-shadow: 0 0 8px rgba(0,255,136,.35); }
+.quest-row.done .quest-check svg { opacity: 1; }
+.quest-xp { font-size: 10px; font-weight: 700; color: var(--accent); background: rgba(255,230,0,.08); border: 1px solid rgba(255,230,0,.18); padding: 2px 6px; border-radius: 99px; }
+.quest-row.done .quest-xp { color: var(--dim); background: none; border-color: transparent; }
+.quest-row.secret .qn { color: var(--accent2); }
+#quest-card.all-done { border-color: rgba(255,230,0,.55); box-shadow: 0 0 24px rgba(255,230,0,.18), 0 10px 30px rgba(0,0,0,.35); }
+
+/* zone pill (top centre) */
+#zone-card { top: 18px; right: auto; left: 50%; transform: translateX(-50%); text-align: left; min-width: 0; display: flex; align-items: center; gap: 11px; padding: 9px 18px 9px 14px; border-radius: 99px; transition: border-color .4s; }
+#zone-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px currentColor; color: var(--accent); flex-shrink: 0; transition: background .4s, color .4s; }
+#zone-name { font-family: var(--display); font-size: 14px; font-weight: 700; letter-spacing: .04em; color: #fff; white-space: nowrap; }
+#zone-sub { font-size: 9.5px; color: var(--dim); letter-spacing: .18em; margin-top: 2px; white-space: nowrap; }
+
+/* toolbar (top right) */
+#quick-actions { top: 18px; right: 18px; gap: 2px; padding: 4px; align-items: center; border-radius: 12px; }
+.qa-btn { all: unset; box-sizing: border-box; cursor: pointer; height: 32px; padding: 0 11px; border-radius: 8px; display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--mono); font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #c9d4df; transition: background .2s, color .2s; white-space: nowrap; }
+.qa-btn:hover { background: rgba(255,255,255,.07); color: #fff; }
+.qa-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.qa-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+.qa-btn.qa-icon { width: 32px; padding: 0; justify-content: center; }
+.qa-btn.qa-primary { background: var(--accent); color: #0a0d12; }
+.qa-btn.qa-primary:hover { background: #fff27a; color: #0a0d12; }
+.qa-btn.qa-primary svg { width: 10px; height: 10px; }
+.qa-btn .ico { font-size: 13px; line-height: 1; }
+.qa-btn small { font-size: 8px; font-weight: 800; letter-spacing: .12em; color: var(--dim); border: 1px solid rgba(255,255,255,.14); border-radius: 4px; padding: 1px 4px; }
+.qa-sep { width: 1px; height: 18px; background: rgba(255,255,255,.1); margin: 0 3px; }
+
+/* controls */
+#controls-hint { bottom: 18px; left: 18px; display: grid; grid-template-columns: auto auto; column-gap: 12px; row-gap: 6px; align-items: center; padding: 12px 30px 12px 12px; font-size: 11px; transition: opacity .3s, transform .3s; }
+#controls-hint.hidden { opacity: 0; transform: translateY(10px); pointer-events: none; }
+.ctrl-row { display: contents; }
+.ctrl-row .ctrl-keys { display: inline-flex; gap: 3px; }
+.ctrl-row .ctrl-label { font-size: 10.5px; color: #b9c6d3; letter-spacing: .01em; text-transform: none; }
+#ctrl-close { all: unset; position: absolute; top: 6px; right: 9px; cursor: pointer; color: var(--dim); font-size: 15px; line-height: 1; pointer-events: all; }
+#ctrl-close:hover { color: #fff; }
+#controls-hint { pointer-events: none; } #controls-hint #ctrl-close { pointer-events: all; }
+#ctrl-open { all: unset; position: absolute; left: 18px; bottom: 18px; width: 34px; height: 34px; display: none; align-items: center; justify-content: center; cursor: pointer; pointer-events: all;
+  font-family: var(--mono); font-weight: 800; color: var(--accent); }
+#ctrl-open.glass { background: var(--glass); border: 1px solid var(--glass-b); border-radius: 10px; }
+#controls-hint.hidden + #ctrl-open { display: flex; }
+
+/* minimap */
+#minimap-card { position: absolute; right: 18px; bottom: 18px; padding: 9px 9px 9px; }
+.mm-head { display: flex; justify-content: space-between; gap: 8px; font-size: 9px; font-weight: 700; letter-spacing: .25em; text-transform: uppercase; color: var(--dim); padding: 0 3px 7px; }
+#mm-zone { color: var(--text); letter-spacing: .12em; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#minimap { position: static; display: block; width: 150px; height: 150px; border-radius: 8px; border: 0; background: none; }
+#debug-coords { display: none; }
+body.debug #debug-coords { display: block; bottom: 220px; }
+
+/* prompt + toast + dialog + tour, same family */
+#interact-prompt { border-radius: 99px; padding: 9px 18px; background: rgba(9,14,24,.82); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,230,0,.45); box-shadow: 0 0 24px rgba(255,230,0,.15); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .14em; display: flex; align-items: center; gap: 8px; }
+#interact-prompt kbd { height: 20px; min-width: 20px; font-size: 10.5px; }
+#interact-prompt .sep { color: var(--dim); margin: 0 4px; }
+#toast { border-radius: 99px; padding: 10px 18px; font-size: 11px; letter-spacing: .14em; font-weight: 800; box-shadow: 0 8px 30px rgba(255,230,0,.25); transform: translate(-50%, 6px); transition: opacity .3s, transform .3s; }
+#toast[style*="opacity: 1"] { transform: translate(-50%, 0); }
+#npc-dialog { border-radius: 16px; border: 1px solid rgba(255,230,0,.45); box-shadow: 0 20px 50px rgba(0,0,0,.5), 0 0 30px rgba(255,230,0,.08);
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0) 40%), rgba(9,14,24,.9); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); padding: 16px 20px 16px; }
+#npc-dialog-portrait { width: 52px; height: 52px; border-radius: 12px; border: 1px solid rgba(255,230,0,.45); background: radial-gradient(circle at 50% 30%, rgba(255,230,0,.18), transparent 70%), #121b28; object-fit: cover; object-position: 50% 15%; }
+#npc-dialog-name { font-family: var(--display); font-size: 17px; letter-spacing: .02em; color: #fff; }
+#npc-dialog-sub { color: var(--dim); }
+#npc-dialog-text { font-size: 13.5px; line-height: 1.75; }
+#tour-card { border-radius: 16px; background: rgba(9,14,24,.88); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+#tour-title { font-family: var(--display); }
+#tour-dots i { border-radius: 99px; }
+.tour-btn { border-radius: 8px; }
+
+@media (pointer: coarse) {
+  #hud-left { top: 10px; left: 10px; width: min(230px, 56vw); gap: 7px; }
+  #player-card { padding: 9px 10px; }
+  .pc-avatar { width: 34px; height: 34px; border-radius: 8px; } .pc-avatar img { width: 50px; height: 50px; }
+  .pc-name { font-size: 12.5px; } .pc-role { font-size: 9px; }
+  .pc-lvl { width: 30px; height: 30px; border-radius: 8px; } .pc-lvl b { font-size: 13px; } .pc-lvl span { font-size: 7px; }
+  #xp-wrap { margin-top: 8px; } #xp-label { font-size: 9px; margin-bottom: 4px; } #xp-bar { height: 4px; }
+  #quest-head { padding: 9px 10px 6px; } #quest-prog { margin: 0 10px 5px; }
+  #quest-list { max-height: 22vh; padding: 0 4px 6px; }
+  .quest-row { font-size: 10px; padding: 4px 6px; } .quest-check { width: 13px; height: 13px; } .quest-xp { font-size: 8.5px; }
+  #zone-card { top: auto; bottom: calc(176px + env(safe-area-inset-bottom)); padding: 6px 13px 6px 10px; }
+  #zone-name { font-size: 11px; } #zone-sub { font-size: 8px; }
+  #hud-left { width: min(205px, 53vw); }
+  #quick-actions { top: 10px; right: 10px; padding: 3px; gap: 1px; flex-wrap: nowrap; }
+  .qa-btn { height: 28px; width: 28px; padding: 0; justify-content: center; gap: 0; } .qa-btn .lbl, .qa-btn small { display: none; } .qa-sep { display: none; }
+  #minimap-card { bottom: auto; top: 50px; right: 10px; padding: 6px; } #minimap { width: 92px; height: 92px; } .mm-head { display: none; }
+  #controls-hint, #ctrl-open { display: none !important; }
+  body.is-moving #zone-card { opacity: .25; transform: translateX(-50%) scale(.92); }
+}
+
+/* ── GARAGE showroom ── */
+.gar-credit { position: absolute; right: 44px; top: 8px; font-size: 10px; color: var(--dim); opacity: .75; }
+@media (max-width: 640px) { .gar-credit { right: 24px; top: 4px; font-size: 9px; } }
+.gar-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 18px; border-bottom: 1px solid rgba(77,163,255,.14); }
+.gar-title { margin: 0; font-size: clamp(24px, 3.4vw, 38px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; color: var(--text); }
+.gar-title em { font-style: normal; color: #4DA3FF; }
+.gar-sub { margin: 8px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); max-width: 46ch; }
+.gar-count { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; padding-left: 20px; border-left: 1px solid rgba(77,163,255,.14); }
+.gar-count b { font-size: 34px; font-weight: 800; line-height: 1; color: var(--text); }
+.gar-count span { margin-top: 4px; font-size: 10px; letter-spacing: .25em; text-transform: uppercase; color: var(--dim); }
+@media (max-width: 640px) { .gar-head { align-items: flex-start; } .gar-count { display: none; } .gar-sub { font-size: 12px; } }
+#overlay.garage #overlay-inner { max-width: 980px; border-radius: 18px; background: radial-gradient(ellipse at 50% 30%, #1a2534, #070b13 70%); border-color: rgba(77,163,255,.25); }
+.gar-stage { position: relative; margin: 18px -40px 0; height: min(46vh, 420px); background: radial-gradient(ellipse at 50% 70%, rgba(77,163,255,.18), transparent 60%); }
+#gar-cv { width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
+#gar-cv:active { cursor: grabbing; }
+.gar-hint { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font-size: 10px; letter-spacing: .25em; color: var(--dim); text-transform: uppercase; }
+.gar-plate { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px; padding: 14px 18px; border-radius: 12px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); flex-wrap: wrap; }
+#gar-name { font-family: var(--display); font-size: 24px; font-weight: 700; color: #fff; }
+#gar-meta { font-size: 11.5px; color: var(--dim); letter-spacing: .08em; margin-top: 3px; }
+#gar-drive { width: auto; padding: 12px 20px; border-radius: 10px; }
+.gar-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+.gar-tab { all: unset; cursor: pointer; padding: 11px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03); display: flex; flex-direction: column; gap: 3px; transition: border-color .2s, background .2s; }
+.gar-tab b { font-family: var(--display); font-size: 14px; color: #fff; }
+.gar-tab span { font-size: 10px; color: var(--dim); letter-spacing: .1em; }
+.gar-tab:hover { border-color: rgba(77,163,255,.5); }
+.gar-tab.on { border-color: #4DA3FF; background: rgba(77,163,255,.12); box-shadow: 0 0 18px rgba(77,163,255,.18); }
+@media (max-width: 640px) { .gar-tabs { grid-template-columns: repeat(2, 1fr); } .gar-stage { margin: 12px -20px 0; height: 34vh; } #gar-name { font-size: 19px; } }
 </style>
 </head>
 <body>
@@ -459,6 +917,9 @@ body {
 <a id="cv-text-link" href="cv/">versão texto (cv)</a>
 
 <div id="viewport"><div id="mapLayer"></div></div>
+<div id="world"><div id="worldPan"></div></div>
+<div id="sky"></div><div id="fog"></div><canvas id="rain"></canvas><div id="flash"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="city-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
 
 <div id="boot">
   <div id="boot-logo">JOPES.EXE</div>
@@ -478,64 +939,67 @@ body {
     </div>
     <div id="intro-actions">
       <button id="intro-play" class="intro-btn primary">COMEÇAR A EXPLORAR</button>
+      <button id="intro-tour" class="intro-btn">▶ TOUR RÁPIDO (1 MIN)</button>
       <button id="intro-skip" class="intro-btn">PULAR PRO CV →</button>
     </div>
   </div>
 </div>
 
-<div id="quick-actions">
-  <a id="serious-mode-link" class="icon-btn" href="/api/mode?mode=serious" title="Voltar pro portfolio sério">← SÉRIO</a>
-  <button id="mute-btn" class="icon-btn" title="Som"></button>
-  <button id="cv-btn" class="icon-btn" title="CV / LinkedIn / GitHub"><span id="cv-btn-icon"></span><span>CV</span></button>
+<div id="quick-actions" class="glass">
+  <a id="serious-mode-link" class="qa-btn" href="/api/mode?mode=serious" title="Voltar pro portfólio sério" style="text-decoration:none">← Sério</a>
+  <i class="qa-sep"></i>
+  <button id="tour-btn" class="qa-btn qa-primary" title="Tour guiado de 1 minuto"><svg viewBox="0 0 12 12"><path d="M3 2 10 6 3 10Z" fill="currentColor"/></svg><span class="lbl">Tour</span></button>
+  <i class="qa-sep"></i>
+  <button id="period-btn" class="qa-btn" title="Hora do dia (auto = hora de Blumenau)"></button>
+  <button id="weather-btn" class="qa-btn" title="Clima"></button>
+  <button id="mute-btn" class="qa-btn qa-icon" title="Som"></button>
+  <i class="qa-sep"></i>
+  <button id="cv-btn" class="qa-btn" title="CV / LinkedIn / GitHub"><span id="cv-btn-icon"></span><span class="lbl">CV</span></button>
 </div>
 
 <div id="hud">
   <div id="hud-left">
-    <div id="player-card">
-      <div class="label">Developer</div>
-      <div class="name">João Paulo Oliveira</div>
-      <div class="role">Backend · Java · Spring · AWS</div>
+    <div id="player-card" class="glass">
+      <div class="pc-top">
+        <div class="pc-avatar"><img src="assets/player/Idle/rotations/south.png" alt=""></div>
+        <div class="pc-id">
+          <div class="pc-name">João Paulo Oliveira</div>
+          <div class="pc-role">Backend · Java · Spring · AWS</div>
+        </div>
+        <div class="pc-lvl" title="Nível"><span>LV</span><b id="lvl-num">1</b></div>
+      </div>
       <div id="xp-wrap">
-        <div id="xp-label"><span id="lvl-txt">LVL 1 — EXPLORADOR</span><span id="xp-txt">0 XP</span></div>
+        <div id="xp-label"><span id="lvl-txt">EXPLORADOR</span><span id="xp-txt">0 XP</span></div>
         <div id="xp-bar"><div id="xp-fill"></div></div>
       </div>
     </div>
-    <div id="quest-card">
-      <div class="label">Missões</div>
+    <div id="quest-card" class="glass">
+      <button id="quest-head" type="button" aria-expanded="true">
+        <span class="qh-title">Missões</span>
+        <span id="quest-count">0/0</span>
+        <svg class="qh-chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 4.5 6 7.5 9 4.5"/></svg>
+      </button>
+      <div id="quest-prog"><i id="quest-prog-fill"></i></div>
       <div id="quest-list"></div>
     </div>
   </div>
-  <div id="zone-card">
-    <div id="zone-name">CITY CENTER</div>
-    <div id="zone-sub">EXPLORE A CIDADE</div>
+  <div id="zone-card" class="glass">
+    <i id="zone-dot"></i>
+    <div><div id="zone-name">CITY CENTER</div><div id="zone-sub">EXPLORE A CIDADE</div></div>
   </div>
-  <div id="controls-hint">
-    <div class="ctrl-section">
-      <span class="ctrl-label">Mover</span>
-      <div class="ctrl-keys">
-        <div class="wasd-cluster">
-          <span class="key key-w" id="key-up"></span>
-          <span class="key key-a" id="key-left"></span>
-          <span class="key key-s" id="key-down"></span>
-          <span class="key key-d" id="key-right"></span>
-        </div>
-        <span class="hint-sep">/</span>
-        <div class="wasd-cluster">
-          <span class="key key-w">W</span>
-          <span class="key key-a">A</span>
-          <span class="key key-s">S</span>
-          <span class="key key-d">D</span>
-        </div>
-      </div>
-    </div>
-    <div class="ctrl-section">
-      <span class="ctrl-label">Entrar / Conversar</span>
-      <div class="ctrl-keys">
-        <span class="key">E</span>
-      </div>
-    </div>
+  <div id="controls-hint" class="glass">
+    <button id="ctrl-close" type="button" title="Esconder">×</button>
+    <div class="ctrl-row"><span class="ctrl-keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span class="ctrl-label">Andar · dirigir · voar</span></div>
+    <div class="ctrl-row"><span class="ctrl-keys"><kbd>E</kbd></span><span class="ctrl-label">Entrar · conversar · carro</span></div>
+    <div class="ctrl-row"><span class="ctrl-keys"><kbd>F</kbd></span><span class="ctrl-label">Helicóptero (no HQ)</span></div>
+    <div class="ctrl-row"><span class="ctrl-keys"><kbd>H</kbd></span><span class="ctrl-label">Buzina</span></div>
+    <div class="ctrl-row"><span class="ctrl-keys"><kbd class="wide">Clique</kbd></span><span class="ctrl-label">Outdoors e containers</span></div>
   </div>
-  <canvas id="minimap"></canvas>
+  <button id="ctrl-open" class="glass" type="button" title="Como jogar">?</button>
+  <div id="minimap-card" class="glass">
+    <div class="mm-head"><span>Mapa</span><span id="mm-zone"></span></div>
+    <canvas id="minimap"></canvas>
+  </div>
   <div id="debug-coords">X: 0 &nbsp; Y: 0</div>
 </div>
 
@@ -557,11 +1021,18 @@ body {
 </div>
 
 <div id="toast"></div>
+<div id="tour-card">
+  <div id="tour-step"></div>
+  <div id="tour-title"></div>
+  <div id="tour-text"></div>
+  <div id="tour-foot"><div id="tour-dots"></div><div><button id="tour-next" class="tour-btn">PRÓXIMO ▸</button><button id="tour-exit" class="tour-btn">SAIR ✕</button></div></div>
+</div>
 <div id="completion-flash"></div>
+<div id="fade"></div>
 
 <div id="touch-controls">
   <div id="touch-joystick"><div id="joy-base"><div id="joy-stick"></div></div></div>
-  <button id="touch-e" class="tbtn">E</button>
+  <div id="touch-right"><button id="touch-f" class="tbtn">F</button><button id="touch-h" class="tbtn">H</button><button id="touch-e" class="tbtn">E</button></div>
 </div>
 
 <div id="overlay">
@@ -571,14 +1042,9 @@ body {
   </div>
 </div>
 
-<script type="module">
+<script src="city.js?v=19"></script>
+<script>
 'use strict';
-
-// Conteúdo dinâmico (projetos, timeline, stack, depoimentos) gerado a partir
-// de data/*.ts do portfolio sério via `npm run generate:rpg-content` —
-// ver /scripts/generate-rpg-content.ts. Mantém este arquivo como única fonte
-// de verdade para layout/mecânica do jogo; nunca edite content.json à mão.
-const content = await fetch('content.json').then(r => r.json());
 
 /* ════════════════════════════════════════════════
    ICONS — inline SVG, no emoji, no external assets
@@ -606,14 +1072,15 @@ const ICONS = {
   cv: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
 };
 
-document.getElementById('key-up').innerHTML = ICONS.arrowUp;
-document.getElementById('key-down').innerHTML = ICONS.arrowDown;
-document.getElementById('key-left').innerHTML = ICONS.arrowLeft;
-document.getElementById('key-right').innerHTML = ICONS.arrowRight;
 
 /* ════════════════════════════════════════════════
    SAVE — localStorage persistence (XP, quests, intro seen)
    ════════════════════════════════════════════════ */
+/* Real portfolio content (projects, testimonials…) synced from portfolio-joao
+   by scripts/sync-portfolio.mjs into assets/portfolio/data.json. */
+window.PORTFOLIO = fetch('assets/portfolio/data.json').then(r => r.ok ? r.json() : null).catch(() => null);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
 const SAVE_KEY = 'jopes_save_v1';
 function loadSave() {
   try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || {}; } catch { return {}; }
@@ -624,14 +1091,37 @@ function writeSave() {
       xp, level,
       revealedZones: [...revealedZones],
       talkedNPCs: [...talkedNPCs],
+      extras: [...extrasDone],
+      viewedProjects: [...viewedProjects],
+      periodMode, weatherMode,
       allMissionsDone,
       introSeen,
       audioMuted,
+      garageCar,
     }));
   } catch {}
 }
 const save = loadSave();
 let introSeen = save.introSeen || false;
+let garageCar = save.garageCar || null;          // which of João's vehicles the JOPES car is
+
+/* ════════════════════════════════════════════════
+   TIME OF DAY — follows the real hour in Blumenau unless the visitor picks
+   one. world3d.js / vehicles.js read window.CITY_PERIOD on start and relight
+   on 'city:period'.
+   ════════════════════════════════════════════════ */
+const PERIOD_ORDER = ['auto', 'day', 'dusk', 'night', 'dawn'];
+const PERIOD_ICON = { day: '☀', dusk: '◐', night: '☾', dawn: '◑' };
+const PERIOD_NAME = { day: 'DIA', dusk: 'ENTARDECER', night: 'NOITE', dawn: 'AMANHECER', auto: 'AUTO' };
+const bluHour = () => +new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'America/Sao_Paulo' }).format(new Date()) % 24;
+const periodFromHour = h => (h >= 5 && h < 7) ? 'dawn' : (h >= 7 && h < 17) ? 'day' : (h >= 17 && h < 19) ? 'dusk' : 'night';
+let periodMode = save.periodMode || 'auto';
+const wantedPeriod = () => periodMode === 'auto' ? periodFromHour(bluHour()) : periodMode;
+let period = wantedPeriod();
+window.CITY_PERIOD = period;
+document.body.dataset.period = period;
+let weather = 'clear', weatherMode = save.weatherMode || 'auto';
+document.body.dataset.weather = weather;
 
 /* ════════════════════════════════════════════════
    SFX — short procedural blips on interaction, no ambient drone.
@@ -672,6 +1162,10 @@ function playSfx(name) {
   if (name === 'talk')      playTone(660, 0, 0.08, 'triangle');
   if (name === 'reveal')    { playTone(440, 0, 0.09); playTone(660, 0.08, 0.12); }
   if (name === 'levelup')   { playTone(523, 0, 0.09); playTone(659, 0.08, 0.09); playTone(784, 0.16, 0.14); }
+  if (name === 'horn')      { playTone(330, 0, 0.16, 'sawtooth'); playTone(415, 0, 0.16, 'sawtooth'); playTone(330, 0.2, 0.22, 'sawtooth'); playTone(415, 0.2, 0.22, 'sawtooth'); }
+  if (name === 'engine')    { playTone(70, 0, 0.25, 'sawtooth'); playTone(95, 0.12, 0.3, 'sawtooth'); playTone(140, 0.3, 0.18, 'square'); }
+  if (name === 'door')      { playTone(180, 0, 0.06, 'square'); playTone(120, 0.06, 0.08, 'square'); }
+  if (name === 'bump')      playTone(90, 0, 0.08, 'square');
   if (name === 'complete')  { playTone(392, 0, 0.1); playTone(523, 0.1, 0.1); playTone(659, 0.2, 0.1); playTone(784, 0.3, 0.22); }
 }
 
@@ -690,13 +1184,39 @@ document.getElementById('mute-btn').addEventListener('click', toggleMute);
 /* ════════════════════════════════════════════════
    CONTENT
    ════════════════════════════════════════════════ */
-const PROJECTS = content.projects;
+const PROJECTS = [
+  { code:'P/001', type:'MONOLITH', year:'2026', title:'E-commerce Monolithic Backend',
+    body:'Arquitetura multi-tenant em Spring Boot 3 para e-commerce B2B. Módulos de pedido, estoque, pricing dinâmico, notificações e integração com AWS SQS/SNS/S3/Kinesis. Processamento assíncrono com filas, eventos de domínio e relatórios em tempo real.',
+    tags:['Java 17','Spring Boot 3','PostgreSQL','Redis','AWS SQS/SNS/S3','Kinesis'] },
+  { code:'P/002', type:'FRONTEND', year:'2026', title:'E-commerce Front — Multi-Tenant B2B SPA',
+    body:'SPA em React + TypeScript para plataforma B2B multi-tenant. Catálogo de produtos, carrinho, checkout, painel do cliente e customização por tenant. Integração com backend via REST e WebSocket para notificações em tempo real.',
+    tags:['React','TypeScript','Vite','TailwindCSS','WebSocket'] },
+  { code:'P/003', type:'MOBILE', year:'2026', title:'Field Sales Mobile — Offline-First App',
+    body:'App Flutter para força de vendas em campo com modo offline completo. Sincronização bidirecional via queue local, compressão de dados e conflict resolution. Suporte a catálogo, pedidos e visitas sem conexão.',
+    tags:['Flutter','Dart','SQLite','Hive','REST sync','Offline-first'] },
+  { code:'P/004', type:'ADMIN', year:'2026', title:'Backoffice — Admin Panel with AI Chat',
+    body:'Painel administrativo fullstack com chat IA integrado (OpenAI GPT-4). CRUD de usuários, permissões, relatórios e dashboards. Chat contextual que entende os dados da plataforma e responde perguntas de negócio em linguagem natural.',
+    tags:['React','Node.js','OpenAI GPT-4','PostgreSQL','JWT','RBAC'] },
+  { code:'P/005', type:'MOBILE', year:'2026', title:'Register Flow — Multi-Step Onboarding',
+    body:'Fluxo de cadastro multi-step para app mobile com validação em tempo real, upload de documentos, reconhecimento facial e integração com bureaus de crédito. UX fluida com progresso persistido.',
+    tags:['Flutter','Dart','REST','Biometrics','Document OCR'] },
+  { code:'P/006', type:'INTEGRATION', year:'2026', title:'Integration Platform — 3-Service Bridge',
+    body:'Middleware de integração conectando ERP, e-commerce e sistema de logística. Mapeamento bidirecional, retry com backoff exponencial, dead-letter queue e dashboard de monitoramento.',
+    tags:['Java','Spring Integration','RabbitMQ','REST','SOAP','DLQ'] },
+  { code:'P/007', type:'EVENT-DRIVEN', year:'2026', title:'Offline Integrator — Field Sales API',
+    body:'API event-driven para sincronização da força de vendas offline. Recebe batches de eventos do app mobile, processa de forma idempotente e propaga para sistemas downstream com auditoria.',
+    tags:['Java 17','Spring Boot','Kafka','PostgreSQL','Idempotency','AWS'] },
+  { code:'P/008', type:'IAC', year:'2025', title:'Infra Terraform — AWS IaC Ecosystem',
+    body:'Ecosistema completo de infraestrutura como código para AWS. Módulos reutilizáveis para ECS, RDS, ElastiCache, ALB, Route53, WAF e VPC. Pipelines de CI/CD com GitHub Actions e deploy blue-green.',
+    tags:['Terraform','AWS ECS','RDS','ElastiCache','GitHub Actions','Terragrunt'] },
+];
 
 const ZONE_CONTENT = {
+  garage: { id:'GARAGE', title:'GARAGEM', sub:'', body:null },
   main: { id:'BOOT', title:'MAIN\nHALL', sub:'Backend Engineer — Blumenau, SC',
     body:'Oi, sou o João Paulo — engenheiro backend apaixonado por sistemas distribuídos, APIs bem desenhadas e código que escala.\n\nTrabalho com Java + Spring Boot como stack principal, mas navego por Flutter, React e Terraform quando o problema pede.\n\nEste site é uma cidade. Explore os prédios pressionando E.',
     tags:['Backend Engineer','Java · Spring','AWS · Terraform','Blumenau SC'] },
-  projects: { id:'PROJ', title:'PROJETOS', sub: `${content.projects.length} projetos reais · 2025–2026`, body:null },
+  projects: { id:'PROJ', title:'PROJETOS', sub:'8 projetos reais · 2025–2026', body:null },
   lab: { id:'LAB', title:'BACKEND\nLAB', sub:'Ferramentas e experimentos',
     body:'Um espaço para ferramentas, experimentos e coisas que construo enquanto aprendo.',
     labCards:[
@@ -707,10 +1227,21 @@ const ZONE_CONTENT = {
     ], link:'https://jopes.com.br' },
   about: { id:'SOBRE', title:'SOBRE\nMIM', sub:'Trajetória · valores · forma de trabalhar',
     body:'Engenheiro backend com foco em sistemas distribuídos e cloud-native. Cresci profissionalmente na Segalas, construindo plataformas que escalam.\n\nGosto de código limpo, mas não de purismo. Prefiro soluções que funcionam em produção.',
-    timeline: content.experienceTimeline },
+    timeline:[
+      { date:'AGO 2023 — PRESENTE', role:'Desenvolvedor Backend', company:'Segalas · Blumenau SC' },
+      { date:'2022 — 2023', role:'Desenvolvedor Full Stack Jr', company:'Freelance · Remoto' },
+      { date:'2021 — 2022', role:'Suporte & Automação', company:'Prime Informática · Blumenau SC' },
+      { date:'2019 — 2021', role:'Técnico em TI', company:'SENAI · Blumenau SC' },
+      { date:'2018 — 2019', role:'Estagiário de TI', company:'Cooperativa local · SC' },
+    ] },
   stack: { id:'TECH', title:'TECH\nSTACK', sub:'Tecnologias do dia a dia',
     body:'Stack principal em backend Java/Spring, com incursões em Node.js, Flutter e infra AWS.',
-    techGrid: content.techGrid },
+    techGrid:[
+      { cat:'Backend', items:['Java 17+','Spring Boot 3','Node.js','REST / GraphQL'] },
+      { cat:'Mobile & Front', items:['Flutter / Dart','React / Next.js','TypeScript'] },
+      { cat:'Cloud & Infra', items:['AWS (ECS/RDS/S3…)','Terraform','Docker','GitHub Actions'] },
+      { cat:'Data & Messaging', items:['PostgreSQL','Oracle DB','Redis','Kafka / RabbitMQ'] },
+    ] },
   contact: { id:'CONTATO', title:'VAMOS\nCONSTRUIR?', sub:'Aberto a projetos, freelas e conversas',
     body:'Se você tem um problema de backend interessante — um sistema que não escala, uma integração que não integra — me conta.',
     links:[
@@ -725,86 +1256,62 @@ const ZONE_CONTENT = {
 };
 
 /* ════════════════════════════════════════════════
-   MAP — flat 2D image, camera is just a clamped scroll offset.
-   No 3D, no isometric projection. Everything below lives in "map
-   pixel space": (0,0) is the image's top-left corner, MAP_PX is its
-   scaled width/height. Tune MAP_SCALE to zoom the whole game in/out.
+   MAP — generated by city.js (isometric line-art SVG).
+   Everything lives in "map pixel space": (0,0) is the top-left corner of
+   the MAP_PX × MAP_PX city, camera is a clamped scroll offset.
+   city.js also exposes an iso grid (u, v) — handy for footprints.
    ════════════════════════════════════════════════ */
-const IMG_NATIVE = 1254;       // native size of assets/map/image.png
-const MAP_SCALE = 2.2;         // display scale — bigger = more room to pan
-const MAP_PX = IMG_NATIVE * MAP_SCALE;
-const EDGE_MARGIN = 70;        // how close to the true image edge the player can get
-
-// Convert a pixel position eyeballed on the native 1254×1254 art into map space.
-function mp(nativeX, nativeY) { return { x: nativeX * MAP_SCALE, y: nativeY * MAP_SCALE }; }
+const MAP_PX = 2760;
+const EDGE_MARGIN = 70;        // how close to the map edge the player can get
 
 const viewport = document.getElementById('viewport');
 const mapLayerEl = document.getElementById('mapLayer');
+const worldPanEl = document.getElementById('worldPan');
 mapLayerEl.style.width = MAP_PX + 'px';
 mapLayerEl.style.height = MAP_PX + 'px';
 
 function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 
+const CITY = City.build({ mapPx: MAP_PX, groundEl: mapLayerEl, worldEl: worldPanEl });
+window.CITY = CITY; // vehicles.js (3D) attaches to it once loaded
+
 /* ════════════════════════════════════════════════
-   BUILDING FACTORY
+   BUILDINGS — the interactive ones. Position/footprint come from city.js
+   (edit ZONE_BLOCKS there to move a building to another block).
    ════════════════════════════════════════════════ */
-const BUILDINGS = []; // { zone, x, y, radius, hex, label, sublabel }
+const ZONE_META = {
+  main:     { label:'MAIN HQ',     sublabel:'João Paulo Oliveira' },
+  projects: { label:'PROJETOS',    sublabel:'8 projetos reais' },
+  lab:      { label:'BACKEND LAB', sublabel:'Ferramentas & experimentos' },
+  about:    { label:'SOBRE MIM',   sublabel:'Trajetória & valores' },
+  stack:    { label:'TECH STACK',  sublabel:'Stack do dia a dia' },
+  contact:  { label:'CONTATO',     sublabel:'Vamos conversar?' },
+  secret:   { label:'???',         sublabel:'Arquivo .env' },
+  garage:   { label:'GARAGEM',     sublabel:'Os carros que já foram meus' },
+};
+const ZONE_ORDER = Object.keys(ZONE_META);
+// { zone, x, y (ground centre, map px), u, v, a, b (iso footprint), labelY, obj, label, sublabel }
+const BUILDINGS = CITY.zones
+  .map(z => ({ ...z, ...ZONE_META[z.zone] }))
+  .sort((p, q) => ZONE_ORDER.indexOf(p.zone) - ZONE_ORDER.indexOf(q.zone));
 
-// An isometric cube's silhouette is a hexagon: a roof diamond fused to a
-// straight-walled body, then narrowing back to a point at the floor corner
-// — NOT two diamonds meeting tip-to-tip (that pinches into a bowtie/X,
-// which doesn't match a box). hex = { dyTop, hw, roofH, wallH }:
-//   dyTop  = offset from the building anchor up to the roof's top point
-//   hw     = half-width at the shoulder/foot (the straight vertical walls)
-//   roofH  = height from top point down to the shoulder (mirrored at the
-//            bottom, from foot back down to the floor-corner point)
-//   wallH  = height of the straight-sided middle section (shoulder→foot)
-function insideHex(dx, ry, hex) {
-  const total = 2 * hex.roofH + hex.wallH;
-  if (ry < 0 || ry > total) return false;
-  let allowedHw;
-  if (ry <= hex.roofH) allowedHw = hex.hw * (ry / hex.roofH);
-  else if (ry <= hex.roofH + hex.wallH) allowedHw = hex.hw;
-  else allowedHw = hex.hw * (1 - (ry - hex.roofH - hex.wallH) / hex.roofH);
-  return Math.abs(dx) <= allowedHw;
-}
-
-// Registers a building hotspot: label anchor + proximity radius for the [E]
-// prompt, plus a hexagonal collision footprint that blocks the player from
-// walking on top of the art. Keep every hex vertex within `radius` so the
-// player stopped at a collision edge is always still in interact range.
-function registerBuilding({ zone, pos, radius = 90, hex, label, sublabel }) {
-  const h = hex || { dyTop: -55, hw: 80, roofH: 30, wallH: 25 };
-  BUILDINGS.push({ zone, x: pos.x, y: pos.y, radius, hex: h, label, sublabel });
-}
-
-// Coordinates are eyeballed pixel positions on the 1254×1254 map art (via mp()).
-// Starting point, not final: walk up to a building, read the X/Y in the HUD,
-// and report it back if a hotspot doesn't line up with the art.
-registerBuilding({ zone:'main', pos: mp(725, 375), radius:155,
-  hex: { dyTop: -125, hw: 130, roofH: 55, wallH: 135 },
-  label:'MAIN HQ', sublabel:'João Paulo Oliveira' });
-registerBuilding({ zone:'projects', pos: mp(210, 350), radius:155,
-  hex: { dyTop: -125, hw: 130, roofH: 55, wallH: 155 },
-  label:'PROJETOS', sublabel:'8 projetos reais' });
-registerBuilding({ zone:'lab', pos: mp(1090, 430), radius:155,
-  hex: { dyTop: -125, hw: 130, roofH: 55, wallH: 135 },
-  label:'BACKEND LAB', sublabel:'Ferramentas & experimentos' });
-registerBuilding({ zone:'about', pos: mp(375, 670), radius:155,
-  hex: { dyTop: -125, hw: 130, roofH: 55, wallH: 135 },
-  label:'SOBRE MIM', sublabel:'Trajetória & valores' });
-registerBuilding({ zone:'stack', pos: mp(685, 890), radius:155,
-  hex: { dyTop: -125, hw: 130, roofH: 55, wallH: 155 },
-  label:'TECH STACK', sublabel:'Stack do dia a dia' });
-registerBuilding({ zone:'contact', pos: mp(960, 700), radius:155,
-  hex: { dyTop: -125, hw: 115, roofH: 55, wallH: 180 },
-  label:'CONTATO', sublabel:'Vamos conversar?' });
-registerBuilding({ zone:'secret', pos: mp(540, 190), radius:155,
-  hex: { dyTop: -125, hw: 130, roofH: 55, wallH: 135 },
-  label:'???', sublabel:'Arquivo .env' });
-
-const B = {}; // quick zone → building lookup, used to place NPCs relative to buildings
+const B = {}; // quick zone → building lookup
 BUILDINGS.forEach(b => { B[b.zone] = b; });
+
+// Distance (iso units) from a map point to the edge of a footprint; 0 = touching.
+function footprintDist(x, y, o) {
+  const p = CITY.I(x, y);
+  const du = Math.max(Math.abs(p.u - o.u) - o.a, 0);
+  const dv = Math.max(Math.abs(p.v - o.v) - o.b, 0);
+  return Math.hypot(du, dv);
+}
+
+function setBuildingLit(zone, lit) {
+  const b = B[zone]; if (!b) return;
+  b.objs.forEach(o => o.el.classList.toggle('lit', lit));
+  if (b.halo) b.halo.classList.toggle('lit', lit);
+}
+document.querySelector('.bld-plaza')?.classList.add('lit');
 
 /* ════════════════════════════════════════════════
    XP / LEVEL
@@ -824,8 +1331,9 @@ function updateHUD() {
   const [req, name] = LEVELS[level-1];
   const next = LEVELS[level] ? LEVELS[level][0] : req;
   const pct = level >= LEVELS.length ? 100 : Math.min(100, (xp-req)/(next-req)*100);
-  document.getElementById('lvl-txt').textContent = 'LVL ' + level + ' — ' + name;
-  document.getElementById('xp-txt').textContent = xp + ' XP';
+  document.getElementById('lvl-num').textContent = level;
+  document.getElementById('lvl-txt').textContent = name;
+  document.getElementById('xp-txt').textContent = level >= LEVELS.length ? xp + ' XP · MAX' : `${xp} / ${next} XP`;
   document.getElementById('xp-fill').style.width = pct + '%';
 }
 
@@ -833,10 +1341,12 @@ function updateHUD() {
    ZONE REVEAL SYSTEM
    ════════════════════════════════════════════════ */
 const revealedZones = new Set(save.revealedZones || []);
+revealedZones.forEach(z => setBuildingLit(z, true));
 
 function revealZone(zone) {
   if (revealedZones.has(zone)) return;
   revealedZones.add(zone);
+  setBuildingLit(zone, true);
   addXP(zone === 'secret' ? 200 : 60);
   playSfx('reveal');
   showToast('ZONA REVELADA: ' + (ZONE_CONTENT[zone]?.title || zone).replace('\n',' '), 'flame');
@@ -845,6 +1355,8 @@ function revealZone(zone) {
 }
 
 const talkedNPCs = new Set(save.talkedNPCs || []);
+const extrasDone = new Set(save.extras || []); // side quests, e.g. 'drive'
+const viewedProjects = new Set(save.viewedProjects || []);
 function talkToNPC(npc) {
   if (!talkedNPCs.has(npc.def.key)) {
     talkedNPCs.add(npc.def.key);
@@ -876,7 +1388,7 @@ Object.values(spritePaths).flat().forEach(src => { new Image().src = src; });
 const playerImgEl = document.createElement('img');
 playerImgEl.className = 'sprite';
 playerImgEl.src = spritePaths['idle_south'];
-document.body.appendChild(playerImgEl);
+worldPanEl.appendChild(playerImgEl);
 
 let spriteDir = 'south';
 let spriteFrame = 0;
@@ -893,34 +1405,37 @@ function getSpriteDir(dx, dy) {
   return dy < 0 ? 'north-east' : 'south-east';
 }
 
-const playerSpawn = { x: B.main.x, y: B.main.y + 170 };
+const playerSpawn = { x: CITY.spawn.x, y: CITY.spawn.y }; // plaza, next to the monument
 let playerPos = { x: playerSpawn.x, y: playerSpawn.y };
 
 /* ════════════════════════════════════════════════
    NPCS
    ════════════════════════════════════════════════ */
-// sub/answer vêm de content.testimonials (gerado a partir de data/testimonials.ts) — ver topo do arquivo.
-const testimonialByKey = Object.fromEntries(content.testimonials.map(t => [t.npcKey, t]));
 const NPC_DEFS = [
-  { key:'kauan', pos: { x: 1356, y: 774 }, imgPath:'assets/npcs/kauan/Idle/rotations/south.png',
-    name:'KAUAN', sub: testimonialByKey.kauan.sub,
+  { key:'felipe', pos: CITY.S(B.about.u + 160, B.about.v - 70), imgPath:'assets/npcs/felipe/Idle/rotations/south.png',
+    name:'FELIPE', sub:'Desenvolvedor Full-Stack · Web, Mobile e PWA',
     question:'O que acha de João Paulo?',
-    answer: testimonialByKey.kauan.answer },
-  { key:'vargas', pos: { x: 1976, y: 1721 }, imgPath:'assets/npcs/vargas/Idle/rotations/south.png',
-    name:'VARGAS', sub: testimonialByKey.vargas.sub,
+    answer:'Tive o prazer de trabalhar com o João e posso afirmar, com total convicção, que seu trabalho é excepcional. Acompanhei de perto sua evolução, assim como sua dedicação e vontade constante de aprender e fazer as coisas acontecerem.\n\nSeu papel sempre foi fundamental, tanto na tomada de decisões quanto na construção de soluções, graças ao seu profundo conhecimento e domínio técnico. Trabalhar com o João é, sem dúvida, uma oportunidade valiosa que todos deveriam ter.' },
+  { key:'kauan', pos: CITY.npcSpots.main, imgPath:'assets/npcs/kauan/Idle/rotations/south.png',
+    name:'KAUAN', sub:'Parceiro de projeto · App Mobile',
     question:'O que acha de João Paulo?',
-    answer: testimonialByKey.vargas.answer },
-  { key:'fernando', pos: { x: 2465, y: 1073 }, imgPath:'assets/npcs/fernando/Idle/rotations/south.png',
-    name:'FERNANDO', sub: testimonialByKey.fernando.sub,
+    answer:'Tive a oportunidade de trabalhar com o João nos últimos 2 anos no desenvolvimento do nosso app mobile, e posso dizer com tranquilidade que ele foi peça-chave na construção do backend.\n\nComo Dev Backend, atuando com Java e Spring, o João participou diretamente de grande parte da implementação da nossa estrutura backend. Além disso, contribuiu bastante para melhorar a performance de consultas e otimizar pontos importantes da aplicação, sempre preocupado com eficiência e qualidade.\n\nO que mais gosto de trabalhar com ele é a postura: aprende rápido, entende o problema com facilidade e sabe discutir soluções de forma madura, sempre buscando a melhor decisão para o produto. Ele entrega rápido, mas sem abrir mão de boas práticas e organização, o que faz muita diferença no dia a dia.\n\nRecomendo o João com total confiança para qualquer time que precise de um backend sólido, responsável e comprometido com resultado.' },
+  { key:'vargas', pos: CITY.npcSpots.stack, imgPath:'assets/npcs/vargas/Idle/rotations/south.png',
+    name:'VARGAS', sub:'Colega de carreira',
     question:'O que acha de João Paulo?',
-    answer: testimonialByKey.fernando.answer },
+    answer:'Tive a sorte de iniciar minha carreira como desenvolvedor ao lado do João Paulo. Desde o começo, sempre ficou evidente a competência e a curiosidade dele na resolução de problemas.\n\nO João foi uma peça fundamental na minha evolução profissional. Como colega e amigo, nunca mediu esforços para ajudar, seja explicando algo que eu não entendia ou dedicando horas (às vezes o dia inteiro) para resolver um problema junto. Para ele, o importante sempre foi chegar na melhor solução.\n\nRecomendo o João com total confiança para qualquer empresa. Trabalhar com ele é uma experiência que eleva o nível de quem está ao redor.' },
+  { key:'fernando', pos: CITY.npcSpots.lab, imgPath:'assets/npcs/fernando/Idle/rotations/south.png',
+    name:'FERNANDO', sub:'Colega de trabalho',
+    question:'O que acha de João Paulo?',
+    answer:'João é um excelente profissional, tive a oportunidade de trabalhar com ele durante 2 anos e ele sempre foi um profissional dedicado, se mostrou desde o início ter facilidade de aprender e ser capaz de assumir responsabilidades. Desempenhou com excelência os projetos em que participou.\n\nJoão é e será peça fundamental em qualquer equipe que atuar. Contudo deixo minha recomendação de seus serviços.' },
 ];
 
 const NPCS = NPC_DEFS.map(def => {
   const imgEl = document.createElement('img');
   imgEl.className = 'sprite';
   imgEl.src = def.imgPath;
-  document.body.appendChild(imgEl);
+  if (def.cls) imgEl.classList.add(def.cls);
+  worldPanEl.appendChild(imgEl);
   const nameEl = document.createElement('div');
   nameEl.className = 'npc-name';
   nameEl.textContent = def.name;
@@ -934,19 +1449,43 @@ const NPCS = NPC_DEFS.map(def => {
 const MISSIONS = [
   ...BUILDINGS.map(b => ({ type:'zone', key:b.zone, label:b.label, xp: b.zone==='secret' ? 200 : 60 })),
   ...NPCS.map(n => ({ type:'npc', key:n.def.key, label:'Conversar com ' + n.def.name, xp:40 })),
+  { type:'extra', key:'drive', label:'Dar uma volta de carro', xp:50 },
+  { type:'extra', key:'fly', label:'Voar de helicóptero', xp:80 },
+  { type:'extra', key:'billboards', label:'Ver 3 projetos nos outdoors', xp:60 },
+  { type:'extra', key:'garage', label:'Tirar um carro da garagem', xp:50 },
 ];
 const questListEl = document.getElementById('quest-list');
 const questCardEl = document.getElementById('quest-card');
 let allMissionsDone = save.allMissionsDone || false;
+const uiPref = (() => { try { return JSON.parse(localStorage.getItem('jopes_ui') || '{}'); } catch { return {}; } })();
+const saveUiPref = () => { try { localStorage.setItem('jopes_ui', JSON.stringify(uiPref)); } catch {} };
+const questHead = document.getElementById('quest-head');
+function setQuestCollapsed(c) { questCardEl.classList.toggle('collapsed', c); questHead.setAttribute('aria-expanded', String(!c)); }
+setQuestCollapsed(!!uiPref.questsCollapsed || matchMedia('(pointer: coarse)').matches);
+questHead.addEventListener('click', () => { uiPref.questsCollapsed = !questCardEl.classList.contains('collapsed'); setQuestCollapsed(uiPref.questsCollapsed); saveUiPref(); });
+const ctrlHint = document.getElementById('controls-hint');
+if (uiPref.ctrlHidden) ctrlHint.classList.add('hidden');
+document.getElementById('ctrl-close').addEventListener('click', () => { ctrlHint.classList.add('hidden'); uiPref.ctrlHidden = true; saveUiPref(); });
+document.getElementById('ctrl-open').addEventListener('click', () => { ctrlHint.classList.remove('hidden'); uiPref.ctrlHidden = false; saveUiPref(); });
+if (/[?&]debug\b/.test(location.search)) document.body.classList.add('debug');
 if (allMissionsDone) questCardEl.classList.add('all-done');
 
 function renderQuestList() {
   let doneCount = 0;
-  questListEl.innerHTML = MISSIONS.map(m => {
-    const done = m.type === 'zone' ? revealedZones.has(m.key) : talkedNPCs.has(m.key);
-    if (done) doneCount++;
-    return `<div class="quest-row${done?' done':''}"><span class="quest-name"><span class="quest-check"></span>${m.label}</span><span class="quest-xp">+${m.xp} XP</span></div>`;
+  const CHECK = '<svg viewBox="0 0 10 10" fill="none" stroke="#06140c" stroke-width="2"><path d="M2 5.2 4.2 7.3 8 2.8"/></svg>';
+  const GROUPS = [['zone', 'Lugares'], ['npc', 'Pessoas'], ['extra', 'Desafios']];
+  questListEl.innerHTML = GROUPS.map(([type, title]) => {
+    const rows = MISSIONS.filter(m => m.type === type).map(m => {
+      const done = m.type === 'zone' ? revealedZones.has(m.key) : m.type === 'npc' ? talkedNPCs.has(m.key) : extrasDone.has(m.key);
+      if (done) doneCount++;
+      const secret = m.key === 'secret' && !done;
+      return { done, html: `<div class="quest-row${done ? ' done' : ''}${secret ? ' secret' : ''}"><span class="quest-name"><span class="quest-check">${CHECK}</span><span class="qn">${secret ? '??? (segredo)' : m.label}</span></span><span class="quest-xp">+${m.xp}</span></div>` };
+    });
+    rows.sort((a, b) => a.done - b.done);                         // pending first
+    return `<div class="q-group">${title} · ${rows.filter(r => r.done).length}/${rows.length}</div>` + rows.map(r => r.html).join('');
   }).join('');
+  document.getElementById('quest-count').textContent = `${doneCount}/${MISSIONS.length}`;
+  document.getElementById('quest-prog-fill').style.width = (doneCount / MISSIONS.length * 100) + '%';
 
   if (doneCount === MISSIONS.length && !allMissionsDone) {
     allMissionsDone = true;
@@ -976,14 +1515,22 @@ const keys = {};
 function handleInteract() {
   if (npcDialogOpen) { advanceNPCDialog(); return; }
   if (overlayOpen) return;
+  if (pilot) { landHeli(); return; }
+  if (drivingCar) { exitCar(); return; }
   if (nearNPC) { playSfx('talk'); talkToNPC(nearNPC); return; }
+  if (nearHeli) { boardHeli(false); return; }
+  if (nearBillboard) { playSfx('interact'); openProject(nearBillboard.billboard.k); return; }
+  if (nearCar) { enterCar(nearCar); return; }
   if (nearBuilding) { playSfx('interact'); flashBuildingLabel(nearBuilding.zone); revealZone(nearBuilding.zone); openZone(nearBuilding.zone); }
 }
 
 window.addEventListener('keydown', e => {
   keys[e.key] = true;
   if (e.key === 'e' || e.key === 'E') handleInteract();
-  if (e.key === 'Escape') { closeNPCDialog(); closeOverlay(); }
+  if ((e.key === 'h' || e.key === 'H') && drivingCar && !e.repeat) { playSfx('horn'); honkAt = performance.now(); }
+  if ((e.key === 'f' || e.key === 'F') && !e.repeat) tryHelipad();
+  if (e.key === 'Escape') { if (tour.active) endTour(); closeNPCDialog(); closeOverlay(); }
+  if (tour.active && (e.key === 'ArrowRight' || e.key === 'Enter')) tourNext();
 });
 window.addEventListener('keyup', e => { keys[e.key] = false; });
 
@@ -998,13 +1545,16 @@ document.addEventListener('gesturestart', e => e.preventDefault());
 const SPEED = 260; // map-space px/sec
 const NPC_COLLIDE_RADIUS = 28;
 
-// Diamond footprint for buildings (matches the isometric art), circle for NPCs.
-function collidesAt(x, y) {
-  for (const b of BUILDINGS) {
-    if (insideHex(x - b.x, (y - b.y) - b.hex.dyTop, b.hex)) return true;
+// Every solid city object blocks its iso footprint (+ a little padding for
+// the sprite's feet) — so you can walk right up to a wall, or behind it.
+const FOOT_PAD = 12;
+function collidesAt(x, y, pad = FOOT_PAD, npcExtra = 0) {
+  const p = CITY.I(x, y);
+  for (const o of CITY.objects) {
+    if (o.solid && Math.abs(p.u - o.u) < o.a + pad && Math.abs(p.v - o.v) < o.b + pad) return true;
   }
   for (const npc of NPCS) {
-    if (Math.hypot(x - npc.def.pos.x, y - npc.def.pos.y) < NPC_COLLIDE_RADIUS) return true;
+    if (Math.hypot(x - npc.def.pos.x, y - npc.def.pos.y) < NPC_COLLIDE_RADIUS + npcExtra) return true;
   }
   return false;
 }
@@ -1028,6 +1578,9 @@ function updatePlayer(dt) {
 
   moving = dx !== 0 || dy !== 0;
   document.body.classList.toggle('is-moving', moving);
+
+  if (pilot) { updateHeli(dt, dx, dy); nearNPC = null; nearBuilding = null; nearCar = null; nearHeli = null; return; }
+  if (drivingCar) { updateDriving(dt, dx, dy); nearNPC = null; nearBuilding = null; nearCar = null; return; }
 
   if (moving) {
     const len = Math.hypot(dx, dy);
@@ -1067,9 +1620,359 @@ function updatePlayer(dt) {
   if (!nearNPC) {
     let closestDist = Infinity;
     for (const b of BUILDINGS) {
-      const dist = Math.hypot(playerPos.x - b.x, playerPos.y - b.y);
-      if (dist < b.radius && dist < closestDist) { closestDist = dist; nearBuilding = b; }
+      const dist = footprintDist(playerPos.x, playerPos.y, b);
+      if (dist < 70 && dist < closestDist) { closestDist = dist; nearBuilding = b; }
     }
+  }
+
+  // parked car within reach? (traffic cars don't stop for hitchhikers)
+  nearCar = null;
+  if (!nearNPC) {
+    let closestDist = 80;
+    for (const car of CITY.cars) {
+      if (car.ai) continue;
+      const dist = Math.hypot(playerPos.x - car.x, playerPos.y - car.y);
+      if (dist < closestDist) { closestDist = dist; nearCar = car; }
+    }
+    if (nearCar && nearBuilding && footprintDist(playerPos.x, playerPos.y, nearBuilding) < 25) nearCar = null;
+  }
+  nearBillboard = null;
+  if (!nearNPC) {
+    let best = 75;
+    for (const o of CITY.billboards) { const d = footprintDist(playerPos.x, playerPos.y, o); if (d < best) { best = d; nearBillboard = o; } }
+    if (nearBillboard) { nearCar = null; }
+  }
+  nearHeli = (!nearNPC && heli.state === 'ground' && Math.hypot(playerPos.x - heli.x, playerPos.y - heli.y) < 90) ? heli : null;
+  if (nearHeli) nearCar = null;
+  document.body.classList.toggle('can-fly', atHQ() && heli.state === 'roof');
+}
+
+/* ════════════════════════════════════════════════
+   CARS — walk up to a parked car and press E to drive it. Cars move along
+   the iso grid (8 headings), H honks, E again to get out. Traffic cars loop
+   along their lanes and brake for you.
+   ════════════════════════════════════════════════ */
+// Simple bicycle-model car: throttle/brake change speed, the front wheels steer,
+// and the turn rate depends on speed (no turning on the spot, inverted in reverse).
+const CAR = {
+  MAX_SPEED: 520,     // iso units/s forward
+  MAX_REVERSE: 170,   // iso units/s backward
+  ACCEL: 360,         // throttle
+  BRAKE: 900,         // S while moving forward
+  DRAG: 1.1,          // rolling resistance (per second, proportional)
+  COAST: 70,          // constant decel when off the throttle
+  WHEELBASE: 62,      // bigger = wider turning circle
+  MAX_STEER: 0.55,    // rad at the front wheels
+  STEER_RATE: 4.5,    // how fast the wheel turns toward the input (rad/s)
+  GRIP_LOSS: 0.35,    // at top speed the max steer shrinks by this fraction
+};
+const CAR_PAD = 24;      // extra clearance around the car body (iso units)
+let nearBillboard = null;
+let drivingCar = null, nearCar = null, driveDist = 0, honkAt = 0, lastBump = 0;
+
+function updateDriving(dt, dx, dy) {
+  const car = drivingCar;
+  const throttle = dy < 0 ? 1 : 0, brake = dy > 0 ? 1 : 0, steerIn = dx;
+
+  // speed
+  if (throttle) car.speed += CAR.ACCEL * dt * (car.speed < 0 ? 2.5 : 1);
+  else if (brake) car.speed -= (car.speed > 0 ? CAR.BRAKE : CAR.ACCEL * 0.6) * dt;
+  else {
+    const c = Math.min(Math.abs(car.speed), CAR.COAST * dt);
+    car.speed -= Math.sign(car.speed) * c;
+  }
+  car.speed -= car.speed * CAR.DRAG * 0.25 * dt;
+  car.speed = clamp(car.speed, -CAR.MAX_REVERSE, CAR.MAX_SPEED);
+  if (Math.abs(car.speed) < 2 && !throttle && !brake) car.speed = 0;
+
+  // steering: the wheel eases toward the input; less lock at high speed
+  const lock = CAR.MAX_STEER * (1 - CAR.GRIP_LOSS * Math.min(1, Math.abs(car.speed) / CAR.MAX_SPEED));
+  const target = steerIn * lock;
+  const ds = target - car.steer, maxStep = CAR.STEER_RATE * dt;
+  car.steer += clamp(ds, -maxStep, maxStep);
+  if (!steerIn && Math.abs(car.steer) < 0.02) car.steer = 0;
+
+  // heading changes with distance travelled (bicycle model). +angle = clockwise on screen.
+  // Arcade choice: we use |speed| so D always turns the car right and A left, also in
+  // reverse — a real car would flip, and that felt like a bug when going W↔S.
+  car.angle += (Math.abs(car.speed) / CAR.WHEELBASE) * Math.tan(car.steer) * dt;
+
+  const du = Math.cos(car.angle) * car.speed * dt, dv = Math.sin(car.angle) * car.speed * dt;
+  const nx = car.x + (du - dv), ny = car.y + (du + dv) / 2;
+  const inside = nx > EDGE_MARGIN && nx < MAP_PX - EDGE_MARGIN && ny > EDGE_MARGIN && ny < MAP_PX - EDGE_MARGIN;
+  if (car.speed !== 0) {
+    if (inside && !collidesAt(nx, ny, CAR_PAD, 24)) {
+      driveDist += Math.hypot(nx - car.x, ny - car.y);
+      CITY.moveCar(car, nx, ny);
+      if (driveDist > 900 && !extrasDone.has('drive')) {
+        extrasDone.add('drive');
+        addXP(50);
+        showToast('MISSÃO: VOLTA DE CARRO +50 XP', 'star');
+        renderQuestList();
+        writeSave();
+      }
+    } else {
+      // crash: stop dead and bounce back a little
+      if (Math.abs(car.speed) > 60 && performance.now() - lastBump > 250) { lastBump = performance.now(); playSfx('bump'); }
+      car.speed = -car.speed * 0.25;
+    }
+  }
+  car.wheelRot = (car.wheelRot || 0) + car.speed * dt / 5.8; // wheels roll with the distance covered
+  CITY.setCarHeading(car, car.angle, car.steer > 0.12 ? 1 : car.steer < -0.12 ? -1 : 0);
+  car.el.classList.toggle('braking', !!brake && car.speed > 5 || (car.speed < 0 && !throttle));
+  updateEngine(car.speed);
+  playerPos.x = car.x; playerPos.y = car.y;
+}
+
+// engine hum: one low oscillator whose pitch follows the speed
+let engineOsc = null, engineGain = null;
+function startEngine() {
+  ensureAudio();
+  if (engineOsc) return;
+  engineOsc = audioCtx.createOscillator();
+  engineOsc.type = 'sawtooth';
+  engineGain = audioCtx.createGain();
+  engineGain.gain.value = 0.0001;
+  const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420;
+  engineOsc.connect(lp); lp.connect(engineGain); engineGain.connect(masterGain);
+  engineOsc.start();
+}
+function updateEngine(speed) {
+  if (!engineOsc) return;
+  const t = audioCtx.currentTime, v = Math.abs(speed) / CAR.MAX_SPEED;
+  engineOsc.frequency.setTargetAtTime(42 + v * 95, t, 0.08);
+  engineGain.gain.setTargetAtTime(0.05 + v * 0.07, t, 0.1);
+}
+function stopEngine() {
+  if (!engineOsc) return;
+  const t = audioCtx.currentTime;
+  engineGain.gain.setTargetAtTime(0.0001, t, 0.08);
+  const o = engineOsc; engineOsc = null;
+  setTimeout(() => { try { o.stop(); } catch {} }, 400);
+}
+
+/* ════════════════════════════════════════════════
+   HELICOPTER — parked on the MAIN HQ helipad. At the HQ door press F to ride
+   the elevator up and take off. WASD flies (screen-relative, with inertia),
+   E lands: back on the helipad if you're over the HQ, otherwise on any free
+   spot on the ground (and E there to take off again).
+   ════════════════════════════════════════════════ */
+const heli = CITY.heli;
+const HELI = { CRUISE: 420, CLIMB: 190, ACCEL: 760, DRAG: 1.6, MAX: 620, YAW: 3.2 };
+let pilot = false, nearHeli = null, flyDist = 0, heliT = 0;
+let heliOsc = null, heliLfo = null, heliGain = null;
+
+function fadeThen(fn) {
+  const f = document.getElementById('fade');
+  f.classList.add('on');
+  setTimeout(() => { fn(); setTimeout(() => f.classList.remove('on'), 60); }, 380);
+}
+const atHQ = () => footprintDist(playerPos.x, playerPos.y, B.main) < 80;
+function tryHelipad() {
+  if (pilot || drivingCar || overlayOpen || npcDialogOpen) return;
+  if (atHQ() && heli.state === 'roof') { playSfx('door'); fadeThen(() => boardHeli(true)); }
+}
+function boardHeli(fromRoof) {
+  pilot = true;
+  heli.state = 'takeoff';
+  heli.solid = false;
+  heli.vx = heli.vy = 0;
+  heli.el.classList.add('spinning');
+  document.body.classList.add('flying');
+  playerImgEl.style.display = 'none';
+  document.body.classList.add('driving');
+  playerPos.x = heli.x; playerPos.y = heli.y;
+  startRotorSound();
+  showToast(fromRoof ? 'DECOLANDO DO HQ · WASD VOA · E POUSA' : 'DECOLANDO · WASD VOA · E POUSA', 'city');
+}
+function landHeli() {
+  if (heli.state !== 'flying') return;
+  const overPad = Math.hypot(heli.x - heli.pad.x, heli.y - heli.pad.y) < 110;
+  if (overPad) { heli.state = 'landing'; heli.target = { ...heli.pad }; return; }
+  if (!collidesAt(heli.x, heli.y, 36, 40)) { heli.state = 'landing'; heli.target = { x: heli.x, y: heli.y, h: 0 }; return; }
+  showToast('SEM ESPAÇO PRA POUSAR AQUI — TENTE UMA RUA OU O HELIPONTO DO HQ', 'alert');
+}
+function leaveHeli() {
+  pilot = false;
+  heli.el.classList.remove('spinning');
+  document.body.classList.remove('flying');
+  CITY.redraw(heli);
+  document.body.classList.remove('driving');
+  stopRotorSound();
+  if (heli.state === 'roof') {
+    // back down the elevator, out the front door of the HQ
+    fadeThen(() => {
+      const door = CITY.S(B.main.u - 70, B.main.v + 150);
+      playerPos.x = door.x; playerPos.y = door.y;
+      playerImgEl.style.display = '';
+      showToast('DESCEU PELO ELEVADOR DO HQ', 'city');
+    });
+    return;
+  }
+  heli.solid = true;
+  for (const [du, dv] of [[0, 60], [60, 0], [0, -60], [-60, 0], [60, 60], [-60, -60], [0, 90], [90, 0]]) {
+    const x = heli.x + (du - dv), y = heli.y + (du + dv) / 2;
+    if (!collidesAt(x, y)) { playerPos.x = x; playerPos.y = y; break; }
+  }
+  playerImgEl.style.display = '';
+}
+function updateHeli(dt, dx, dy) {
+  heliT += dt;
+  // vertical
+  if (heli.state === 'takeoff') {
+    const h = Math.min(HELI.CRUISE, heli.h + HELI.CLIMB * dt);
+    if (h >= HELI.CRUISE) heli.state = 'flying';
+    heli.h = h;
+  } else if (heli.state === 'landing') {
+    const t = heli.target;
+    heli.vx *= Math.max(0, 1 - 4 * dt); heli.vy *= Math.max(0, 1 - 4 * dt);
+    heli.x += (t.x - heli.x) * Math.min(1, 3 * dt);
+    heli.y += (t.y - heli.y) * Math.min(1, 3 * dt);
+    heli.h = Math.max(t.h, heli.h - HELI.CLIMB * 0.8 * dt);
+    if (heli.h <= t.h + 0.5 && Math.hypot(t.x - heli.x, t.y - heli.y) < 3) {
+      heli.x = t.x; heli.y = t.y; heli.h = t.h;
+      heli.state = t.h > 0 ? 'roof' : 'ground';
+      CITY.moveHeli(heli, heli.x, heli.y, heli.h);
+      leaveHeli();
+      return;
+    }
+  }
+  // horizontal: screen-relative thrust with inertia (only once off the pad)
+  if (heli.state !== 'landing' && heli.h > 40) {
+    if (dx || dy) { const l = Math.hypot(dx, dy); heli.vx += dx / l * HELI.ACCEL * dt; heli.vy += dy / l * HELI.ACCEL * dt; }
+    heli.vx -= heli.vx * HELI.DRAG * dt; heli.vy -= heli.vy * HELI.DRAG * dt;
+    const sp = Math.hypot(heli.vx, heli.vy);
+    if (sp > HELI.MAX) { heli.vx *= HELI.MAX / sp; heli.vy *= HELI.MAX / sp; }
+    const nx = clamp(heli.x + heli.vx * dt, EDGE_MARGIN, MAP_PX - EDGE_MARGIN);
+    const ny = clamp(heli.y + heli.vy * dt, EDGE_MARGIN + 200, MAP_PX - EDGE_MARGIN);
+    flyDist += Math.hypot(nx - heli.x, ny - heli.y);
+    heli.x = nx; heli.y = ny;
+    // nose turns toward where it's going
+    if (sp > 40) {
+      const du = heli.vy + heli.vx / 2, dv = heli.vy - heli.vx / 2;
+      let d = Math.atan2(dv, du) - heli.angle;
+      d = Math.atan2(Math.sin(d), Math.cos(d));
+      heli.angle += clamp(d, -HELI.YAW * dt, HELI.YAW * dt);
+    }
+    if (flyDist > 1500 && !extrasDone.has('fly')) {
+      extrasDone.add('fly'); addXP(80);
+      showToast('MISSÃO: VOO DE HELICÓPTERO +80 XP', 'star');
+      renderQuestList(); writeSave();
+    }
+  }
+  const bob = heli.state === 'flying' ? Math.sin(heliT * 2.2) * 3 : 0;
+  CITY.setHeliHeading(heli, heli.angle);
+  const hLogical = heli.h;
+  CITY.moveHeli(heli, heli.x, heli.y, hLogical + bob);
+  heli.h = hLogical; // the bob is visual only
+  updateRotorSound(Math.hypot(heli.vx, heli.vy));
+  playerPos.x = heli.x; playerPos.y = heli.y;
+}
+
+// rotor sound: low saw whose volume is chopped by a ~12 Hz LFO
+function startRotorSound() {
+  ensureAudio();
+  if (heliOsc) return;
+  heliOsc = audioCtx.createOscillator(); heliOsc.type = 'sawtooth'; heliOsc.frequency.value = 48;
+  const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 300;
+  heliGain = audioCtx.createGain(); heliGain.gain.value = 0.0001;
+  const chop = audioCtx.createGain(); chop.gain.value = 0.5;
+  heliLfo = audioCtx.createOscillator(); heliLfo.type = 'square'; heliLfo.frequency.value = 11;
+  const lfoAmt = audioCtx.createGain(); lfoAmt.gain.value = 0.5;
+  heliLfo.connect(lfoAmt); lfoAmt.connect(chop.gain);
+  heliOsc.connect(lp); lp.connect(chop); chop.connect(heliGain); heliGain.connect(masterGain);
+  heliOsc.start(); heliLfo.start();
+  heliGain.gain.setTargetAtTime(0.09, audioCtx.currentTime, 0.4);
+}
+function updateRotorSound(speed) {
+  if (!heliOsc) return;
+  const v = Math.min(1, speed / HELI.MAX), t = audioCtx.currentTime;
+  heliLfo.frequency.setTargetAtTime(11 + v * 5, t, 0.2);
+  heliOsc.frequency.setTargetAtTime(48 + v * 20, t, 0.2);
+}
+function stopRotorSound() {
+  if (!heliOsc) return;
+  heliGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.3);
+  const o = heliOsc, l = heliLfo; heliOsc = heliLfo = null;
+  setTimeout(() => { try { o.stop(); l.stop(); } catch {} }, 1200);
+}
+
+function enterCar(car) {
+  drivingCar = car;
+  car.solid = false;
+  car.speed = 0; car.steer = 0;
+  car.angle = car.heading * 2 * Math.PI / 64;
+  car.el.classList.add('driving');
+  car.el.classList.remove('near-car');
+  playerImgEl.style.display = 'none';
+  document.body.classList.add('driving');
+  playerPos.x = car.x; playerPos.y = car.y;
+  playSfx('door'); setTimeout(() => { playSfx('engine'); startEngine(); }, 120);
+  showToast('W ACELERA · S FREIA/RÉ · A/D ESTERÇA · H BUZINA', 'city');
+}
+
+function exitCar() {
+  const car = drivingCar;
+  if (Math.abs(car.speed) > 140) { showToast('FREIA ANTES DE SAIR (S)', 'alert'); return; }
+  car.solid = true;
+  // first free spot around the car
+  const spots = [[0, 52], [52, 0], [0, -52], [-52, 0], [52, 52], [-52, -52], [52, -52], [-52, 52], [0, 80], [80, 0]];
+  for (const [du, dv] of spots) {
+    const x = car.x + (du - dv), y = car.y + (du + dv) / 2;
+    if (x < EDGE_MARGIN || x > MAP_PX - EDGE_MARGIN || y < EDGE_MARGIN || y > MAP_PX - EDGE_MARGIN) continue;
+    if (!collidesAt(x, y)) {
+      playerPos.x = x; playerPos.y = y;
+      drivingCar = null;
+      car.speed = 0; car.steer = 0;
+      CITY.setCarHeading(car, car.angle, 0);
+      car.el.classList.remove('driving', 'braking');
+      stopEngine();
+      playerImgEl.style.display = '';
+      document.body.classList.remove('driving');
+      playSfx('door');
+      return;
+    }
+  }
+  car.solid = false;
+  showToast('SEM ESPAÇO PRA SAIR AQUI', 'alert');
+}
+
+// traffic: move along the lane, brake if the player (or the player's car) is ahead.
+// Cars on u-roads also yield to cars on v-roads so nobody deadlocks at a junction.
+function updateTraffic(dt) {
+  for (const car of CITY.cars) {
+    const ai = car.ai; if (!ai) continue;
+    const along = ai.axis, across = along === 'u' ? 'v' : 'u';
+    const blockers = [];
+    if (drivingCar) blockers.push(CITY.I(drivingCar.x, drivingCar.y)); else if (!pilot) blockers.push(CITY.I(playerPos.x, playerPos.y));
+    if (heli.state === 'ground') blockers.push(heli);
+    for (const o of CITY.cars) if (o !== car && !o.ai) blockers.push(o);
+    if (along === 'u') for (const o of CITY.cars) if (o.ai && o.ai.axis === 'v') blockers.push(o);
+    let blocked = false;
+    for (const b of blockers) {
+      const ahead = (b[along] - car[along]) * ai.dir, side = Math.abs(b[across] - car[across]);
+      if (ahead > 0 && ahead < 95 && side < 36) { blocked = true; break; }
+    }
+    // a honk makes nearby stopped cars hurry along (they don't, but they flash)
+    car.el.classList.toggle('honked', performance.now() - honkAt < 600 && drivingCar && Math.hypot(car.x - drivingCar.x, car.y - drivingCar.y) < 260);
+    if (!blocked) {
+      // red / amber light at the next junction → stop at the line
+      const B_ = CITY.BLOCK, coord = car[along], road = Math.round(car[across] / B_);
+      const next = ai.dir > 0 ? Math.ceil((coord + 1) / B_) : Math.floor((coord - 1) / B_);
+      const stopAt = next * B_ - ai.dir * (CITY.ROAD / 2 + 26);
+      const dist = (stopAt - coord) * ai.dir;
+      if (dist > -2 && dist < 34) {
+        const st = along === 'u' ? CITY.lightAt(next, road, 'u') : CITY.lightAt(road, next, 'v');
+        if (st !== 'g') blocked = true;
+      }
+    }
+    if (car.el.classList.contains('braking') !== blocked) { car.el.classList.toggle('braking', blocked); CITY.redraw(car); } // brake lights
+    if (blocked) continue;
+    let pos = car[along] + ai.dir * ai.speed * dt;
+    if (pos > ai.hi) pos = ai.lo; else if (pos < ai.lo) pos = ai.hi;
+    const u = along === 'u' ? pos : car.u, v = along === 'u' ? car.v : pos;
+    const sp = CITY.S(u, v);
+    CITY.moveCar(car, sp.x, sp.y);
   }
 }
 
@@ -1078,50 +1981,113 @@ function updatePlayer(dt) {
    ════════════════════════════════════════════════ */
 const mmCanvas = document.getElementById('minimap');
 const mmCtx = mmCanvas.getContext('2d');
-mmCanvas.width = 110; mmCanvas.height = 110;
+const MM_DPR = Math.min(2, window.devicePixelRatio || 1);
+function sizeMinimap() { const w = mmCanvas.clientWidth || 150; mmCanvas.width = mmCanvas.height = Math.round(w * MM_DPR); }
+sizeMinimap(); addEventListener('resize', sizeMinimap);
 const MM_SCALE = 100 / MAP_PX;
 
-const ZONE_COLORS = {
-  main:'#FFE600', projects:'#FF3CAC', lab:'#2AFADF',
-  about:'#7B61FF', stack:'#00FF88', contact:'#FF8C00', secret:'#ff3333'
-};
+const ZONE_COLORS = CITY.colors;
 
 function drawMinimap() {
-  mmCtx.clearRect(0,0,110,110);
-  mmCtx.fillStyle='rgba(5,13,24,0.9)'; mmCtx.fillRect(0,0,110,110);
-
-  BUILDINGS.forEach(b => {
-    mmCtx.fillStyle = ZONE_COLORS[b.zone] || '#ffffff';
-    mmCtx.globalAlpha = 0.8;
-    mmCtx.fillRect(5 + b.x*MM_SCALE - 3, 5 + b.y*MM_SCALE - 3, 6, 6);
-    mmCtx.globalAlpha = 1;
+  const k = mmCanvas.width / 110;                    // draw in a 110-unit space, scaled to the canvas
+  mmCtx.setTransform(1, 0, 0, 1, 0, 0);
+  mmCtx.clearRect(0, 0, mmCanvas.width, mmCanvas.height);
+  mmCtx.setTransform(k, 0, 0, k, 0, 0);
+  mmCtx.fillStyle = 'rgba(4,8,15,0.75)'; mmCtx.fillRect(0, 0, 110, 110);
+  mmCtx.save();
+  mmCtx.beginPath(); mmCtx.rect(2, 2, 106, 106); mmCtx.clip();
+  mmCtx.lineCap = 'round';
+  mmCtx.strokeStyle = 'rgba(200,215,230,0.16)'; mmCtx.lineWidth = 2.2;
+  CITY.roads.forEach(r => {
+    mmCtx.beginPath();
+    mmCtx.moveTo(5 + r.a.x*MM_SCALE, 5 + r.a.y*MM_SCALE);
+    mmCtx.lineTo(5 + r.b.x*MM_SCALE, 5 + r.b.y*MM_SCALE);
+    mmCtx.stroke();
   });
-
-  mmCtx.fillStyle='#ffffff';
-  mmCtx.beginPath();
-  mmCtx.arc(5 + playerPos.x*MM_SCALE, 5 + playerPos.y*MM_SCALE, 3, 0, Math.PI*2);
-  mmCtx.fill();
+  BUILDINGS.forEach(b => {
+    if (b.zone === 'secret' && !revealedZones.has('secret')) return;
+    const x = 5 + b.x*MM_SCALE, y = 5 + b.y*MM_SCALE, lit = revealedZones.has(b.zone);
+    mmCtx.fillStyle = ZONE_COLORS[b.zone] || '#ffffff';
+    mmCtx.globalAlpha = lit ? 0.95 : 0.45;
+    mmCtx.beginPath(); mmCtx.arc(x, y, 3.2, 0, Math.PI*2); mmCtx.fill();
+    if (lit) { mmCtx.globalAlpha = 0.18; mmCtx.beginPath(); mmCtx.arc(x, y, 6, 0, Math.PI*2); mmCtx.fill(); }
+  });
+  mmCtx.globalAlpha = 1;
+  const px = 5 + playerPos.x*MM_SCALE, py = 5 + playerPos.y*MM_SCALE, t = performance.now() / 1000;
+  mmCtx.strokeStyle = 'rgba(255,230,0,' + (0.55 - (t % 1.4) / 1.4 * 0.55) + ')'; mmCtx.lineWidth = 1;
+  mmCtx.beginPath(); mmCtx.arc(px, py, 3 + (t % 1.4) / 1.4 * 7, 0, Math.PI*2); mmCtx.stroke();
+  mmCtx.fillStyle = '#FFE600'; mmCtx.strokeStyle = '#0a0d12'; mmCtx.lineWidth = 1.2;
+  mmCtx.beginPath(); mmCtx.arc(px, py, 3, 0, Math.PI*2); mmCtx.fill(); mmCtx.stroke();
+  mmCtx.restore();
 }
 
 /* ════════════════════════════════════════════════
    HUD
    ════════════════════════════════════════════════ */
 const interactPrompt = document.getElementById('interact-prompt');
+{ // every caller sets .textContent = '[ E ] ENTRAR · [ F ] …' — render those brackets as keycaps
+  let last = '';
+  Object.defineProperty(interactPrompt, 'textContent', {
+    get() { return last; },
+    set(v) { if (v === last) return; last = v;
+      this.innerHTML = esc(v).replace(/\[ ?([A-Z]+) ?\]/g, '<kbd>$1</kbd>').replace(/ · /g, '<span class="sep">·</span>'); }
+  });
+}
 const zoneName = document.getElementById('zone-name');
 const zoneSub = document.getElementById('zone-sub');
 const debugCoords = document.getElementById('debug-coords');
 
+const zoneDot = document.getElementById('zone-dot'), mmZone = document.getElementById('mm-zone');
 function updateZoneHUD() {
+  updateZoneHUDText();
+  const c = pilot || drivingCar ? 'var(--cyan)' : nearBuilding ? (ZONE_COLORS[nearBuilding.zone] || 'var(--accent)') : nearBillboard ? 'var(--accent2)' : 'var(--accent)';
+  if (zoneDot._c !== c) { zoneDot._c = c; zoneDot.style.background = c; zoneDot.style.color = c; }
+  const z = zoneName.textContent; if (mmZone._z !== z) { mmZone._z = z; mmZone.textContent = z; }
+}
+function updateZoneHUDText() {
   if (npcDialogOpen) { interactPrompt.classList.remove('visible'); return; }
-  if (nearNPC) {
+  if (pilot) {
+    const kmh = Math.round(Math.hypot(heli.vx, heli.vy) * 0.3);
+    zoneName.textContent = 'HELICÓPTERO JOPES';
+    zoneSub.textContent = `ALT ${Math.round(heli.h / 3)} M · ${kmh} KM/H`;
+    const overPad = Math.hypot(heli.x - heli.pad.x, heli.y - heli.pad.y) < 110;
+    interactPrompt.textContent = heli.state === 'flying' ? (overPad ? '[ E ] POUSAR NO HELIPONTO' : '[ E ] POUSAR') : heli.state === 'takeoff' ? 'DECOLANDO…' : 'POUSANDO…';
+    interactPrompt.classList.add('visible');
+    return;
+  }
+  if (nearHeli) {
+    zoneName.textContent = 'HELICÓPTERO JOPES';
+    zoneSub.textContent = 'POUSADO';
+    interactPrompt.textContent = '[ E ] DECOLAR';
+    interactPrompt.classList.add('visible');
+    return;
+  }
+  if (drivingCar) {
+    zoneName.textContent = drivingCar.special ? jopesCarName() : 'DIRIGINDO';
+    const kmh = Math.round(Math.abs(drivingCar.speed) * 0.22);
+    zoneSub.textContent = (drivingCar.speed < -1 ? 'RÉ · ' : '') + kmh + ' KM/H · A/D ESTERÇA';
+    interactPrompt.textContent = drivingCar.special && garageCar === 'xtz' ? '[ E ] DESCER DA MOTO' : '[ E ] SAIR DO CARRO';
+    interactPrompt.classList.add('visible');
+  } else if (nearNPC) {
     zoneName.textContent = nearNPC.def.name;
     zoneSub.textContent = nearNPC.def.sub;
-    interactPrompt.textContent = '[ E ] CONVERSAR COM ' + nearNPC.def.name;
+    interactPrompt.textContent = '[ E ] CONVERSAR COM ' + nearNPC.def.name + (atHQ() && heli.state === 'roof' ? ' · [ F ] HELIPONTO' : '');
+    interactPrompt.classList.add('visible');
+  } else if (nearBillboard) {
+    const p = projectList()[nearBillboard.billboard.k];
+    zoneName.textContent = 'OUTDOOR · PROJETO ' + String(nearBillboard.billboard.k + 1).padStart(2, '0');
+    zoneSub.textContent = p ? (p.title?.pt || p.title) : '';
+    interactPrompt.textContent = '[ E ] VER PROJETO';
+    interactPrompt.classList.add('visible');
+  } else if (nearCar) {
+    zoneName.textContent = nearCar.special ? jopesCarName() : 'CARRO ESTACIONADO';
+    zoneSub.textContent = 'DÁ PRA DIRIGIR';
+    interactPrompt.textContent = '[ E ] DIRIGIR';
     interactPrompt.classList.add('visible');
   } else if (nearBuilding) {
     zoneName.textContent = nearBuilding.label;
     zoneSub.textContent = nearBuilding.sublabel;
-    interactPrompt.textContent = '[ E ] ENTRAR';
+    interactPrompt.textContent = (nearBuilding === B.main && heli.state === 'roof') ? '[ E ] ENTRAR · [ F ] HELIPONTO' : '[ E ] ENTRAR';
     interactPrompt.classList.add('visible');
   } else {
     zoneName.textContent = 'CITY CENTER';
@@ -1151,7 +2117,9 @@ let npcDialogIdx = 0;
 
 function openNPCDialog(npc) {
   const { name, sub, question, answer, imgPath } = npc.def;
-  npcDialogPortrait.src = imgPath;
+  const G = CITY.getGL();
+  if (CHARS_3D && G?.personBust) { npcDialogPortrait.src = bustCache[npc.def.key] || (bustCache[npc.def.key] = G.personBust(npc.def.key)); npcDialogPortrait.className = ''; }
+  else { npcDialogPortrait.src = imgPath; npcDialogPortrait.className = npc.def.cls || ''; }
   npcDialogName.textContent = name;
   npcDialogSub.textContent = sub;
   npcDialogPages = [{ text: `Você: "${question}"`, question: true }, ...answer.split('\n\n').map(text => ({ text }))];
@@ -1186,6 +2154,7 @@ function closeNPCDialog() {
 function openZone(zone) {
   const data = ZONE_CONTENT[zone];
   if (!data) return;
+  if (zone === 'garage') { openGarage(); return; }
   if (zone === 'projects') { currentProjIdx = 0; renderProjectOverlay(); }
   else overlayContent.innerHTML = buildOverlayHTML(data, zone);
   overlay.classList.add('active');
@@ -1249,7 +2218,27 @@ function buildOverlayHTML(data, zone) {
   return h;
 }
 
+let PROJECT_DATA = null;
+const projectList = () => PROJECT_DATA || PROJECTS;
+const CAT_LABEL = { monolith:'Monolito', frontend:'Front-end', mobile:'Mobile', admin:'Backoffice', integration:'Integração', 'event-driven':'Event-driven', iac:'Infra as Code', automation:'Automação', sync:'Sync' };
+function openProject(k) {
+  currentProjIdx = k;
+  renderProjectOverlay();
+  overlay.classList.add('active');
+  overlayOpen = true;
+  const p = projectList()[k];
+  if (p && p.slug && !viewedProjects.has(p.slug)) {
+    viewedProjects.add(p.slug);
+    if (viewedProjects.size >= 3 && !extrasDone.has('billboards')) {
+      extrasDone.add('billboards'); addXP(60);
+      showToast('MISSÃO: 3 PROJETOS VISTOS +60 XP', 'star');
+      renderQuestList();
+    }
+    writeSave();
+  }
+}
 function renderProjectOverlay() {
+  if (PROJECT_DATA) return renderRealProject();
   const p = PROJECTS[currentProjIdx];
   let h = `<div class="ov-id">${p.code} — ${currentProjIdx+1} / ${PROJECTS.length}</div>`;
   h += `<div class="ov-title">${p.type}</div><div class="ov-sub">${p.title}</div>`;
@@ -1262,11 +2251,158 @@ function renderProjectOverlay() {
   overlayContent.innerHTML = h;
 }
 
-window.prevProj = () => { if (currentProjIdx>0) { currentProjIdx--; renderProjectOverlay(); } };
-window.nextProj = () => { if (currentProjIdx<PROJECTS.length-1) { currentProjIdx++; renderProjectOverlay(); } };
+function renderRealProject() {
+  const L = PROJECT_DATA, k = currentProjIdx, p = L[k];
+  const t = x => esc(x?.pt ?? x);
+  const list = (title, arr) => arr?.pt?.length ? `<div class="proj-h">${title}</div><ul class="proj-list">${arr.pt.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
+  let h = `<div class="proj-head">`;
+  if (p.image) h += `<div class="proj-media"><img src="${p.image}" alt="${t(p.title)}"></div>`;
+  h += `<div><div class="ov-id">PROJETO ${String(k + 1).padStart(2, '0')} / ${L.length}</div>`;
+  h += `<div class="ov-title proj-title">${t(p.title)}</div><div class="ov-sub" style="margin-bottom:0;line-height:1.6;letter-spacing:.05em">${t(p.subtitle)}</div>`;
+  h += `<div class="proj-badges"><span class="proj-badge">${p.type === 'personal' ? 'Pessoal' : 'Profissional'}</span><span class="proj-badge">${p.year}</span><span class="proj-badge">${CAT_LABEL[p.category] || p.category}</span><span class="proj-badge">Complexidade ${'★'.repeat(p.complexity)}</span></div>`;
+  if (p.role) h += `<div class="proj-role">${t(p.role)}</div>`;
+  h += `</div></div>`;
+  h += `<div class="ov-body" style="margin-bottom:8px">${t(p.description)}</div>`;
+  h += `<div class="proj-grid"><div class="proj-sec"><h4>O PROBLEMA</h4><p>${t(p.problem)}</p></div><div class="proj-sec"><h4>A SOLUÇÃO</h4><p>${t(p.solution)}</p></div></div>`;
+  h += list('DESTAQUES', p.highlights) + list('RESULTADOS', p.results) + list('DECISÕES TÉCNICAS', p.technicalDecisions) + list('DESAFIOS', p.challenges);
+  h += `<div class="proj-h">STACK</div><div class="tags" style="margin-bottom:20px">` + p.techStack.map(x => `<span class="tag cyan">${esc(x)}</span>`).join('') + `</div>`;
+  h += `<a class="proj-link" href="/pt/projects/${encodeURIComponent(p.slug)}" target="_blank" rel="noopener">VER NO PORTFÓLIO ↗</a>`;
+  h += `<div class="proj-nav"><button onclick="prevProj()" ${k === 0 ? 'disabled' : ''}>← ANTERIOR</button><button onclick="nextProj()" ${k === L.length - 1 ? 'disabled' : ''}>PRÓXIMO →</button></div>`;
+  overlayContent.innerHTML = h;
+  overlayContent.parentElement.scrollTop = 0;
+}
+window.prevProj = () => { if (currentProjIdx>0) { currentProjIdx--; openProject(currentProjIdx); } };
+window.nextProj = () => { if (currentProjIdx<projectList().length-1) { currentProjIdx++; openProject(currentProjIdx); } };
+
+// once the data arrives: real projects everywhere, billboard screenshots, Felipe's real testimonial
+window.PORTFOLIO.then(data => {
+  if (!data) return;
+  PROJECT_DATA = data.projects;
+  ZONE_CONTENT.projects.sub = `${data.projects.length} projetos reais · clique ou chegue perto dos outdoors`;
+  document.querySelectorAll('image.bb-img').forEach(img => { const p = data.projects[+img.dataset.k]; if (p?.image) img.setAttribute('href', p.image); });
+  const fel = data.testimonials?.find(x => x.id === 'felipe-baer');
+  const npc = NPCS.find(n => n.def.key === 'felipe');
+  if (fel && npc) { npc.def.answer = fel.content.pt; npc.def.sub = fel.author.role.pt; }
+});
+
+// click a billboard panel or a port container to open that project
+let camNow = { x: 0, y: 0, z: 1 };
+const ZOOM = { BASE: matchMedia('(pointer: coarse)').matches ? 1.15 : 1.35, TOUR: 0.95 };
+let camZoom = ZOOM.BASE, rasterZoom = 1;
+function pickAt(cx, cy) {
+  const mx = cx / camNow.z + camNow.x, my = cy / camNow.z + camNow.y;
+  for (const o of CITY.billboards) {
+    const bb = o.bbox;
+    if (mx >= bb.x0 + 14 && mx <= bb.x1 - 14 && my >= bb.y0 + 14 && my <= o.y - 30) return o.billboard.k;
+  }
+  if (B.projects) {                                   // containers: test at mid container height
+    const p = CITY.I(mx, my + 17), du = p.u - B.projects.u, dv = p.v - B.projects.v;
+    const cols = [-114, -38, 38, 114], rows = [-24, 24];
+    for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++)
+      if (Math.abs(du - cols[c]) < 34 && Math.abs(dv - rows[r]) < 18) return r * 4 + c;
+  }
+  return -1;
+}
+const UI_SEL = '#overlay, #npc-dialog, #intro-modal, button, a, #hud-left, #quick-actions, #touch-controls, #zone-card';
+window.addEventListener('click', e => {
+  if (overlayOpen || npcDialogOpen || e.target.closest(UI_SEL)) return;
+  const k = pickAt(e.clientX, e.clientY);
+  if (k >= 0 && k < projectList().length) { playSfx('interact'); openProject(k); }
+});
+window.addEventListener('mousemove', e => {
+  document.body.classList.toggle('pick-hover', !overlayOpen && !e.target.closest(UI_SEL) && pickAt(e.clientX, e.clientY) >= 0);
+});
+
+
+/* ════════════════════════════════════════════════
+   GARAGE — João's own cars (and the bike), on turntables.
+   Models come from vehicles.js (hand-built, or GLB files listed in
+   assets/garage/garage.json). "Dirigir este" turns the JOPES car into it.
+   ════════════════════════════════════════════════ */
+const GARAGE_INFO = {
+  clio:  { name: 'Renault Clio',          year: '2010/2011', color: 'Preto',  kind: 'Hatch · 3 portas' },
+  hb20:  { name: 'Hyundai HB20',          year: '2016',      color: 'Branco', kind: 'Hatch · 5 portas' },
+  cruze: { name: 'Chevrolet Cruze',       year: '2016/2017', color: 'Branco', kind: 'Sedã' },
+  xtz:   { name: 'Yamaha XTZ 250 Lander', year: '',          color: 'Azul',   kind: 'Moto trail' },
+};
+const GARAGE_ORDER = ['clio', 'hb20', 'cruze', 'xtz'];
+const jopesCarName = () => garageCar ? GARAGE_INFO[garageCar].name.toUpperCase() : 'JOPES MOBILE';
+let garageOpen = false, garageSel = garageCar || 'clio', garageAng = -0.7, garageDrag = null;
+function applyGarageCar() {
+  const car = CITY.playerCar;
+  if (!car || !window.JOPES_GARAGE) return;
+  car.model = garageCar || undefined;
+  if (CITY.gl) CITY.redraw(car);
+}
+window.addEventListener('garage:ready', applyGarageCar);
+window.addEventListener('garage:models', applyGarageCar);
+if (window.JOPES_GARAGE) applyGarageCar();
+function openGarage() {
+  const G = window.JOPES_GARAGE;
+  overlayContent.innerHTML = `
+    <div class="gar-head">
+      <div>
+        <div class="ov-id">GARAGEM · JOPES</div>
+        <h2 class="gar-title">Os carros que <em>já foram meus</em></h2>
+        <p class="gar-sub">Cada um marcou uma fase. Escolha um, gire e leve pra rodar pela cidade.</p>
+      </div>
+      <div class="gar-count"><b>${GARAGE_ORDER.length}</b><span>veículos</span></div>
+    </div>
+    <div class="gar-stage">
+      <canvas id="gar-cv"></canvas>
+      <div id="gar-credit" class="gar-credit" hidden></div>
+      <div class="gar-hint">${G ? 'arraste para girar' : 'os modelos 3D precisam de WebGL'}</div>
+    </div>
+    <div class="gar-plate"><div><div id="gar-name"></div><div id="gar-meta"></div></div><button id="gar-drive" class="intro-btn primary"></button></div>
+    <div class="gar-tabs">${GARAGE_ORDER.map(id => `<button class="gar-tab" data-id="${id}"><b>${GARAGE_INFO[id].name.split(' ').slice(-1)[0] === 'Lander' ? 'XTZ 250' : GARAGE_INFO[id].name.split(' ').slice(1).join(' ')}</b><span>${GARAGE_INFO[id].year || GARAGE_INFO[id].kind}</span></button>`).join('')}</div>`;
+  overlay.classList.add('active', 'garage');
+  overlayOpen = true; garageOpen = true;
+  const cv = document.getElementById('gar-cv');
+  const sel = id => {
+    garageSel = id;
+    const I = GARAGE_INFO[id];
+    document.getElementById('gar-name').textContent = I.name;
+    document.getElementById('gar-meta').textContent = [I.year, I.color, I.kind].filter(Boolean).join(' · ');
+    const cr = G && G.credit && G.credit(id), ce = document.getElementById('gar-credit');
+    ce.textContent = cr || ''; ce.hidden = !cr;
+    document.getElementById('gar-drive').textContent = garageCar === id ? '✓ É O SEU CARRO NA CIDADE' : (id === 'xtz' ? 'PILOTAR ESTA' : 'DIRIGIR ESTE');
+    overlayContent.querySelectorAll('.gar-tab').forEach(b => b.classList.toggle('on', b.dataset.id === id));
+  };
+  overlayContent.querySelectorAll('.gar-tab').forEach(b => b.addEventListener('click', () => { playSfx('interact'); sel(b.dataset.id); }));
+  document.getElementById('gar-drive').addEventListener('click', () => driveGarageCar(garageSel));
+  cv.addEventListener('pointerdown', e => { garageDrag = { x: e.clientX, a: garageAng }; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointermove', e => { if (garageDrag) garageAng = garageDrag.a + (e.clientX - garageDrag.x) * 0.012; });
+  cv.addEventListener('pointerup', () => { garageDrag = null; });
+  sel(garageSel);
+  let last = performance.now();
+  (function spin(now) {
+    if (!garageOpen) return;
+    requestAnimationFrame(spin);
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (!garageDrag) garageAng += dt * 0.35;
+    if (G) G.showcase(garageSel, cv, garageAng, { elev: 0.2 });
+  })(last);
+}
+function driveGarageCar(id) {
+  garageCar = id; writeSave(); applyGarageCar();
+  playSfx('reveal');
+  const car = CITY.playerCar, g = BUILDINGS.find(b => b.zone === 'garage');
+  if (car && g && !drivingCar) {
+    // bring it round to the street in front of the garage and hop in
+    const p = CITY.S(g.u + 40, (Math.floor(g.v / CITY.BLOCK) + 1) * CITY.BLOCK - 22);
+    car.heading = 0; car.angle = 0;
+    CITY.moveCar(car, p.x, p.y); CITY.setCarHeading(car, 0, 0);
+    closeOverlay();
+    playerPos.x = p.x; playerPos.y = p.y;
+    enterCar(car);
+    showToast((id === 'xtz' ? 'SUA ' : 'SEU ') + GARAGE_INFO[id].name.toUpperCase() + ' · BOA VOLTA!', 'city');
+  } else closeOverlay();
+  if (!extrasDone.has('garage')) { extrasDone.add('garage'); addXP(50); renderQuestList(); writeSave(); }
+}
 
 function closeOverlay() {
-  overlay.classList.remove('active');
+  garageOpen = false;
+  overlay.classList.remove('active', 'garage');
   overlayOpen = false;
 }
 document.getElementById('overlay-close').addEventListener('click', closeOverlay);
@@ -1290,7 +2426,13 @@ let bootIdx = 0;
 const bootText = document.getElementById('boot-text');
 (function tick() { if (bootIdx<bootLines.length) { bootText.textContent=bootLines[bootIdx++]; setTimeout(tick,420); } })();
 
-setTimeout(() => {
+// The boot screen stays up until the 3D city (world3d.js) is built, so nobody
+// sees it "turning 3D" piece by piece. Never blocks: no WebGL / module not
+// loading / slow device → it opens anyway after a timeout.
+let cityReady = false, bootMinDone = false, bootDone = false;
+function finishBoot() {
+  if (bootDone || !(cityReady && bootMinDone)) return;
+  bootDone = true;
   const boot = document.getElementById('boot');
   boot.style.transition='opacity 0.8s'; boot.style.opacity='0';
   setTimeout(()=>boot.remove(),800);
@@ -1299,7 +2441,12 @@ setTimeout(() => {
   } else {
     showToast('CHEGUE PERTO DE UM PRÉDIO E APERTE [ E ]', 'city');
   }
-}, 2600);
+}
+setTimeout(() => { bootMinDone = true; finishBoot(); }, 2600);
+window.addEventListener('city3d:progress', e => { if (bootIdx >= bootLines.length) bootText.textContent = `Construindo a cidade 3D… ${Math.round(e.detail * 100)}%`; });
+window.addEventListener('city3d:ready', () => { cityReady = true; finishBoot(); });
+setTimeout(() => { if (!window.__world3dStarted) { cityReady = true; finishBoot(); } }, 3500);
+setTimeout(() => { cityReady = true; finishBoot(); }, 14000);
 
 
 /* ════════════════════════════════════════════════
@@ -1376,6 +2523,8 @@ joyBase.addEventListener('pointerup', endJoy);
 joyBase.addEventListener('pointercancel', endJoy);
 
 document.getElementById('touch-e').addEventListener('pointerdown', e => { e.preventDefault(); handleInteract(); });
+document.getElementById('touch-f').addEventListener('pointerdown', e => { e.preventDefault(); tryHelipad(); });
+document.getElementById('touch-h').addEventListener('pointerdown', e => { e.preventDefault(); if (drivingCar) { playSfx('horn'); honkAt = performance.now(); } });
 
 /* ════════════════════════════════════════════════
    BUILDING LABELS
@@ -1402,6 +2551,265 @@ function flashBuildingLabel(zone) {
 }
 
 /* ════════════════════════════════════════════════
+   TIME OF DAY + WEATHER (controls and effects)
+   ════════════════════════════════════════════════ */
+function applyPeriod(p) {
+  if (p === period) { updatePeriodBtn(); return; }
+  period = p; window.CITY_PERIOD = p; document.body.dataset.period = p;
+  window.dispatchEvent(new CustomEvent('city:period', { detail: p }));
+  updatePeriodBtn();
+}
+function updatePeriodBtn() {
+  document.getElementById('period-btn').innerHTML = `<span class="ico">${PERIOD_ICON[period]}</span><span class="lbl">${PERIOD_NAME[period]}</span>${periodMode === 'auto' ? '<small>AUTO</small>' : ''}`;
+}
+document.getElementById('period-btn').addEventListener('click', () => {
+  periodMode = PERIOD_ORDER[(PERIOD_ORDER.indexOf(periodMode) + 1) % PERIOD_ORDER.length];
+  writeSave();
+  applyPeriod(wantedPeriod());
+  showToast(periodMode === 'auto' ? `HORA DE BLUMENAU: ${PERIOD_NAME[period]}` : PERIOD_NAME[period], 'city');
+});
+setInterval(() => { if (periodMode === 'auto') applyPeriod(wantedPeriod()); }, 60000);
+updatePeriodBtn();
+
+// weather: auto cycles clear / rain / fog every few minutes; or pick one
+const WEATHER_ORDER = ['auto', 'clear', 'rain', 'fog'];
+const WEATHER_LABEL = { auto: 'AUTO', clear: 'LIMPO', rain: 'CHUVA', fog: 'NEBLINA' };
+const WEATHER_ICON = { clear: '✦', rain: '☂', fog: '≋' };
+let nextWeatherAt = performance.now() + 70000;
+function setWeather(w) {
+  if (w === weather) { updateWeatherBtn(); return; }
+  weather = w; document.body.dataset.weather = w;
+  rainSound(w === 'rain');
+  updateWeatherBtn();
+}
+function updateWeatherBtn() {
+  document.getElementById('weather-btn').innerHTML = `<span class="ico">${WEATHER_ICON[weather]}</span><span class="lbl">${WEATHER_LABEL[weather]}</span>${weatherMode === 'auto' ? '<small>AUTO</small>' : ''}`;
+}
+document.getElementById('weather-btn').addEventListener('click', () => {
+  weatherMode = WEATHER_ORDER[(WEATHER_ORDER.indexOf(weatherMode) + 1) % WEATHER_ORDER.length];
+  writeSave();
+  setWeather(weatherMode === 'auto' ? 'clear' : weatherMode);
+  if (weatherMode === 'auto') nextWeatherAt = performance.now() + 60000;
+  showToast('CLIMA: ' + WEATHER_LABEL[weatherMode], 'city');
+});
+if (weatherMode !== 'auto') setWeather(weatherMode);
+updateWeatherBtn();
+
+const rainCv = document.getElementById('rain'), rainCtx = rainCv.getContext('2d');
+let drops = [], splashes = [], nextBolt = 0;
+function sizeRain() { rainCv.width = innerWidth; rainCv.height = innerHeight; drops = [...Array(Math.round(innerWidth * innerHeight / 7000))].map(() => newDrop(true)); }
+function newDrop(any) { return { x: Math.random() * (innerWidth + 200) - 100, y: any ? Math.random() * innerHeight : -20 - Math.random() * 60, l: 10 + Math.random() * 14, v: 900 + Math.random() * 500 }; }
+addEventListener('resize', sizeRain); sizeRain();
+function updateWeather(dt, now) {
+  if (weatherMode === 'auto' && now > nextWeatherAt) {
+    const r = Math.random();
+    setWeather(r < 0.58 ? 'clear' : r < 0.86 ? 'rain' : 'fog');
+    nextWeatherAt = now + (weather === 'clear' ? 150000 : 90000) + Math.random() * 90000;
+  }
+  if (weather !== 'rain') { if (drops.length && rainCv.dataset.on) { rainCtx.clearRect(0, 0, rainCv.width, rainCv.height); delete rainCv.dataset.on; } return; }
+  rainCv.dataset.on = 1;
+  const c = rainCtx; c.clearRect(0, 0, rainCv.width, rainCv.height);
+  c.strokeStyle = 'rgba(175,205,235,0.38)'; c.lineWidth = 1; c.beginPath();
+  for (const d of drops) {
+    d.y += d.v * dt; d.x -= d.v * dt * 0.18;
+    if (d.y > innerHeight) { if (Math.random() < 0.35) splashes.push({ x: d.x, y: innerHeight * (0.25 + Math.random() * 0.75), t: 0 }); Object.assign(d, newDrop(false)); }
+    c.moveTo(d.x, d.y); c.lineTo(d.x + d.l * 0.18, d.y - d.l);
+  }
+  c.stroke();
+  c.strokeStyle = 'rgba(190,215,240,0.35)';
+  splashes = splashes.filter(sp => (sp.t += dt) < 0.35);
+  for (const sp of splashes) { const k = sp.t / 0.35; c.globalAlpha = 1 - k; c.beginPath(); c.ellipse(sp.x, sp.y, 2 + k * 7, 1 + k * 2.5, 0, 0, Math.PI * 2); c.stroke(); }
+  c.globalAlpha = 1;
+  if (now > nextBolt) {                                // lightning + thunder
+    if (nextBolt) { const f = document.getElementById('flash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); setTimeout(thunder, 500 + Math.random() * 1500); }
+    nextBolt = now + 9000 + Math.random() * 16000;
+  }
+}
+// sounds: rain = looped filtered noise; thunder = low noise burst
+let rainNode = null;
+function noiseBuffer(sec) { const b = audioCtx.createBuffer(1, audioCtx.sampleRate * sec, audioCtx.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; }
+function rainSound(on) {
+  if (!audioCtx) { if (on) { const once = () => { removeEventListener('keydown', once); removeEventListener('pointerdown', once); if (weather === 'rain') rainSound(true); }; addEventListener('keydown', once); addEventListener('pointerdown', once); } return; }
+  if (on && !rainNode) {
+    const src = audioCtx.createBufferSource(); src.buffer = noiseBuffer(2); src.loop = true;
+    const bp = audioCtx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1400; bp.Q.value = 0.6;
+    const g = audioCtx.createGain(); g.gain.value = 0.0001; src.connect(bp); bp.connect(g); g.connect(masterGain); src.start();
+    g.gain.setTargetAtTime(0.06, audioCtx.currentTime, 1.2);
+    rainNode = { src, g };
+  } else if (!on && rainNode) {
+    const r = rainNode; rainNode = null; r.g.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.8); setTimeout(() => { try { r.src.stop(); } catch {} }, 3000);
+  }
+}
+function thunder() {
+  if (!audioCtx || audioMuted) return;
+  const src = audioCtx.createBufferSource(); src.buffer = noiseBuffer(3);
+  const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 180;
+  const g = audioCtx.createGain(); const t = audioCtx.currentTime;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + 0.08); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.8);
+  src.connect(lp); lp.connect(g); g.connect(masterGain); src.start(); src.stop(t + 3);
+}
+
+/* ════════════════════════════════════════════════
+   TOUR — a one-minute guided flight for people in a hurry (recruiters!).
+   The HQ helicopter takes off and flies the camera over the city, one
+   caption per stop; it lands back on the helipad at the end.
+   ════════════════════════════════════════════════ */
+const tour = { active: false, i: 0, phase: 'fly', t: 0, from: null, stops: [] };
+function tourStops() {
+  const P = PROJECT_DATA || [];
+  const at = (b, du = 0, dv = 0) => { const s = CITY.S(b.u + du, b.v + dv); return { x: s.x, y: s.y }; };
+  const pos = PORTFOLIO_CACHE?.experience?.positions?.find(p => !p.isLocked);
+  const quote = PORTFOLIO_CACHE?.testimonials?.[0];
+  return [
+    { ...at(B.main, 260, 260), title: 'Bem-vindo à JOPES.EXE', text: 'Esta cidade é o portfólio do João Paulo Oliveira, engenheiro backend em Blumenau (SC). Cada prédio é uma parte da carreira. Bora dar uma volta.' },
+    { ...at(B.main), title: 'MAIN HQ · quem é o João', text: 'Backend com Java + Spring Boot como stack principal, AWS e Terraform na infra, Flutter e React quando o problema pede. Gosta de sistemas distribuídos, APIs bem desenhadas e código que escala.' },
+    { ...at(B.projects), title: `PROJETOS · ${P.length || 11} projetos reais`, text: 'O porto de deploy: um contêiner por projeto. Pela cidade, outdoors mostram cada um. Chegue perto ou clique para abrir a ficha completa (problema, solução, stack e resultados).' },
+    ...(B.garage ? [{ ...at(B.garage), title: 'GARAGEM · os carros do João', text: 'Clio, HB20, Cruze e a XTZ 250: os veículos que já foram dele, em 3D. Entre, gire cada um e saia dirigindo o seu favorito pela cidade.' }] : []),
+    { ...at(B.lab), title: 'BACKEND LAB', text: 'O laboratório: ferramentas, experimentos e estudos. System Monitor, simulador de on-call, desafios de backend e notas do dia a dia.' },
+    { ...at(B.stack), title: 'TECH STACK', text: 'Uma pilha de verdade: AWS + Terraform na base, Postgres e Redis, Kafka e RabbitMQ, Spring Boot 3 e Java 17+ no topo. Chegue perto e ela se desmonta camada por camada.' },
+    { ...at(B.about), title: 'SOBRE MIM · trajetória', text: pos ? `Hoje: ${pos.title} na Segala's. ${pos.description.pt}` : 'De estagiário de TI a desenvolvedor backend, construindo plataformas que escalam.' },
+    { ...at(B.stack, 160, -20), title: 'Quem trabalhou com ele', text: quote ? `“${quote.content.pt.split('\n')[0].slice(0, 230)}${quote.content.pt.length > 230 ? '…' : ''}” — ${quote.author.name}` : 'Converse com os NPCs da cidade: eles contam como é trabalhar com o João.' },
+    { ...at(B.contact), title: 'CONTATO · vamos conversar?', text: 'Email, LinkedIn e GitHub na torre de rádio. Agora é com você: ande com WASD, pegue um carro, voe de helicóptero e explore cada prédio.' },
+  ];
+}
+function startTour() {
+  if (tour.active) return;
+  if (drivingCar || pilot) { showToast('SAIA DO VEÍCULO PARA VER O TOUR', 'alert'); return; }
+  closeOverlay(); closeNPCDialog();
+  tour.stops = tourStops(); tour.i = 0; tour.phase = 'fly'; tour.t = 0;
+  tour.saved = { state: heli.state, x: heli.x, y: heli.y, h: heli.h, solid: heli.solid };
+  heli.state = 'tour'; heli.solid = false; heli.el.classList.add('spinning');
+  tour.from = { x: heli.x, y: heli.y, h: heli.h };
+  tour.active = true;
+  document.body.classList.add('touring', 'flying');
+  startRotorSound();
+  renderTourCard();
+}
+function endTour() {
+  if (!tour.active) return;
+  tour.active = false;
+  document.body.classList.remove('touring', 'flying');
+  stopRotorSound();
+  fadeThen(() => {
+    // the helicopter goes home: back on the helipad
+    heli.state = 'roof'; heli.solid = false; heli.vx = heli.vy = 0;
+    heli.el.classList.remove('spinning');
+    CITY.moveHeli(heli, heli.pad.x, heli.pad.y, heli.pad.h);
+    heli.el.style.zIndex = B.main.objs[0].z + 2;
+    CITY.setHeliHeading(heli, Math.PI / 4);
+    showToast('AGORA É COM VOCÊ — EXPLORE A CIDADE', 'city');
+  });
+}
+function tourNext() {
+  if (tour.i >= tour.stops.length - 1) { endTour(); return; }
+  tour.i++; tour.phase = 'fly'; tour.t = 0; tour.from = { x: heli.x, y: heli.y, h: heli.h };
+  renderTourCard();
+}
+function renderTourCard() {
+  const st = tour.stops[tour.i];
+  document.getElementById('tour-step').textContent = `TOUR · ${tour.i + 1} / ${tour.stops.length}`;
+  document.getElementById('tour-title').textContent = st.title;
+  document.getElementById('tour-text').textContent = st.text;
+  document.getElementById('tour-dots').innerHTML = tour.stops.map((_, k) => `<i class="${k <= tour.i ? 'on' : ''}"></i>`).join('');
+  document.getElementById('tour-next').textContent = tour.i === tour.stops.length - 1 ? 'EXPLORAR ▸' : 'PRÓXIMO ▸';
+}
+const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+function updateTour(dt) {
+  const st = tour.stops[tour.i];
+  tour.t += dt;
+  const FLY = 2.6, HOLD = 3.2 + st.text.length / 38;   // reading time grows with the caption
+  const px = heli.x, py = heli.y;
+  if (tour.phase === 'fly') {
+    const k = ease(Math.min(1, tour.t / FLY));
+    heli.x = tour.from.x + (st.x - tour.from.x) * k;
+    heli.y = tour.from.y + (st.y - tour.from.y) * k;
+    heli.h = tour.from.h + (440 - tour.from.h) * Math.min(1, tour.t / 1.2);
+    if (tour.t >= FLY) { tour.phase = 'hold'; tour.t = 0; }
+  } else {
+    heli.x = st.x + Math.sin(performance.now() / 900) * 8;    // gentle hover
+    if (tour.t >= HOLD) tourNext();
+  }
+  heli.vx = (heli.x - px) / Math.max(dt, 1e-3); heli.vy = (heli.y - py) / Math.max(dt, 1e-3);
+  if (Math.hypot(heli.vx, heli.vy) > 30) {
+    const du = heli.vy + heli.vx / 2, dv = heli.vy - heli.vx / 2;
+    let d = Math.atan2(dv, du) - heli.angle; d = Math.atan2(Math.sin(d), Math.cos(d));
+    heli.angle += clamp(d, -2.5 * dt, 2.5 * dt);
+  }
+  CITY.setHeliHeading(heli, heli.angle);
+  CITY.moveHeli(heli, heli.x, heli.y, heli.h + Math.sin(performance.now() / 500) * 3);
+  heli.h = tour.phase === 'fly' ? heli.h : 440;
+}
+let PORTFOLIO_CACHE = null;
+window.PORTFOLIO.then(d => { PORTFOLIO_CACHE = d; });
+document.getElementById('tour-btn').addEventListener('click', startTour);
+document.getElementById('tour-next').addEventListener('click', tourNext);
+document.getElementById('tour-exit').addEventListener('click', endTour);
+document.getElementById('intro-tour').addEventListener('click', () => { closeIntro(); setTimeout(startTour, 300); });
+
+/* ════════════════════════════════════════════════
+   3D CHARACTERS — once vehicles.js is up, the player and NPCs are drawn
+   from low-poly 3D models (vehicles.js · PEOPLE). The pixel-art <img>
+   sprites stay as the fallback (no WebGL).
+   ════════════════════════════════════════════════ */
+const bustCache = {};
+const CHARS_3D = /[?&]chars=3d\b/.test(location.search);   // opt-in: the pixel-art sprites are the default look
+const SCREEN_DIR = { south: [0, 1], 'south-east': [1, 1], east: [1, 0], 'north-east': [1, -1], north: [0, -1], 'north-west': [-1, -1], west: [-1, 0], 'south-west': [-1, 1] };
+const dirAngle = d => { const [dx, dy] = SCREEN_DIR[d]; return Math.atan2(dy - dx / 2, dy + dx / 2); };
+let chars3d = false, playerCv = null, playerKey = '';
+function blit(cv, src) { const c = cv.getContext('2d'); c.clearRect(0, 0, cv.width, cv.height); c.drawImage(src, 0, 0, cv.width, cv.height); }
+function updateChars3D() {
+  const G = CHARS_3D && CITY.getGL();
+  if (!G?.personFrame) return;
+  const mk = () => { const c = document.createElement('canvas'); c.className = 'char3d'; c.width = Math.round(60 * G.DPR); c.height = Math.round(72 * G.DPR); worldPanEl.appendChild(c); return c; };
+  if (!chars3d) {
+    chars3d = true;
+    playerCv = mk(); playerImgEl.style.visibility = 'hidden';
+    for (const npc of NPCS) { npc.cv = mk(); npc.key = ''; npc.imgEl.style.visibility = 'hidden'; }
+  }
+  // player
+  const visible = playerImgEl.style.display !== 'none' && !tour.active;
+  playerCv.style.display = visible ? '' : 'none';
+  if (visible) {
+    playerCv.style.left = playerPos.x + 'px'; playerCv.style.top = playerPos.y + 'px'; playerCv.style.zIndex = playerImgEl.style.zIndex;
+    const frame = moving ? spriteFrame : -1, key = spriteDir + ':' + frame;
+    if (key !== playerKey) { playerKey = key; blit(playerCv, G.personFrame('joao', dirAngle(spriteDir), frame)); }
+  }
+  // NPCs: turn to face you when you're close
+  for (const npc of NPCS) {
+    const { x, y } = npc.def.pos;
+    npc.cv.style.left = x + 'px'; npc.cv.style.top = y + 'px'; npc.cv.style.zIndex = npc.imgEl.style.zIndex;
+    let ang = Math.PI / 4;
+    const dx = playerPos.x - x, dy = playerPos.y - y;
+    if (!drivingCar && !pilot && Math.hypot(dx, dy) < 240) { const du = dy + dx / 2, dv = dy - dx / 2; ang = Math.round(Math.atan2(dv, du) / (Math.PI / 4)) * Math.PI / 4; }
+    const key = String(ang);
+    if (key !== npc.key) { npc.key = key; blit(npc.cv, G.personFrame(npc.def.key, ang, -1)); }
+  }
+}
+window.addEventListener('city:period', () => { playerKey = ''; NPCS.forEach(n => { n.key = ''; }); for (const k in bustCache) delete bustCache[k]; });
+
+/* ════════════════════════════════════════════════
+   DEPTH — a sprite standing behind an object (north of both of its front
+   faces) is drawn under it; the object fades so the player stays visible.
+   ════════════════════════════════════════════════ */
+function spriteDepth(x, y, xraySet, self = null, hw = 26, top = 56) {
+  let z = Math.round(y);
+  const p = CITY.I(x, y);
+  const sx0 = x - hw, sx1 = x + hw, sy0 = y - top, sy1 = y + 4;
+  for (const o of CITY.objects) {
+    if (o === self || o.skipDepth || (self && o.car)) continue;
+    const bb = o.bbox;
+    if (sx1 < bb.x0 || sx0 > bb.x1 || sy1 < bb.y0 || sy0 > bb.y1) continue;
+    if (p.u < o.u + o.a && p.v < o.v + o.b) {
+      z = Math.min(z, o.z - 1);
+      if (xraySet && sy0 < o.y) xraySet.add(o);
+    } else {
+      z = Math.max(z, o.z + 1);
+    }
+  }
+  return z;
+}
+
+/* ════════════════════════════════════════════════
    GAME LOOP
    ════════════════════════════════════════════════ */
 let lastT = performance.now();
@@ -1412,35 +2820,80 @@ function animate() {
   const dt = Math.min((now - lastT) / 1000, 0.05);
   lastT = now;
 
-  if (!overlayOpen && !npcDialogOpen) updatePlayer(dt);
+  if (!overlayOpen && !npcDialogOpen && !tour.active) updatePlayer(dt);
+  updateTraffic(dt);
+  CITY.updatePeds(dt, now);
+  CITY.updateMetro(dt);
 
   // camera: clamp so the viewport never shows past the map's real edge
   const vw = window.innerWidth, vh = window.innerHeight;
-  const camX = clamp(playerPos.x - vw/2, 0, Math.max(0, MAP_PX - vw));
-  const camY = clamp(playerPos.y - vh/2, 0, Math.max(0, MAP_PX - vh));
-  mapLayerEl.style.transform = `translate(${-camX}px, ${-camY}px)`;
+  if (tour.active) updateTour(dt);
+  updateWeather(dt, now);
+  const fx = tour.active ? heli.x : playerPos.x;
+  const focusY = tour.active ? heli.y - heli.h * 0.8 : playerPos.y - (pilot ? heli.h * 0.8 : 0);
+  // zoom: the city is shown bigger on foot; the camera pulls back with speed
+  // in a car and with altitude in the helicopter (you see the whole city up there)
+  const zt = tour.active ? ZOOM.TOUR
+    : pilot ? ZOOM.BASE * (1 - 0.45 * Math.min(1, heli.h / HELI.CRUISE))
+    : drivingCar ? ZOOM.BASE - 0.22 * Math.min(1, Math.abs(drivingCar.speed) / 520)
+    : ZOOM.BASE;
+  camZoom += (zt - camZoom) * Math.min(1, dt * 2.2);
+  const Z = camZoom, ww = vw / Z, wh = vh / Z;
+  const camX = clamp(fx - ww/2, 0, Math.max(0, MAP_PX - ww));
+  const camY = clamp(focusY - wh/2, 0, Math.max(0, MAP_PX - wh));
+  camNow.x = camX; camNow.y = camY; camNow.z = Z;
+  const camT = `translate(${(-camX * Z).toFixed(2)}px, ${(-camY * Z).toFixed(2)}px) scale(${Z.toFixed(4)})`;
+  mapLayerEl.style.transform = camT;
+  worldPanEl.style.transform = camT;
+  // layers with will-change keep the raster scale they started with; once the zoom
+  // settles at a new value, drop the hint for a frame so they re-rasterize sharp
+  if (Math.abs(zt - Z) < 0.003 && Math.abs(Z - rasterZoom) > 0.04) {
+    rasterZoom = Z; mapLayerEl.style.willChange = worldPanEl.style.willChange = 'auto';
+    requestAnimationFrame(() => { mapLayerEl.style.willChange = worldPanEl.style.willChange = ''; });
+  }
 
-  playerImgEl.style.left = (playerPos.x - camX) + 'px';
-  playerImgEl.style.top  = (playerPos.y - camY) + 'px';
+  // sprites are positioned in map space inside #worldPan
+  const xray = new Set();
+  playerImgEl.style.left = playerPos.x + 'px';
+  playerImgEl.style.top  = playerPos.y + 'px';
+  if (!drivingCar && !pilot) playerImgEl.style.zIndex = spriteDepth(playerPos.x, playerPos.y, xray);
+  heli.skipDepth = heli.state !== 'ground';
+  if (heli.state === 'ground') { heli.z = spriteDepth(heli.x, heli.y, null, heli, 50, 50); heli.el.style.zIndex = heli.z; }
+  else if (heli.state !== 'roof') heli.el.style.zIndex = 99999;
+  for (const o of CITY.peds) { o.z = spriteDepth(o.x, o.y, null, o, 10, 34); o.el.style.zIndex = o.z; }
+  for (const o of CITY.train) { o.z = Math.round(o.y + 90); o.el.style.zIndex = o.z; }
+  for (const car of CITY.cars) {
+    car.z = spriteDepth(car.x, car.y, car === drivingCar ? xray : null, car, 34, 40);
+    car.el.style.zIndex = car.z;
+    car.el.classList.toggle('near-car', car === nearCar);
+  }
+  CITY.objects.forEach(o => { const on = xray.has(o); if (o.xray !== on) { o.xray = on; o.el.classList.toggle('xray', on); } });
 
   for (const npc of NPCS) {
-    npc.imgEl.style.left = (npc.def.pos.x - camX) + 'px';
-    npc.imgEl.style.top  = (npc.def.pos.y - camY) + 'px';
-    npc.nameEl.style.left = (npc.def.pos.x - camX) + 'px';
-    npc.nameEl.style.top  = (npc.def.pos.y - camY - 58) + 'px';
+    npc.imgEl.style.left = npc.def.pos.x + 'px';
+    npc.imgEl.style.top  = npc.def.pos.y + 'px';
+    npc.imgEl.style.zIndex = spriteDepth(npc.def.pos.x, npc.def.pos.y, null);
+    npc.nameEl.style.left = ((npc.def.pos.x - camX) * Z) + 'px';
+    npc.nameEl.style.top  = ((npc.def.pos.y - camY - 45) * Z) + 'px';
   }
 
   buildingLabelEls.forEach(({ el, b }) => {
-    el.style.left = (b.x - camX) + 'px';
-    el.style.top  = (b.y - camY - 70) + 'px';
+    el.style.left = ((b.x - camX) * Z) + 'px';
+    el.style.top  = ((b.labelY - camY) * Z) + 'px';
     el.classList.toggle('near', nearBuilding === b);
+    b.objs.forEach(o => o.el.classList.toggle('near', nearBuilding === b));
   });
 
+  updateChars3D();
   updateZoneHUD();
   drawMinimap();
   debugCoords.textContent = `X: ${Math.round(playerPos.x)}   Y: ${Math.round(playerPos.y)}`;
 }
 animate();
 </script>
+<!-- 3D vehicles: three.js is vendored in assets/vendor (MIT), nothing loads from outside -->
+<script type="importmap">{ "imports": { "three": "./assets/vendor/three.module.min.js" } }</script>
+<script type="module" src="vehicles.js?v=23"></script>
+<script type="module" src="world3d.js?v=16"></script>
 </body>
 </html>

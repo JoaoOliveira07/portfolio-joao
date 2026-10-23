@@ -45,5 +45,5 @@ next-env.d.ts
 /lib/generated/prisma
 .env*
 
-# Gerado por scripts/generate-rpg-content.ts
+# Do jogo antigo (scripts/generate-rpg-content.ts agora gera public/rpg/assets/portfolio/data.json)
 /public/rpg/content.json

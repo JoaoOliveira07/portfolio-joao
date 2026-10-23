@@ -1,0 +1,35 @@
+{
+  "_info": "Modelos 3D prontos (GLB) para a garagem. Sem arquivo, usa o modelo feito à mão em cars/*.js.",
+  "cruze": {
+    "file": "cruze.glb",
+    "length": 70.2,
+    "wheel": "BRIDGESTONE|RODACINZA|DISCO_CRUZES18|PARAFUSORODA|CUBORODA|LOGOCHEVROLETRODA",
+    "tyre": "BRIDGESTONE",
+    "static": "CUBORODA",
+    "brake": "BLIGHTS|LANTERNATRASEIRA",
+    "credit": "Modelo 3D: “2017 Chevrolet Cruze LTZ” por Ddiaz Design (Sketchfab) · CC BY 4.0"
+  },
+  "clio": {
+    "file": "clio.glb",
+    "length": 57.2,
+    "wheel": "^(material|rim_badge|rim_chrome_td|rim_emblem|rim_hub_black|rim_plastic|tyre|disc|CALIPER|EXT_PLATE_plastic)$",
+    "tyre": "^tyre$",
+    "static": "CALIPER",
+    "brake": "^(tail_lens|feux)$",
+    "credit": "Modelo 3D: “Renault Clio 2003” por DR1KING100K (Sketchfab) · CC BY 4.0 · pintado de preto"
+  },
+  "hb20": {
+    "file": "hb20.glb",
+    "length": 58.8,
+    "brake": "Vidros_Vermelhos",
+    "credit": "Modelo 3D: “Hyundai HB20” por Nieve5677 (Sketchfab) · CC BY 4.0 · pintado de branco"
+  },
+  "xtz": {
+    "file": "xtz.glb",
+    "length": 31.8,
+    "rotY": -1.5708,
+    "moto": true,
+    "brake": "^Color_A06$",
+    "credit": "Modelo 3D: “Moto Yamaha XTZ 250 Lander” por lf.tavares (Sketchfab) · CC BY 4.0 · cores ajustadas"
+  }
+}
