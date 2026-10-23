@@ -9,8 +9,6 @@ import { Contact } from '@/components/home/Contact';
 import { LabTeaser } from '@/components/home/LabTeaser';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import { SectionDivider } from '@/components/ui/SectionDivider';
-import { Sparkles } from '@/components/ui/Sparkles';
-import { OnlineBadge } from '@/components/ui/OnlineBadge';
 
 export default function HomePage() {
   return (
@@ -20,11 +18,7 @@ export default function HomePage() {
 
       {/* Hero */}
       <section id="hero" className="relative">
-        <Sparkles particleCount={30} particleSize={1.5} speed={0.5} className="opacity-50" />
         <Hero />
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-          <OnlineBadge page="/" />
-        </div>
       </section>
 
       {/* Projects - PROVA PRIMEIRO */}
@@ -32,6 +26,16 @@ export default function HomePage() {
       <ScrollReveal>
         <section id="projects" className="relative">
           <FeaturedProjects />
+        </section>
+      </ScrollReveal>
+
+      {/* Experience */}
+      <SectionDivider variant="line" />
+      <ScrollReveal>
+        <section id="experience" className="relative">
+          <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
+            <Timeline />
+          </div>
         </section>
       </ScrollReveal>
 
@@ -60,16 +64,6 @@ export default function HomePage() {
       <ScrollReveal>
         <section id="philosophy" className="relative">
           <AboutSection />
-        </section>
-      </ScrollReveal>
-
-      {/* Experience */}
-      <SectionDivider variant="line" />
-      <ScrollReveal>
-        <section id="experience" className="relative">
-          <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
-            <Timeline />
-          </div>
         </section>
       </ScrollReveal>
 

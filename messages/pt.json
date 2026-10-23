@@ -12,11 +12,22 @@
   },
   "hero": {
     "role": "Engenheiro Backend",
-    "tagline": "Backend Engineer focado em sistemas escaláveis e integrações complexas.",
-    "description": "+3 anos | Java / Spring Boot | AWS | Arquitetura distribuída",
+    "eyebrow": "Engenheiro Backend · Blumenau, SC",
+    "name": "João Paulo Oliveira",
+    "tagline": "Construo as APIs e integrações que sustentam o e-commerce B2B, o app de vendas e a operação da Segalas Alimentos.",
+    "description": "Java · Spring Boot · AWS · Integrações e sistemas distribuídos",
     "cta": {
-      "projects": "Ver Projetos",
-      "contact": "Contato"
+      "projects": "Ver projetos",
+      "contact": "Contato",
+      "cv": "Baixar CV",
+      "linkedin": "LinkedIn"
+    },
+    "cvUrl": "/cv/cv-pt.pdf",
+    "rpg": {
+      "label": "Modo RPG · JOPES.EXE",
+      "title": "O mesmo portfólio, como uma cidade 3D",
+      "text": "Ande pela cidade, entre nos prédios e converse com quem já trabalhou comigo.",
+      "cta": "Explorar a cidade"
     }
   },
   "competencies": {

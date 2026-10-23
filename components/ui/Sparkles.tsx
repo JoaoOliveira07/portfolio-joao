@@ -17,7 +17,7 @@ export function Sparkles({
   background = 'transparent',
   particleCount = 50,
   particleSize = 2,
-  particleColor = '#10b981',
+  particleColor = '#F0D000',
   speed = 1,
 }: SparklesProps) {
   const containerRef = useRef<HTMLDivElement>(null);

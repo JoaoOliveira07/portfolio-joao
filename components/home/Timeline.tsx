@@ -54,7 +54,7 @@ export function Timeline() {
             className="absolute left-0 top-0 w-full bg-emerald-500 transition-all duration-500 ease-out"
             style={{
               height: `${(activeIndex / (reversedPositions.length - 1)) * 100}%`,
-              boxShadow: '0 0 20px rgba(16, 185, 129, 0.5)',
+              boxShadow: '0 0 20px rgba(255,230,0, 0.5)',
             }}
           />
         </div>
@@ -85,7 +85,7 @@ export function Timeline() {
                         : 'bg-neutral-900 border-white/30',
                   )}
                   style={{
-                    boxShadow: isActive && !isLocked ? '0 0 16px rgba(16, 185, 129, 0.8)' : 'none',
+                    boxShadow: isActive && !isLocked ? '0 0 16px rgba(255,230,0, 0.8)' : 'none',
                   }}
                 />
 

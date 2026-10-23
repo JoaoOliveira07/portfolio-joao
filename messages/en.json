@@ -12,11 +12,22 @@
   },
   "hero": {
     "role": "Backend Engineer",
-    "tagline": "Backend Engineer focused on scalable systems and complex integrations.",
-    "description": "+3 years | Java / Spring Boot | AWS | Distributed Architecture",
+    "eyebrow": "Backend Engineer · Blumenau, Brazil",
+    "name": "João Paulo Oliveira",
+    "tagline": "I build the APIs and integrations behind Segalas Alimentos' B2B e-commerce, sales app and operations.",
+    "description": "Java · Spring Boot · AWS · Integrations and distributed systems",
     "cta": {
-      "projects": "View Projects",
-      "contact": "Contact"
+      "projects": "View projects",
+      "contact": "Contact",
+      "cv": "Download CV",
+      "linkedin": "LinkedIn"
+    },
+    "cvUrl": "/cv/cv-en.pdf",
+    "rpg": {
+      "label": "RPG mode · JOPES.EXE",
+      "title": "The same portfolio, as a 3D city",
+      "text": "Walk around the city, step into the buildings and talk to people who've worked with me.",
+      "cta": "Explore the city"
     }
   },
   "competencies": {

@@ -35,7 +35,7 @@ export function EngineeringPractices() {
               <MagicCard
                 key={practice.id}
                 className="p-6 cursor-pointer h-full"
-                gradientColor="#10b981"
+                gradientColor="#F0D000"
               >
                 <button
                   onClick={() => setSelectedPractice(practice)}

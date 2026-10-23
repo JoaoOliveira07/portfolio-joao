@@ -16,10 +16,8 @@ export default function middleware(request: NextRequest) {
     if (mode === 'rpg') {
       return NextResponse.redirect(new URL('/rpg/index.html', request.url));
     }
-    if (mode === 'serious') {
-      return intlMiddleware(request);
-    }
-    return NextResponse.rewrite(new URL('/gate', request.url));
+    // sem escolha salva: abre direto no portfólio (o modo RPG fica em destaque no topo da home)
+    return intlMiddleware(request);
   }
   return intlMiddleware(request);
 }

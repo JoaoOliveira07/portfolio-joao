@@ -55,7 +55,7 @@ export function FeaturedProjects() {
             onClick={() => setActiveTab('professional')}
             className={`px-4 py-1.5 rounded-md text-sm font-semibold transition-all ${
               activeTab === 'professional'
-                ? 'bg-emerald-500 text-white shadow'
+                ? 'bg-emerald-500 text-neutral-950 shadow'
                 : 'text-gray-400 hover:text-white'
             }`}
           >
@@ -66,7 +66,7 @@ export function FeaturedProjects() {
             onClick={() => setActiveTab('personal')}
             className={`px-4 py-1.5 rounded-md text-sm font-semibold transition-all ${
               activeTab === 'personal'
-                ? 'bg-emerald-500 text-white shadow'
+                ? 'bg-emerald-500 text-neutral-950 shadow'
                 : 'text-gray-400 hover:text-white'
             }`}
           >

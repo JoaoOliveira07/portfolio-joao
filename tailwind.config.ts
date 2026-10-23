@@ -10,6 +10,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Cor de destaque da marca (mesmo amarelo do JOPES.EXE, o modo RPG).
+        // Substitui a paleta "emerald" em todo o site, pra os dois modos parecerem uma coisa só.
+        emerald: {
+          50: '#FFFDE8', 100: '#FFF8BF', 200: '#FFF185', 300: '#FFEA4D', 400: '#FFE600',
+          500: '#F0D000', 600: '#C7AC00', 700: '#968200', 800: '#665800', 900: '#3D3500', 950: '#211D00',
+        },
         // Primary colors (emerald-based from MD3)
         primary: {
           DEFAULT: '#00694d',

@@ -19,8 +19,8 @@ export function BorderBeam({
   size = 50,
   duration = 6,
   delay = 0,
-  colorFrom = '#10b981',
-  colorTo = '#059669',
+  colorFrom = '#F0D000',
+  colorTo = '#C7AC00',
   reverse = false,
   initialOffset = 0,
 }: BorderBeamProps) {

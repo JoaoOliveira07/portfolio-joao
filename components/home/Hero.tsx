@@ -1,183 +1,125 @@
 'use client';
 
-import { useTranslations, useLocale } from 'next-intl';
-import { Button } from '@/components/ui/Button';
-import { ArrowRight } from 'lucide-react';
-import { useEffect, useState, useRef } from 'react';
+import { useTranslations } from 'next-intl';
+import Image from 'next/image';
+import { ArrowRight, Download, Linkedin } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { TerminalWindow } from '@/components/ui/TerminalWindow';
+
+const LINKEDIN_URL = 'https://www.linkedin.com/in/joaooliveira07/';
 
 export function Hero() {
   const t = useTranslations('hero');
-  const locale = useLocale();
-  const [mounted, setMounted] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
-  const spotlightRef = useRef<HTMLDivElement>(null);
-  const [hovering, setHovering] = useState(false);
   const reduceMotion = useReducedMotion();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // entrada suave, em sequência (desligada se o usuário pede menos movimento)
+  const rise = (delay: number) =>
+    reduceMotion
+      ? {}
+      : { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6, ease: 'easeOut' as const, delay } };
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    const spotlight = spotlightRef.current;
-    if (!section || !spotlight) return;
-
-    let frame = 0;
-    let targetX = 0;
-    let targetY = 0;
-
-    const onMove = (e: MouseEvent) => {
-      const rect = section.getBoundingClientRect();
-      targetX = e.clientX - rect.left;
-      targetY = e.clientY - rect.top;
-      if (!frame) {
-        frame = requestAnimationFrame(() => {
-          spotlight.style.background = `radial-gradient(600px circle at ${targetX}px ${targetY}px, rgba(16,185,129,0.15), transparent 40%)`;
-          frame = 0;
-        });
-      }
-    };
-
-    section.addEventListener('mousemove', onMove);
-    return () => {
-      section.removeEventListener('mousemove', onMove);
-      if (frame) cancelAnimationFrame(frame);
-    };
-  }, []);
-
-  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const scrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
     e.preventDefault();
-    const targetId = href.replace('#', '');
-    const element = document.getElementById(targetId);
-    if (element) {
-      const headerHeight = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
-      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-    }
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
   };
 
   return (
-    <section
-      ref={sectionRef}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-      className="relative min-h-screen flex items-center overflow-hidden bg-neutral-950"
-    >
-      {/* Simple gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-950 to-neutral-900" />
-      
-      {/* Subtle grid pattern */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: 'linear-gradient(rgb(255,255,255) 1px, transparent 1px), linear-gradient(90deg, rgb(255,255,255) 1px, transparent 1px)',
-        backgroundSize: '50px 50px'
-      }} />
-
-      {/* Radial glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-500/5 rounded-full blur-3xl" />
-
-      {/* Animated gradient blobs (skipped if reduced motion) */}
-      {!reduceMotion && (
-        <>
-          <motion.div
-            className="absolute -top-20 -left-20 w-[480px] h-[480px] bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none"
-            animate={{ x: [0, 80, -40, 0], y: [0, 60, 100, 0], scale: [1, 1.15, 0.95, 1] }}
-            transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute bottom-0 right-0 w-[560px] h-[560px] bg-cyan-500/8 rounded-full blur-[120px] pointer-events-none"
-            animate={{ x: [0, -120, 60, 0], y: [0, -80, -40, 0], scale: [1, 0.9, 1.1, 1] }}
-            transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute top-1/3 right-1/4 w-[360px] h-[360px] bg-emerald-400/6 rounded-full blur-[90px] pointer-events-none"
-            animate={{ x: [0, 60, -80, 0], y: [0, 100, 40, 0], scale: [1, 1.2, 0.85, 1] }}
-            transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
-          />
-        </>
-      )}
-
-      {/* Cursor spotlight */}
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-neutral-950">
+      {/* fundo: grade discreta + um único brilho quente atrás do cartão */}
       <div
-        ref={spotlightRef}
-        className="absolute inset-0 pointer-events-none transition-opacity duration-500"
-        style={{ opacity: hovering ? 1 : 0 }}
-      />
-
-      {/* Scanline overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.04]"
+        className="absolute inset-0 opacity-[0.035]"
         style={{
-          backgroundImage: 'repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(16,185,129,0.6) 3px, rgba(16,185,129,0.6) 4px)',
+          backgroundImage:
+            'linear-gradient(rgb(255,255,255) 1px, transparent 1px), linear-gradient(90deg, rgb(255,255,255) 1px, transparent 1px)',
+          backgroundSize: '56px 56px',
         }}
       />
+      <div className="absolute right-[-10%] top-1/2 -translate-y-1/2 w-[720px] h-[720px] rounded-full bg-emerald-400/[0.05] blur-3xl pointer-events-none" />
 
-      <div className="relative z-10 pt-32 pb-20 px-6 md:px-8 max-w-7xl mx-auto w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Left - Text */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-8 pt-32 pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-14 lg:gap-16 items-center">
+          {/* esquerda: quem é */}
           <div>
-            <h1
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter text-white leading-[1.1] mb-6 md:mb-8"
-              style={{
-                opacity: mounted ? 1 : 0,
-                transform: mounted ? 'translateY(0)' : 'translateY(20px)',
-                transition: 'opacity 600ms ease-out, transform 600ms ease-out',
-                transitionDelay: '0ms',
-              }}
+            <motion.p {...rise(0)} className="font-mono text-xs md:text-sm uppercase tracking-[0.25em] text-emerald-400 mb-5">
+              {t('eyebrow')}
+            </motion.p>
+
+            <motion.h1
+              {...rise(0.08)}
+              className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tighter text-white leading-[1.02] mb-6"
             >
+              {t('name')}
+            </motion.h1>
+
+            <motion.p {...rise(0.16)} className="text-lg md:text-xl text-neutral-300 leading-relaxed max-w-xl mb-4">
               {t('tagline')}
-            </h1>
-            
-            <p 
-              className="text-lg md:text-xl text-gray-400 leading-relaxed max-w-xl mb-8 md:mb-12"
-              style={{
-                opacity: mounted ? 1 : 0,
-                transform: mounted ? 'translateY(0)' : 'translateY(20px)',
-                transition: 'opacity 600ms ease-out, transform 600ms ease-out',
-                transitionDelay: '150ms',
-              }}
-            >
+            </motion.p>
+
+            <motion.p {...rise(0.22)} className="font-mono text-sm text-neutral-500 mb-10">
               {t('description')}
-            </p>
-            
-              <div 
-              className="flex flex-wrap gap-4"
-              style={{
-                opacity: mounted ? 1 : 0,
-                transform: mounted ? 'translateY(0)' : 'translateY(20px)',
-                transition: 'opacity 600ms ease-out, transform 600ms ease-out',
-                transitionDelay: '300ms',
-              }}
-            >
-              <Button asChild size="lg" className="bg-emerald-500 hover:bg-emerald-600 text-white border-0">
-                <a href="#projects" onClick={(e) => handleScroll(e, '#projects')} className="flex items-center gap-2 cursor-pointer">
-                  <span>{t('cta.projects')}</span>
-                  <ArrowRight className="h-5 w-5" />
-                </a>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 bg-transparent">
-                <a href="#contact" onClick={(e) => handleScroll(e, '#contact')} className="flex items-center gap-2">
-                  <span>{t('cta.contact')}</span>
-                </a>
-              </Button>
-            </div>
+            </motion.p>
+
+            <motion.div {...rise(0.3)} className="flex flex-wrap items-center gap-3">
+              <a
+                href="#projects"
+                onClick={(e) => scrollTo(e, 'projects')}
+                className="inline-flex items-center gap-2 h-12 px-6 rounded-xl bg-emerald-400 text-neutral-950 font-semibold hover:bg-emerald-300 transition-colors"
+              >
+                {t('cta.projects')}
+                <ArrowRight className="h-4 w-4" />
+              </a>
+              <a
+                href={t('cvUrl')}
+                target="_blank"
+                rel="noopener"
+                className="inline-flex items-center gap-2 h-12 px-5 rounded-xl border border-white/15 text-white font-semibold hover:bg-white/5 hover:border-white/30 transition-colors"
+              >
+                <Download className="h-4 w-4" />
+                {t('cta.cv')}
+              </a>
+              <a
+                href={LINKEDIN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 h-12 px-5 rounded-xl border border-white/15 text-white font-semibold hover:bg-white/5 hover:border-white/30 transition-colors"
+              >
+                <Linkedin className="h-4 w-4" />
+                {t('cta.linkedin')}
+              </a>
+            </motion.div>
           </div>
 
-          {/* Right - Terminal */}
-          <div
-            className="hidden lg:flex items-center justify-center"
-            style={{
-              opacity: mounted ? 1 : 0,
-              transform: mounted ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 600ms ease-out, transform 600ms ease-out',
-              transitionDelay: '200ms',
-            }}
+          {/* direita: o modo RPG como vitrine */}
+          <motion.a
+            {...rise(0.2)}
+            href="/api/mode?mode=rpg"
+            className="group relative block rounded-2xl border border-white/10 bg-[#070d16] overflow-hidden shadow-2xl shadow-black/50 hover:border-emerald-400/50 transition-colors"
           >
-            <TerminalWindow />
-          </div>
+            <div className="relative aspect-[16/10] overflow-hidden">
+              <Image
+                src="/images/rpg-preview.webp"
+                alt="Prévia do JOPES.EXE: a cidade isométrica do portfólio"
+                fill
+                priority
+                sizes="(min-width: 1024px) 560px, 100vw"
+                className="object-cover scale-[1.04] group-hover:scale-[1.09] transition-transform duration-[1200ms] ease-out"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#070d16] via-[#070d16]/20 to-transparent" />
+              <span className="absolute top-4 left-4 inline-flex items-center gap-2 rounded-full bg-black/60 backdrop-blur px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-emerald-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                {t('rpg.label')}
+              </span>
+            </div>
+            <div className="relative -mt-12 px-6 pb-6">
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-2">{t('rpg.title')}</h2>
+              <p className="text-sm text-neutral-400 leading-relaxed mb-5 max-w-md">{t('rpg.text')}</p>
+              <span className="inline-flex items-center gap-2 font-semibold text-emerald-400">
+                {t('rpg.cta')}
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </span>
+            </div>
+          </motion.a>
         </div>
       </div>
     </section>

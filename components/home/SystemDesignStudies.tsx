@@ -37,7 +37,7 @@ export function SystemDesignStudies() {
               <MagicCard
                 key={study.id}
                 className="p-6 cursor-pointer h-full"
-                gradientColor="#10b981"
+                gradientColor="#F0D000"
               >
                 <button
                   onClick={() => setSelectedStudy(study)}

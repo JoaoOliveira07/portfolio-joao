@@ -26,7 +26,7 @@ const ECOSYSTEM_DIAGRAM = `graph TB
     style IP fill:#7c3aed,color:#fff
     style OI fill:#01926D,color:#fff
     style Oracle fill:#374151,color:#fff
-    style TF fill:#0d1f0d,stroke:#10b981,stroke-width:2px,color:#10b981`;
+    style TF fill:#0d1f0d,stroke:#F0D000,stroke-width:2px,color:#F0D000`;
 
 export function EcosystemDiagram() {
   const locale = useLocale() as 'pt' | 'en';

@@ -23,12 +23,10 @@ export function Navigation() {
   const activeId = useScrollSpy(SECTION_IDS);
 
   const navItems = [
-    { href: '#hero', label: t('home'), id: 'hero' },
     { href: '#projects', label: t('projects'), id: 'projects' },
-    { href: '#engineering', label: t('engineering'), id: 'engineering' },
+    { href: '#experience', label: t('experience'), id: 'experience' },
     { href: '#techstack', label: t('techstack'), id: 'techstack' },
     { href: '#philosophy', label: t('philosophy'), id: 'philosophy' },
-    { href: '#experience', label: t('experience'), id: 'experience' },
     { href: '#testimonials', label: t('testimonials'), id: 'testimonials' },
     { href: '#contact', label: t('contact'), id: 'contact' },
   ];

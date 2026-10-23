@@ -180,7 +180,7 @@ export function LiveDashboard() {
                 <motion.div
                   key={kpi.label}
                   className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4"
-                  animate={pulse ? { borderColor: "rgba(52,211,153,0.3)" } : { borderColor: "rgba(255,255,255,0.06)" }}
+                  animate={pulse ? { borderColor: "rgba(255,230,0,0.3)" } : { borderColor: "rgba(255,255,255,0.06)" }}
                   transition={{ duration: 0.6 }}
                 >
                   <div className={`${kpi.color} mb-2`}>{kpi.icon}</div>

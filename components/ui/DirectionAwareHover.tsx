@@ -54,7 +54,7 @@ export function DirectionAwareHover({
           className="absolute inset-0 pointer-events-none transition-opacity duration-300"
           style={{
             opacity: isHovered ? 1 : 0,
-            background: `radial-gradient(circle at ${position.x}px ${position.y}px, rgba(16, 185, 129, 0.15), transparent 50%)`,
+            background: `radial-gradient(circle at ${position.x}px ${position.y}px, rgba(255,230,0, 0.15), transparent 50%)`,
           }}
         />
       )}

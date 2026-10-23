@@ -31,7 +31,7 @@ const TYPE_COLORS: Record<TerminalLine['type'], string> = {
 const FILES: Record<string, string> = {
   'stack.txt': 'Java 17/21 · Spring Boot · AWS (Lambda, SQS, DynamoDB) · Terraform · Kafka · PostgreSQL',
   'about.md': '3+ years backend. Scalable systems, distributed architecture, event-driven design.',
-  'contact.txt': 'joao.oliveira@segalas.com.br · linkedin.com/in/joao-paulo-oliveira',
+  'contact.txt': 'jpauloo.2003@gmail.com · linkedin.com/in/joaooliveira07',
   'experience.txt': 'Mid-level @ Segala\'s · Sep 2025–present. Junior→Mid in 1y1mo. IT Assistant → Trainee → Junior → Mid.',
 };
 
@@ -47,8 +47,8 @@ const COMMANDS = [
 
 const LINKS: Record<string, { url: string; label: string }> = {
   github: { url: 'https://github.com/JoaoOliveira07', label: 'GitHub' },
-  linkedin: { url: 'https://www.linkedin.com/in/joao-paulo-oliveira', label: 'LinkedIn' },
-  email: { url: 'mailto:joao.oliveira@segalas.com.br', label: 'Email' },
+  linkedin: { url: 'https://www.linkedin.com/in/joaooliveira07', label: 'LinkedIn' },
+  email: { url: 'mailto:jpauloo.2003@gmail.com', label: 'Email' },
   cv: { url: '/cv/cv-en.pdf', label: 'CV (EN)' },
   resume: { url: '/cv/cv-en.pdf', label: 'Resume (EN)' },
 };

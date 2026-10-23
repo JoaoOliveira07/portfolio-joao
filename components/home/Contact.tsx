@@ -25,7 +25,7 @@ export function Contact() {
           
           <div className="flex flex-wrap justify-center gap-6 mb-12">
             <a 
-              href="mailto:joao.oliveira.dev@gmail.com"
+              href="mailto:jpauloo.2003@gmail.com"
               className="flex items-center gap-3 px-6 py-4 bg-neutral-900 rounded-xl border border-white/10 hover:border-emerald-500/50 hover:bg-neutral-800 transition-all group"
             >
               <Mail className="h-6 w-6 text-gray-400 group-hover:text-emerald-400 transition-colors" />
@@ -33,7 +33,7 @@ export function Contact() {
             </a>
             
             <a 
-              href="https://www.linkedin.com/in/joão-paulo-oliveira07/"
+              href="https://www.linkedin.com/in/joaooliveira07/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 px-6 py-4 bg-neutral-900 rounded-xl border border-white/10 hover:border-emerald-500/50 hover:bg-neutral-800 transition-all group"

@@ -35,7 +35,7 @@ export function Competencies() {
             <MagicCard
               key={competency.title.en}
               className="p-6 md:p-8 group cursor-pointer"
-              gradientColor="#10b981"
+              gradientColor="#F0D000"
             >
               <span className="material-symbols-outlined text-3xl md:text-4xl text-emerald-400 mb-4 md:mb-6 block group-hover:scale-110 transition-transform">
                 {getIcon(competency.icon)}

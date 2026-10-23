@@ -77,7 +77,7 @@ export function MagicCard({
           <motion.div
             className="absolute inset-0"
             style={{
-              background: `linear-gradient(45deg, transparent 40%, #10b981 50%, transparent 60%)`,
+              background: `linear-gradient(45deg, transparent 40%, #F0D000 50%, transparent 60%)`,
               backgroundSize: '200% 200%',
             }}
             animate={{
@@ -98,7 +98,7 @@ export function MagicCard({
         style={{
           opacity: isHovered ? 1 : 0,
           background: mode === 'gradient' 
-            ? `radial-gradient(${gradientSize}px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(16, 185, 129, 0.15), transparent 40%)`
+            ? `radial-gradient(${gradientSize}px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,230,0, 0.15), transparent 40%)`
             : undefined,
         }}
       />
@@ -121,7 +121,7 @@ export function MagicCard({
         className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300"
         style={{
           opacity: isHovered ? 1 : 0,
-          background: `radial-gradient(${gradientSize}px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(16, 185, 129, 0.3), transparent 40%)`,
+          background: `radial-gradient(${gradientSize}px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,230,0, 0.3), transparent 40%)`,
         }}
       />
 

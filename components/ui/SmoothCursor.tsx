@@ -50,7 +50,7 @@ export function SmoothCursor({ className }: SmoothCursorProps) {
         width: '20px',
         height: '20px',
         borderRadius: '50%',
-        background: '#10b981',
+        background: '#F0D000',
         marginTop: '-10px',
         marginLeft: '-10px',
         opacity: 0.8,

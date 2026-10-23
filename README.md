@@ -107,4 +107,4 @@ O projeto está configurado para deploy automático na Vercel.
 ## 🔗 Links
 
 - **GitHub:** [github.com/JoaoOliveira07](https://github.com/JoaoOliveira07)
-- **LinkedIn:** [linkedin.com/in/joão-paulo-oliveira07](https://www.linkedin.com/in/joão-paulo-oliveira07/)
+- **LinkedIn:** [linkedin.com/in/joaooliveira07](https://www.linkedin.com/in/joaooliveira07/)
