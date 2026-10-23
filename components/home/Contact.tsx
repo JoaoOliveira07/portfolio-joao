@@ -2,6 +2,7 @@
 
 import { useLocale } from 'next-intl';
 import { Github, Linkedin, Mail } from 'lucide-react';
+import { profile } from '@/data/profile';
 
 export function Contact() {
   const locale = useLocale();
@@ -15,17 +16,17 @@ export function Contact() {
             {locale === 'pt' ? 'Contato' : 'Contact'}
           </span>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mt-3 mb-6">
-            {locale === 'pt' ? 'Vamos construir algo grande?' : 'Let\'s build something great?'}
+            {locale === 'pt' ? 'Vamos conversar?' : 'Let\'s talk?'}
           </h2>
           <p className="text-gray-400 text-base md:text-lg mb-10">
             {locale === 'pt' 
-              ? 'Pronto para escalar seu sistema ou iniciar um novo projeto?' 
-              : 'Ready to scale your system or start a new project?'}
+              ? 'Aberto a oportunidades, projetos e trocas sobre backend. Respondo todo mundo.' 
+              : 'Open to opportunities, projects and backend conversations. I reply to everyone.'}
           </p>
           
           <div className="flex flex-wrap justify-center gap-6 mb-12">
             <a 
-              href="mailto:jpauloo.2003@gmail.com"
+              href={`mailto:${profile.email}`}
               className="flex items-center gap-3 px-6 py-4 bg-neutral-900 rounded-xl border border-white/10 hover:border-emerald-500/50 hover:bg-neutral-800 transition-all group"
             >
               <Mail className="h-6 w-6 text-gray-400 group-hover:text-emerald-400 transition-colors" />
@@ -33,7 +34,7 @@ export function Contact() {
             </a>
             
             <a 
-              href="https://www.linkedin.com/in/joaooliveira07/"
+              href={profile.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 px-6 py-4 bg-neutral-900 rounded-xl border border-white/10 hover:border-emerald-500/50 hover:bg-neutral-800 transition-all group"
@@ -43,7 +44,7 @@ export function Contact() {
             </a>
             
             <a 
-              href="https://github.com/JoaoOliveira07"
+              href={profile.github}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 px-6 py-4 bg-neutral-900 rounded-xl border border-white/10 hover:border-emerald-500/50 hover:bg-neutral-800 transition-all group"

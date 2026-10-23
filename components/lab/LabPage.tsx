@@ -71,9 +71,9 @@ export function LabPage() {
         </div>
         <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
           {locale === "pt" ? (
-            <>Engenharia real, <span className="text-emerald-400">não só slides</span></>
+            <>Backend <span className="text-emerald-400">na prática</span></>
           ) : (
-            <>Real engineering, <span className="text-emerald-400">not just slides</span></>
+            <>Backend <span className="text-emerald-400">in practice</span></>
           )}
         </h1>
         <p className="text-white/50 text-base max-w-2xl leading-relaxed">

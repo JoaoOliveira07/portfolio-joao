@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
+import { profile } from '@/data/profile';
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
     "PostgreSQL",
     "Hibernate"
   ],
-  authors: [{ name: "João Paulo Oliveira", url: "https://github.com/JoaoOliveira07" }],
+  authors: [{ name: profile.name, url: profile.github }],
   creator: "João Paulo Oliveira",
   openGraph: {
     type: "website",

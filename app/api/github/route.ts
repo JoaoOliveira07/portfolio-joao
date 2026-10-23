@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 
-const GITHUB_USERNAME = 'JoaoOliveira07';
+import { profile } from '@/data/profile';
+
+const GITHUB_USERNAME = profile.github.split('/').pop()!;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN; // Optional: for higher rate limits
 
 interface GitHubEvent {

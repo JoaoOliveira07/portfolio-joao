@@ -947,6 +947,7 @@ function boot() {
   }
   const fit = {};                            // per vehicle: length / height → turntable size + camera distance
   function showcase(id, canvas, angle = 0.6, opts = {}) {
+    loadModels();
     const m = showModels[id] || (showModels[id] = (() => { const g = buildRealCar(id, { studio: true }); g.visible = false; scene.add(g); return g; })());
     if (!fit[id]) { const b = new THREE.Box3(); m.rotation.y = 0; m.updateMatrixWorld(true); m.traverse(o => { if (o.isMesh && o.geometry.type !== 'PlaneGeometry') b.expandByObject(o); });
       const sz = b.getSize(new THREE.Vector3()); fit[id] = { len: sz.x, h: sz.y }; }
@@ -971,8 +972,11 @@ function boot() {
     ctx.drawImage(renderer.domElement, 0, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
     renderer.setPixelRatio(DPR); renderer.setSize(W, HMAX, false);
   }
-  loadGLBs();
-  window.JOPES_GARAGE = { credit: id => GLB[id] && GLB[id].userData.cfg && GLB[id].userData.cfg.credit, ids: GARAGE_IDS, names: Object.fromEntries(GARAGE_IDS.map(k => [k, REAL[k] ? REAL[k].name : 'XTZ 250 Lander'])), showcase, build: buildRealCar };
+  // the downloaded models (~17 MB) load on demand: near the garage, when it opens, or if one is the player's car.
+  // Until then the hand-built models stand in (same ids), and 'garage:models' swaps them in.
+  let glbPromise = null;
+  const loadModels = () => glbPromise || (glbPromise = loadGLBs());
+  window.JOPES_GARAGE = { loadModels, credit: id => GLB[id] && GLB[id].userData.cfg && GLB[id].userData.cfg.credit, ids: GARAGE_IDS, names: Object.fromEntries(GARAGE_IDS.map(k => [k, REAL[k] ? REAL[k].name : 'XTZ 250 Lander'])), showcase, build: buildRealCar };
   window.dispatchEvent(new Event('garage:ready'));
 
   CITY.attachGL({ drawCar, drawHeli, drawPlane, drawTrain, pedFrame, personFrame, personBust,

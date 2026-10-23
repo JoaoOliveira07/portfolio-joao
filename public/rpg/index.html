@@ -1242,7 +1242,7 @@ const ZONE_CONTENT = {
       { cat:'Cloud & Infra', items:['AWS (ECS/RDS/S3…)','Terraform','Docker','GitHub Actions'] },
       { cat:'Data & Messaging', items:['PostgreSQL','Oracle DB','Redis','Kafka / RabbitMQ'] },
     ] },
-  contact: { id:'CONTATO', title:'VAMOS\nCONSTRUIR?', sub:'Aberto a projetos, freelas e conversas',
+  contact: { id:'CONTATO', title:'VAMOS\nCONVERSAR?', sub:'Aberto a oportunidades, projetos e conversas',
     body:'Se você tem um problema de backend interessante — um sistema que não escala, uma integração que não integra — me conta.',
     links:[
       { icon:'mail', label:'jpauloo.2003@gmail.com', sub:'Email principal', href:'mailto:jpauloo.2003@gmail.com' },
@@ -1560,6 +1560,21 @@ function collidesAt(x, y, pad = FOOT_PAD, npcExtra = 0) {
 }
 
 let nearBuilding = null;
+// download the garage's 3D models only once the player heads that way (they're ~17 MB)
+let garageSpot = null, garagePreloaded = false;
+function preloadGarageNear() {
+  if (garagePreloaded || !window.JOPES_GARAGE?.loadModels) return;
+  if (!garageSpot) { const g = BUILDINGS.find(b => b.zone === 'garage'); if (!g) return; garageSpot = CITY.S(g.u, g.v); }
+  if (Math.hypot(playerPos.x - garageSpot.x, playerPos.y - garageSpot.y) < 330) { garagePreloaded = true; window.JOPES_GARAGE.loadModels(); }
+}
+// desktop on a good connection: fetch them quietly a few seconds after the player starts moving
+{
+  const light = matchMedia('(pointer: coarse)').matches || navigator.connection?.saveData || /2g|3g/.test(navigator.connection?.effectiveType || '');
+  if (!light) addEventListener('keydown', function idle() {
+    removeEventListener('keydown', idle);
+    setTimeout(() => (window.requestIdleCallback || setTimeout)(() => { if (!garagePreloaded) { garagePreloaded = true; window.JOPES_GARAGE?.loadModels?.(); } }), 6000);
+  });
+}
 let nearNPC = null;
 let overlayOpen = false;
 let moving = false;
@@ -1578,6 +1593,7 @@ function updatePlayer(dt) {
 
   moving = dx !== 0 || dy !== 0;
   document.body.classList.toggle('is-moving', moving);
+  preloadGarageNear();
 
   if (pilot) { updateHeli(dt, dx, dy); nearNPC = null; nearBuilding = null; nearCar = null; nearHeli = null; return; }
   if (drivingCar) { updateDriving(dt, dx, dy); nearNPC = null; nearBuilding = null; nearCar = null; return; }
@@ -2332,6 +2348,7 @@ function applyGarageCar() {
   const car = CITY.playerCar;
   if (!car || !window.JOPES_GARAGE) return;
   car.model = garageCar || undefined;
+  if (garageCar && window.JOPES_GARAGE.loadModels) window.JOPES_GARAGE.loadModels();   // your own car: fetch its real model
   if (CITY.gl) CITY.redraw(car);
 }
 window.addEventListener('garage:ready', applyGarageCar);
@@ -2740,7 +2757,18 @@ function updateTour(dt) {
   heli.h = tour.phase === 'fly' ? heli.h : 440;
 }
 let PORTFOLIO_CACHE = null;
-window.PORTFOLIO.then(d => { PORTFOLIO_CACHE = d; });
+window.PORTFOLIO.then(d => {
+  PORTFOLIO_CACHE = d;
+  // contatos vêm do portfólio (data/profile.ts) quando disponíveis — uma fonte só
+  const pf = d && d.profile, links = ZONE_CONTENT.contact && ZONE_CONTENT.contact.links;
+  if (pf && links) {
+    const short = u => u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+    const by = icon => links.find(l => l.icon === icon);
+    if (pf.email && by('mail')) Object.assign(by('mail'), { label: pf.email, href: 'mailto:' + pf.email });
+    if (pf.linkedin && by('linkedin')) Object.assign(by('linkedin'), { label: short(pf.linkedin), href: pf.linkedin });
+    if (pf.github && by('github')) Object.assign(by('github'), { label: short(pf.github), href: pf.github });
+  }
+});
 document.getElementById('tour-btn').addEventListener('click', startTour);
 document.getElementById('tour-next').addEventListener('click', tourNext);
 document.getElementById('tour-exit').addEventListener('click', endTour);
@@ -2893,7 +2921,7 @@ animate();
 </script>
 <!-- 3D vehicles: three.js is vendored in assets/vendor (MIT), nothing loads from outside -->
 <script type="importmap">{ "imports": { "three": "./assets/vendor/three.module.min.js" } }</script>
-<script type="module" src="vehicles.js?v=23"></script>
+<script type="module" src="vehicles.js?v=25"></script>
 <script type="module" src="world3d.js?v=16"></script>
 </body>
 </html>

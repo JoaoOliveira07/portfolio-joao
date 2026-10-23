@@ -67,15 +67,15 @@ export function LabTeaser() {
         </div>
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
           {locale === "pt" ? (
-            <>Engenharia real, <span className="text-emerald-400">não só slides</span></>
+            <>Backend <span className="text-emerald-400">na prática</span></>
           ) : (
-            <>Real engineering, <span className="text-emerald-400">not just slides</span></>
+            <>Backend <span className="text-emerald-400">in practice</span></>
           )}
         </h2>
         <p className="text-white/50 text-sm max-w-xl">
           {locale === "pt"
-            ? "Quatro experiências interativas que mostram como um engenheiro backend pensa: métricas ao vivo, simulador de incidente, desafios de arquitetura e aprendizados técnicos reais."
-            : "Four interactive experiences showing how a backend engineer thinks: live metrics, incident simulator, architecture challenges and real technical learnings."}
+            ? "Quatro experimentos interativos sobre o meu dia a dia: métricas ao vivo, simulador de incidente, desafios de arquitetura e o que ando aprendendo."
+            : "Four interactive experiments about my day-to-day: live metrics, an incident simulator, architecture challenges and what I'm learning."}
         </p>
       </div>
 

@@ -6,6 +6,7 @@ import { experience } from '../data/experience';
 import { testimonials } from '../data/testimonials';
 import { competencies } from '../data/skills';
 import { currentlyLearning } from '../data/currently-learning';
+import { profile } from '../data/profile';
 
 // Gera public/rpg/assets/portfolio/data.json a partir de data/*.ts — fonte única de verdade
 // pro conteúdo do modo RPG (JOPES.EXE, em public/rpg). Nunca editar o JSON à mão.
@@ -30,6 +31,7 @@ const data = {
   testimonials,
   skills: competencies,
   learning: currentlyLearning,
+  profile,
 };
 
 const rootDir = path.dirname(path.dirname(fileURLToPath(import.meta.url)));

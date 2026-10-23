@@ -1,5 +1,6 @@
 import { Github, Linkedin } from 'lucide-react';
 import Link from 'next/link';
+import { profile } from '@/data/profile';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -11,13 +12,13 @@ export function Footer() {
         <div className="space-y-6">
           <div className="text-xl font-bold text-emerald-400">JOPES</div>
           <p className="max-w-xs text-gray-500">
-            High-End Engineering Systems for global scale companies. Focused on the "Digital Architect" persona.
+            {profile.name} · {profile.role.pt} / {profile.role.en}. {profile.location.pt}.
           </p>
           <div className="flex items-center gap-4">
-            <Link href="https://github.com/JoaoOliveira07" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-emerald-400 transition-colors" aria-label="GitHub">
+            <Link href={profile.github} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-emerald-400 transition-colors" aria-label="GitHub">
               <Github className="h-5 w-5" />
             </Link>
-            <Link href="https://www.linkedin.com/in/joaooliveira07/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-emerald-400 transition-colors" aria-label="LinkedIn">
+            <Link href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-emerald-400 transition-colors" aria-label="LinkedIn">
               <Linkedin className="h-5 w-5" />
             </Link>
           </div>

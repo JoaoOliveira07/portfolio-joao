@@ -92,7 +92,7 @@ export function Navigation() {
             className="flex items-center gap-1.5 pb-1 border-b-2 border-transparent text-gray-400 hover:text-emerald-400 hover:border-emerald-400 transition-colors whitespace-nowrap"
           >
             <Gamepad2 className="w-3.5 h-3.5" />
-            Modo RPG
+            {t('rpg')}
           </a>
         </div>
 
@@ -151,7 +151,7 @@ export function Navigation() {
                 className="flex items-center gap-1.5 text-sm font-medium py-1 text-gray-400 hover:text-emerald-400 transition-colors"
               >
                 <Gamepad2 className="w-3.5 h-3.5" />
-                Modo RPG
+                {t('rpg')}
               </a>
             </div>
           </motion.div>

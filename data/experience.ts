@@ -18,30 +18,8 @@ export const experience: Experience = {
   location: { pt: 'Gaspar, SC - Brasil', en: 'Gaspar, SC - Brazil' },
   positions: [
     {
-      title: 'Senior Software Developer',
-      period: { pt: '2027 - Em breve', en: '2027 - Coming soon' },
-      description: {
-        pt: 'Próxima etapa da carreira - construção de arquiteturas complexas e liderança técnica.',
-        en: 'Next step in career - building complex architectures and technical leadership.'
-      },
-      responsibilities: {
-        pt: [
-          'Arquitetura de sistemas distribuídos e escaláveis',
-          'Liderança técnica e mentoring de equipe',
-          'Tomada de decisões técnicas estratégicas'
-        ],
-        en: [
-          'Architecture of distributed and scalable systems',
-          'Technical leadership and team mentoring',
-          'Strategic technical decision making'
-        ]
-      },
-      techStack: [],
-      isLocked: true
-    },
-    {
       title: 'Mid-Level Software Developer',
-      period: { pt: 'Set 2025 - Atual (7 meses)', en: 'Sep 2025 - Present (7 months)' },
+      period: { pt: 'Set 2025 - Atual', en: 'Sep 2025 - Present' },
       description: {
         pt: 'Desenvolvo soluções robustas e escaláveis, focando em qualidade e performance.',
         en: 'I develop robust and scalable solutions, focusing on quality and performance.'

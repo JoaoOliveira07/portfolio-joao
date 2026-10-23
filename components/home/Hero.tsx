@@ -4,8 +4,9 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { ArrowRight, Download, Linkedin } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { profile } from '@/data/profile';
 
-const LINKEDIN_URL = 'https://www.linkedin.com/in/joaooliveira07/';
+const LINKEDIN_URL = profile.linkedin;
 
 export function Hero() {
   const t = useTranslations('hero');
