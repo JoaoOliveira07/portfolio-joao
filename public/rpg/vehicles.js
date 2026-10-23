@@ -389,6 +389,7 @@ function boot() {
   const GLB = {};
   const GLB_LEN = { clio: 58.7, hb20: 59.9, cruze: 71.8, xtz: 32 };
   function normalizeGLB(root, id, c) {
+    if (c.hide) { const H = new RegExp(c.hide), drop = []; root.traverse(o => { if (o.isMesh && H.test(o.name)) drop.push(o); }); drop.forEach(o => o.parent.remove(o)); }   // stray parts that break the size
     const wrap = new THREE.Group(), inner = new THREE.Group(); inner.add(root); wrap.add(inner);
     root.traverse(o => { if (o.isMesh && o.material) for (const m of [].concat(o.material)) { m.envMapIntensity = c.env ?? 1.1; if (c.rough !== undefined) m.roughness = c.rough; } });
     let box = new THREE.Box3().setFromObject(inner), size = box.getSize(new THREE.Vector3());

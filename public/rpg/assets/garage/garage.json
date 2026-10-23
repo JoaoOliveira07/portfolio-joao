@@ -50,5 +50,38 @@
     "length": 75.3,
     "traffic": true,
     "credit": "“Lamborghini Veneno” por Jonrss (Sketchfab) · CC BY 4.0"
+  },
+  "ferrari": {
+    "file": "ferrari.glb",
+    "length": 69.2,
+    "traffic": true,
+    "credit": "“2020 Ferrari F8 Tributo” por Ddiaz Design (Sketchfab) · CC BY-NC-SA 4.0"
+  },
+  "jetta": {
+    "file": "jetta.glb",
+    "length": 70.5,
+    "traffic": true,
+    "credit": "“2019 Volkswagen Jetta” por Ddiaz Design (Sketchfab) · CC BY-NC-SA 4.0"
+  },
+  "passat": {
+    "file": "passat.glb",
+    "length": 73.0,
+    "traffic": true,
+    "credit": "“2022 Volkswagen Passat PHEV” por Ddiaz Design (Sketchfab) · CC BY-NC-SA 4.0",
+    "hide": "^83_hub"
+  },
+  "a45": {
+    "file": "a45.glb",
+    "length": 65.0,
+    "traffic": true,
+    "credit": "“Mercedes-Benz A45 AMG 2018” por Lexyc16 (Sketchfab) · CC BY-NC 4.0",
+    "rotY": -1.5708
+  },
+  "civic": {
+    "file": "civic.glb",
+    "length": 69.5,
+    "traffic": true,
+    "credit": "“Honda Civic” por Aldios (Sketchfab) · CC BY 4.0",
+    "rotY": 3.1416
   }
 }
