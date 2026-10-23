@@ -727,7 +727,18 @@ function boot() {
     return carModels.get(key);
   };
   const heliModel = buildHeli('#FFE600');
+  heliModel.scale.setScalar(0.8);           // smaller than the airliner, bigger than a car
   const planeModel = buildPlane();
+  /* the airliner: a real 737 in Gol colours (assets/models/plane.glb) replaces the simple one once loaded.
+     Scale: the biggest thing in the sky — about twice the helicopter's length. */
+  const PLANE = { file: 'assets/models/plane.glb', length: 125, rotY: window.PLANE_ROTY ?? -Math.PI / 2, alt: 4 };
+  let planeCanvas = null;
+  new GLTFLoader().loadAsync(PLANE.file).then(g => {
+    const w = normalizeGLB(g.scene, 'plane', { length: PLANE.length, rotY: PLANE.rotY, env: 1.2 });
+    w.position.y = PLANE.alt;
+    planeModel.clear(); planeModel.add(w);
+    if (planeCanvas) drawPlane(planeCanvas);
+  }).catch(e => console.warn('[plane] modelo não carregou', e));
 
   // vb = the screen box the model is drawn in (css px, origin = the vehicle's ground point)
   const CAR_BOX = { x: -130, y: -95, w: 260, h: 170 };
@@ -756,9 +767,38 @@ function boot() {
       w.rotation.y = w.userData.front ? -steer * 0.9 : 0;
       w.userData.spin.rotation.z = -roll;
     }
+    if (m.userData.moto) seatRider(m, o.el.classList.contains('driving'));
     const tm = o.el.classList.contains('braking') ? mat.tailOn : mat.tailOff;
     for (const t of m.userData.tails || [m.userData.tail]) { if (!t) continue; if (t.userData.brake) t.userData.brake(tm === mat.tailOn); else t.material = tm; }
     draw(m, o.canvas);
+  }
+
+  /* the player riding the bike: the same 3D person as the sprites, seated, at the bike's scale
+     (a 1.75 m rider on a 2.1 m bike), torso leaning forward, hands on the bars, feet on the pegs */
+  let rider = null;
+  function seatRider(bike, on) {
+    if (!rider) {
+      rider = buildPerson(PEOPLE.joao); scene.remove(rider); rider.visible = true;
+      const u = rider.userData, k = 0.5;
+      rider.scale.setScalar(k);
+      u.body.rotation.z = -0.32;                               // lean into the bars
+      u.legL.rotation.set(-0.22, 0, 0.62); u.legR.rotation.set(0.22, 0, 0.62);   // feet forward/down to the pegs, knees out
+      u.armL.rotation.set(-0.2, 0, 1.25); u.armR.rotation.set(0.2, 0, 1.25);     // reach for the grips
+    }
+    if (on && rider.parent !== bike) {
+      // sit it on the seat: the seat is the top of the bike just behind the middle
+      if (!bike.userData.seat) {                                  // measured once, with the bike upright and facing +x
+        const ry = bike.rotation.y, rx = bike.rotation.x; bike.rotation.set(0, 0, 0); bike.updateMatrixWorld(true);
+        const b = new THREE.Box3(); bike.traverse(q => { if (q.isMesh && q.geometry.type !== 'PlaneGeometry') b.expandByObject(q); });
+        bike.rotation.y = ry; bike.rotation.x = rx;
+        const L = b.max.x - b.min.x, H = b.max.y - b.min.y;
+        bike.userData.seat = [(b.min.x + b.max.x) / 2 - L * 0.17, b.min.y + H * 0.6];
+      }
+      const [sx, sy] = bike.userData.seat;
+      bike.add(rider);
+      rider.position.set(sx, sy - 24 * 0.5, 0);
+    }
+    if (!on && rider.parent === bike) bike.remove(rider);
   }
 
   function drawHeli(o) {
@@ -774,7 +814,7 @@ function boot() {
     draw(m, o.canvas);
   }
 
-  function drawPlane(canvas) { planeModel.rotation.y = 0; draw(planeModel, canvas); }
+  function drawPlane(canvas) { planeCanvas = canvas; planeModel.rotation.y = 0; draw(planeModel, canvas); }
 
   /* ════════════════════════════ CHARACTERS ════════════════════════════
      The player and the NPCs, modelled after their pixel-art sprites.
@@ -976,7 +1016,7 @@ function boot() {
   // Until then the hand-built models stand in (same ids), and 'garage:models' swaps them in.
   let glbPromise = null;
   const loadModels = () => glbPromise || (glbPromise = loadGLBs());
-  window.JOPES_GARAGE = { loadModels, credit: id => GLB[id] && GLB[id].userData.cfg && GLB[id].userData.cfg.credit, ids: GARAGE_IDS, names: Object.fromEntries(GARAGE_IDS.map(k => [k, REAL[k] ? REAL[k].name : 'XTZ 250 Lander'])), showcase, build: buildRealCar };
+  window.JOPES_GARAGE = { loadModels, traffic: () => Object.keys(GLB).filter(k => GLB[k].userData.cfg?.traffic), credit: id => GLB[id] && GLB[id].userData.cfg && GLB[id].userData.cfg.credit, ids: GARAGE_IDS, names: Object.fromEntries(GARAGE_IDS.map(k => [k, REAL[k] ? REAL[k].name : 'XTZ 250 Lander'])), showcase, build: buildRealCar };
   window.dispatchEvent(new Event('garage:ready'));
 
   CITY.attachGL({ drawCar, drawHeli, drawPlane, drawTrain, pedFrame, personFrame, personBust,

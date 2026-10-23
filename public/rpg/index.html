@@ -2353,6 +2353,12 @@ function applyGarageCar() {
 }
 window.addEventListener('garage:ready', applyGarageCar);
 window.addEventListener('garage:models', applyGarageCar);
+// traffic: once the downloaded cars are in, about half the cars on the street become one of them
+window.addEventListener('garage:models', () => {
+  const ids = window.JOPES_GARAGE.traffic?.() || [];
+  if (!ids.length || !CITY.gl) return;
+  CITY.cars.filter(c => c.ai).forEach((c, i) => { if (i % 2 === 0) { c.model = ids[(i / 2) % ids.length]; CITY.redraw(c); } });
+});
 if (window.JOPES_GARAGE) applyGarageCar();
 function openGarage() {
   const G = window.JOPES_GARAGE;
@@ -2921,7 +2927,7 @@ animate();
 </script>
 <!-- 3D vehicles: three.js is vendored in assets/vendor (MIT), nothing loads from outside -->
 <script type="importmap">{ "imports": { "three": "./assets/vendor/three.module.min.js" } }</script>
-<script type="module" src="vehicles.js?v=25"></script>
+<script type="module" src="vehicles.js?v=29"></script>
 <script type="module" src="world3d.js?v=16"></script>
 </body>
 </html>

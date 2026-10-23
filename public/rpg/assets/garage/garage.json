@@ -31,5 +31,24 @@
     "moto": true,
     "brake": "^Color_A06$",
     "credit": "Modelo 3D: “Moto Yamaha XTZ 250 Lander” por lf.tavares (Sketchfab) · CC BY 4.0 · cores ajustadas"
+  },
+  "corvette": {
+    "file": "corvette.glb",
+    "length": 69.5,
+    "traffic": true,
+    "credit": "“2019 Chevrolet Corvette C8 Stingray” por Hari (Sketchfab) · CC BY 4.0",
+    "rotY": -1.5708
+  },
+  "porsche": {
+    "file": "porsche.glb",
+    "length": 66.9,
+    "traffic": true,
+    "credit": "“Porsche” por Batman KNIGHTs (Sketchfab) · CC BY 4.0"
+  },
+  "veneno": {
+    "file": "veneno.glb",
+    "length": 75.3,
+    "traffic": true,
+    "credit": "“Lamborghini Veneno” por Jonrss (Sketchfab) · CC BY 4.0"
   }
 }
