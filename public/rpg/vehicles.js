@@ -729,16 +729,37 @@ function boot() {
   };
   const heliModel = buildHeli('#FFE600');
   heliModel.scale.setScalar(0.8);           // smaller than the airliner, bigger than a car
+  /* the real helicopter: a yellow EC135 (assets/models/heli.glb). Its main and tail rotors get their
+     own pivots so they still spin; the pilot figures that came with the model were removed. */
+  new GLTFLoader().loadAsync('assets/models/heli.glb').then(g => {
+    { // the exported model is not upright: pick the orientation where it is flattest (rotor disc horizontal)
+      let best = null; for (const [ax, an] of [['x', 0], ['x', Math.PI / 2], ['x', -Math.PI / 2], ['z', Math.PI / 2], ['z', -Math.PI / 2]]) {
+        g.scene.rotation.set(0, 0, 0); g.scene.rotation[ax] = an; g.scene.updateMatrixWorld(true);
+        const sz = new THREE.Box3().setFromObject(g.scene).getSize(new THREE.Vector3()), f = sz.y / Math.max(sz.x, sz.z);
+        if (!best || f < best[0]) best = [f, ax, an]; }
+      g.scene.rotation.set(0, 0, 0); g.scene.rotation[best[1]] = best[2]; }
+    const w = normalizeGLB(g.scene, 'heli', { length: 90, rotY: window.HELI_ROTY ?? -Math.PI / 2, env: 1.2 });
+    w.updateMatrixWorld(true);
+    const pivot = name => { let me = null; w.traverse(o => { if (o.isMesh && o.name === name) me = o; });
+      const p = new THREE.Group(); if (!me) return p;
+      p.position.copy(w.worldToLocal(new THREE.Box3().setFromObject(me).getCenter(new THREE.Vector3()))); w.add(p); p.updateMatrixWorld(true); p.attach(me); return p; };
+    const rotor = pivot('Object_70'), tailRotor = pivot('Object_67');
+    heliModel.clear(); heliModel.add(w);
+    heliModel.userData = { rotor, tailRotor, disc: new THREE.Object3D() };
+    if (lastHeli) drawHeli(lastHeli);
+  }).catch(e => console.warn('[heli] modelo não carregou', e));
   const planeModel = buildPlane();
   /* the airliner: a real 737 in Gol colours (assets/models/plane.glb) replaces the simple one once loaded.
      Scale: the biggest thing in the sky — about twice the helicopter's length. */
-  const PLANE = { file: 'assets/models/plane.glb', length: 125, rotY: window.PLANE_ROTY ?? -Math.PI / 2, alt: 4 };
-  let planeCanvas = null;
+  const PLANE = { file: 'assets/models/plane.glb', length: 260, rotY: window.PLANE_ROTY ?? -Math.PI / 2, alt: 4 };
+  // its own, bigger drawing box: a 737 dwarfs everything else in town
+  const PLANE_BOX = { x: -320, y: -260, w: 640, h: 440 };
+  const planeCanvases = new Map();
   new GLTFLoader().loadAsync(PLANE.file).then(g => {
     const w = normalizeGLB(g.scene, 'plane', { length: PLANE.length, rotY: PLANE.rotY, env: 1.2 });
     w.position.y = PLANE.alt;
     planeModel.clear(); planeModel.add(w);
-    if (planeCanvas) drawPlane(planeCanvas);
+    planeCanvases.forEach((flip, cv) => drawPlane(cv, flip));
   }).catch(e => console.warn('[plane] modelo não carregou', e));
 
   // vb = the screen box the model is drawn in (css px, origin = the vehicle's ground point)
@@ -802,7 +823,9 @@ function boot() {
     if (!on && rider.parent === bike) bike.remove(rider);
   }
 
+  let lastHeli = null;
   function drawHeli(o) {
+    lastHeli = o;
     const m = heliModel;
     m.rotation.y = -o.angle;
     const sp = Math.hypot(o.vx || 0, o.vy || 0);
@@ -815,7 +838,13 @@ function boot() {
     draw(m, o.canvas);
   }
 
-  function drawPlane(canvas) { planeCanvas = canvas; planeModel.rotation.y = 0; draw(planeModel, canvas); }
+  function drawPlane(canvas, flip = false) {
+    planeCanvases.set(canvas, flip);
+    planeModel.rotation.y = flip ? Math.PI : 0;
+    renderer.setSize(PLANE_BOX.w, PLANE_BOX.h, false);
+    draw(planeModel, canvas, PLANE_BOX);
+    renderer.setSize(W, HMAX, false);
+  }
 
   /* ════════════════════════════ CHARACTERS ════════════════════════════
      The player and the NPCs, modelled after their pixel-art sprites.
@@ -1031,7 +1060,7 @@ function boot() {
   window.dispatchEvent(new Event('garage:ready'));
 
   CITY.attachGL({ drawCar, drawHeli, drawPlane, drawTrain, pedFrame, personFrame, personBust,
-    clearPedCache: () => { pedCache = {}; for (const k in personCache) delete personCache[k]; }, W, H, DPR });
+    clearPedCache: () => { pedCache = {}; for (const k in personCache) delete personCache[k]; }, W, H, DPR, PLANE_BOX });
 }
 
 boot();

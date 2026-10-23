@@ -37,6 +37,9 @@ const ZONE_BLOCKS = {
 };
 const PLAZA_BLOCK = [2,2];
 const FIELD_BLOCK = [4,2];   // football pitch (just to look at)
+// airport: two blocks on the south edge, one runway across both (and the road between them)
+const AIRPORT_BLOCKS = [[3,5],[4,5]];
+const RUNWAY = { u0: 3 * BLOCK + 70, u1: 5 * BLOCK - 70, v: 5.5 * BLOCK + 70, w: 62 };
 
 /* ── tiny deterministic RNG so the city looks the same on every load ── */
 function rng(seed) {
@@ -901,7 +904,8 @@ function build({ mapPx, groundEl, worldEl }) {
     const isPlaza = i === PLAZA_BLOCK[0] && j === PLAZA_BLOCK[1];
     const r = rng(i * 131 + j * 977 + 7);
     const isField = i === FIELD_BLOCK[0] && j === FIELD_BLOCK[1];
-    const kind = zone ? 'zone' : isPlaza ? 'plaza' : isField ? 'field' : ['park', 'lowrise', 'lowrise', 'lot', 'lowrise', 'park'][Math.floor(r() * 6)];
+    const isAirport = AIRPORT_BLOCKS.some(([a, c]) => a === i && c === j);
+    const kind = zone ? 'zone' : isPlaza ? 'plaza' : isField ? 'field' : isAirport ? 'airport' : ['park', 'lowrise', 'lowrise', 'lot', 'lowrise', 'park'][Math.floor(r() * 6)];
     const design = zone ? DESIGNS[zone](rng(i * 733 + j * 191 + 3)) : null;
     blocks.push({ i, j, c, s, kind, zone, design });
   }
@@ -1249,16 +1253,8 @@ function build({ mapPx, groundEl, worldEl }) {
   heli.el.style.zIndex = Z.main.objs[0].z + 2;
   objects.push(heli);
 
-  /* ── an airliner crossing the sky every so often ── */
-  const plane = addEl(`<div class="obj plane-air" style="width:260px;height:170px">${planeSVG()}</div>`, 0, 0, 100000);
-  const a0 = S(-900, 700), a1 = S(4200, 700);
-  const t0 = `translate(${a0.x - 130}px, ${a0.y - 540}px)`, t1 = `translate(${a1.x - 130}px, ${a1.y - 540}px)`;
-  plane.animate([
-    { transform: t0, opacity: 1, offset: 0 },
-    { transform: t1, opacity: 1, offset: 0.7 },   // ~50 s crossing…
-    { transform: t1, opacity: 0, offset: 0.701 },
-    { transform: t0, opacity: 0, offset: 1 },     // …then ~20 s of empty sky
-  ], { duration: 72000, iterations: Infinity, delay: 3000 });
+  /* ── the airliner: lands on the airport runway, rolls out, turns round and takes off again ── */
+  const plane = addEl(`<div class="obj plane-air" style="width:640px;height:440px;opacity:0"></div>`, 0, 0, 100000);
 
   /* ── 3D vehicles (vehicles.js): swap each vehicle's SVG for [ground SVG + canvas] ── */
   let GL = null;
@@ -1298,10 +1294,33 @@ function build({ mapPx, groundEl, worldEl }) {
       div.appendChild(cv); o.el.replaceWith(div); o.el = div; o.canvas = cv;
       gl.drawTrain(o);
     }
-    { plane.innerHTML = ''; const cv = document.createElement('canvas'); cv.width = Math.round(gl.W * gl.DPR); cv.height = Math.round(gl.H * gl.DPR); cv.className = 'veh-canvas'; plane.appendChild(cv); gl.drawPlane(cv); plane.cv = cv; }
+    {
+      const B = gl.PLANE_BOX, mk = flip => { const cv = document.createElement('canvas'); cv.width = Math.round(B.w * gl.DPR); cv.height = Math.round(B.h * gl.DPR);
+        cv.style.cssText = `position:absolute;left:0;top:0;width:${B.w}px;height:${B.h}px;pointer-events:none`; plane.appendChild(cv); gl.drawPlane(cv, flip); return cv; };
+      plane.innerHTML = ''; plane.cvs = [mk(false), mk(true)];          // facing +u (landing) and −u (taking off)
+      const at = (u, h) => { const p = S(u, RUNWAY.v); return `translate(${(p.x + B.x).toFixed(1)}px, ${(p.y + B.y - h).toFixed(1)}px)`; };
+      const { u0, u1 } = RUNWAY, far = 2600, D = 64000;
+      // approach → flare/touchdown → roll-out → hold → (turned round) take-off roll → climb-out → empty sky
+      plane.animate([
+        { transform: at(u0 - far, 620), opacity: 0, offset: 0 },
+        { transform: at(u0 - far * 0.85, 540), opacity: 1, offset: 0.03 },
+        { transform: at(u0 + 60, 0), offset: 0.26, easing: 'cubic-bezier(.2,.6,.4,1)' },
+        { transform: at(u1 - 260, 0), offset: 0.38 },
+        { transform: at(u1 - 260, 0), offset: 0.48 },
+        { transform: at(u1 - 260, 0), offset: 0.5, easing: 'cubic-bezier(.6,0,.9,.6)' },
+        { transform: at(u0 + 200, 0), offset: 0.6, easing: 'cubic-bezier(.3,0,.6,1)' },
+        { transform: at(u0 - far * 0.5, 380), offset: 0.74 },
+        { transform: at(u0 - far, 640), opacity: 1, offset: 0.82 },
+        { transform: at(u0 - far, 640), opacity: 0, offset: 0.83 },
+        { transform: at(u0 - far, 620), opacity: 0, offset: 1 },
+      ], { duration: D, iterations: Infinity, delay: 2000 });
+      const swap = [{ opacity: 1, offset: 0 }, { opacity: 1, offset: 0.49 }, { opacity: 0, offset: 0.4901 }, { opacity: 0, offset: 1 }];
+      plane.cvs[0].animate(swap, { duration: D, iterations: Infinity, delay: 2000 });
+      plane.cvs[1].animate(swap.map(k => ({ ...k, opacity: 1 - k.opacity })), { duration: D, iterations: Infinity, delay: 2000 });
+    }
     // new light → redraw every vehicle (vehicles.js already switched its lights)
     window.addEventListener('train:model', () => train.forEach(o => gl.drawTrain(o)));
-    window.addEventListener('city:period', () => { cars.forEach(o => gl.drawCar(o)); gl.drawHeli(heli); gl.drawPlane(plane.cv); train.forEach(o => gl.drawTrain(o)); peds.forEach(o => { o.heading = -1; }); gl.clearPedCache?.(); });
+    window.addEventListener('city:period', () => { cars.forEach(o => gl.drawCar(o)); gl.drawHeli(heli); plane.cvs.forEach((cv, k) => gl.drawPlane(cv, k === 1)); train.forEach(o => gl.drawTrain(o)); peds.forEach(o => { o.heading = -1; }); gl.clearPedCache?.(); });
     document.body.classList.add('gl-vehicles');
   }
   const getGL = () => GL;
@@ -1310,7 +1329,7 @@ function build({ mapPx, groundEl, worldEl }) {
   /* ── 3D buildings/props/ground (world3d.js) ──────────────────────────
      Every object that has a `spec` swaps its SVG for [canvas + fx SVG]: the
      canvas gets the 3D render, the fx layer keeps the animated details. */
-  const groundData = { mapPx, X0, BLOCK, ROAD, LANE, half, minK, maxK, lamps,
+  const groundData = { RUNWAY, mapPx, X0, BLOCK, ROAD, LANE, half, minK, maxK, lamps,
     blocks: blocks.map(b => ({ i: b.i, j: b.j, u: b.c.u, v: b.c.v, kind: b.kind, zone: b.zone })) };
   function attach3D(dpr, filter) {
     const list = [];
@@ -1349,7 +1368,7 @@ function build({ mapPx, groundEl, worldEl }) {
     if (base) base.style.display = 'none';
   }
 
-  return { S, I, zones, objects, cars, playerCar, spawn, npcSpots, roads, colors: ZONE_COLORS, moveCar, setCarHeading,
+  return { RUNWAY, S, I, zones, objects, cars, playerCar, spawn, npcSpots, roads, colors: ZONE_COLORS, moveCar, setCarHeading,
            heli, moveHeli, setHeliHeading, attachGL, redraw, getGL, get gl() { return !!GL; },
            groundData, attach3D, show3D, setGround3D, billboards, lightAt, BLOCK, ROAD,
            peds, updatePeds, train, updateMetro, metro, PED_VB, TRAIN_VB };

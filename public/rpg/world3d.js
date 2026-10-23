@@ -880,6 +880,63 @@ function buildGround(gd) {
     const m = new THREE.Mesh(geo, mats); m.position.y = y0; scene.add(m); return m;
   };
   const inset = 26;
+  let airportDone = false;
+  // the runway, terminal, control tower and hangar (drawn once, across both airport blocks)
+  function buildAirport(R) {
+    const y = 6.6, len = R.u1 - R.u0 + 60, cu = (R.u0 + R.u1) / 2, PX = 3;
+    const rwT = canvasTex(Math.round(len * PX), Math.round(R.w * PX), (g, W, H) => {
+      g.fillStyle = '#2b2e33'; g.fillRect(0, 0, W, H);
+      const r = rng(17); for (let k = 0; k < 9000; k++) { const c = 36 + r() * 22 | 0; g.fillStyle = `rgb(${c},${c},${c + 3})`; g.fillRect(r() * W, r() * H, 2, 2); }
+      for (let k = 0; k < 40; k++) { g.fillStyle = 'rgba(10,10,12,0.35)'; g.fillRect(W * 0.12 + r() * W * 0.2, H * 0.3 + r() * H * 0.4, 30 + r() * 60, 2); g.fillRect(W * 0.66 + r() * W * 0.2, H * 0.3 + r() * H * 0.4, 30 + r() * 60, 2); }   // tyre marks
+      g.fillStyle = '#e9ecef';
+      g.fillRect(0, 6, W, 3); g.fillRect(0, H - 9, W, 3);                                         // edge lines
+      for (let x = 70 * PX; x < W - 70 * PX; x += 34 * PX) g.fillRect(x, H / 2 - 2, 18 * PX, 4);  // centreline
+      for (const end of [0, 1]) {                                                                  // piano keys + numbers
+        const x0 = end ? W - 8 * PX - 18 * PX : 8 * PX;
+        for (let k = 0; k < 8; k++) { const yy = 14 + k * (H - 28) / 8; g.fillRect(x0, yy, 18 * PX, (H - 28) / 8 - 6); }
+        g.save(); g.translate(end ? W - 40 * PX : 40 * PX, H / 2); g.rotate(end ? -Math.PI / 2 : Math.PI / 2);
+        g.font = `bold ${16 * PX}px "Courier New", monospace`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(end ? '27' : '09', 0, 0); g.restore();
+        g.fillRect(end ? W - 120 * PX : 100 * PX, 22, 22 * PX, 10); g.fillRect(end ? W - 120 * PX : 100 * PX, H - 32, 22 * PX, 10);   // touchdown zone bars
+      }
+    }, false);
+    const rw = new THREE.Mesh(new THREE.BoxGeometry(len, 6.6, R.w), [M.concreteDark || new THREE.MeshStandardMaterial({ color: 0x3a3d42 }), M.concreteDark || new THREE.MeshStandardMaterial({ color: 0x3a3d42 }),
+      new THREE.MeshStandardMaterial({ map: rwT, roughness: 0.9 }), new THREE.MeshStandardMaterial({ color: 0x1c1e22 }), new THREE.MeshStandardMaterial({ color: 0x3a3d42 }), new THREE.MeshStandardMaterial({ color: 0x3a3d42 })]);
+    rw.position.set(cu, y / 2 + 1.2, R.v); scene.add(rw);
+    // shoulders + edge lights + approach lights at both ends
+    const sh = new THREE.Mesh(new THREE.PlaneGeometry(len, R.w + 16), new THREE.MeshStandardMaterial({ color: 0x4b4f55, roughness: 0.95 })); sh.rotation.x = -Math.PI / 2; sh.position.set(cu, y + 1.0, R.v); scene.add(sh);
+    const wl = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff3c8, emissiveIntensity: 2 }), gl2 = new THREE.MeshStandardMaterial({ color: 0x00ff66, emissive: 0x30ff80, emissiveIntensity: 2 }), rl = new THREE.MeshStandardMaterial({ color: 0xff2020, emissive: 0xff2020, emissiveIntensity: 2 });
+    for (let x = R.u0 - 20; x <= R.u1 + 20; x += 34) for (const z of [-1, 1]) scene.add(mesh(new THREE.BoxGeometry(1.6, 1.4, 1.6), wl, x, y + 1.9, R.v + z * (R.w / 2 + 3)));
+    for (let k = -6; k <= 6; k++) { scene.add(mesh(new THREE.BoxGeometry(1.6, 1.4, 1.6), gl2, R.u0 - 32, y + 0.7, R.v + k * 4.5)); scene.add(mesh(new THREE.BoxGeometry(1.6, 1.4, 1.6), rl, R.u1 + 32, y + 0.7, R.v + k * 4.5)); }
+    // taxiway from the runway to the apron (north side, by the terminal)
+    const tw = new THREE.Mesh(new THREE.PlaneGeometry(36, 120), new THREE.MeshStandardMaterial({ color: 0x33363b, roughness: 0.9 })); tw.rotation.x = -Math.PI / 2; tw.position.set(R.u1 - 300, 7.25, R.v - R.w / 2 - 55); scene.add(tw);
+    const ty = new THREE.Mesh(new THREE.PlaneGeometry(2, 120), new THREE.MeshStandardMaterial({ color: 0xffd400, emissive: 0x332a00 })); ty.rotation.x = -Math.PI / 2; ty.position.set(R.u1 - 300, 7.3, R.v - R.w / 2 - 55); scene.add(ty);
+    // terminal (west block): long glass hall, white roof, jet bridge
+    const tv = R.v - 230, tuC = 3.5 * gd.BLOCK;
+    const glassT = canvasTex(256, 64, (g, W, H) => { g.fillStyle = '#5b7e98'; g.fillRect(0, 0, W, H); g.fillStyle = 'rgba(255,240,200,0.55)'; for (let x = 0; x < W; x += 16) for (let yy = 8; yy < H; yy += 20) if ((x * 7 + yy) % 3) g.fillRect(x + 2, yy, 11, 9); g.strokeStyle = '#2a3440'; g.lineWidth = 2; for (let x = 0; x < W; x += 16) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); } }, true);
+    glassT.repeat.set(4, 1);
+    const glassM2 = new THREE.MeshStandardMaterial({ map: glassT, emissive: 0xffffff, emissiveMap: glassT, emissiveIntensity: 0.35, roughness: 0.15, metalness: 0.4 });
+    const white = new THREE.MeshStandardMaterial({ color: 0xe6e9ec, roughness: 0.6 });
+    scene.add(mesh(new THREE.BoxGeometry(250, 26, 56), [glassM2, glassM2, white, white, glassM2, glassM2], tuC, y + 13, tv));
+    const roof = new THREE.Mesh(new THREE.CylinderGeometry(40, 40, 262, 24, 1, false, 0, Math.PI), white); roof.rotation.z = Math.PI / 2; roof.scale.set(0.25, 1, 1); roof.position.set(tuC, y + 26, tv); scene.add(roof);
+    scene.add(mesh(new THREE.BoxGeometry(10, 8, 60), white, tuC + 60, y + 14, tv + 56));                    // jet bridge
+    const sign = new THREE.Mesh(new THREE.PlaneGeometry(90, 9), new THREE.MeshStandardMaterial({ map: canvasTex(360, 36, (g, W, H) => { g.fillStyle = '#0a0d12'; g.fillRect(0, 0, W, H); g.fillStyle = '#FFE600'; g.font = 'bold 24px "Courier New", monospace'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('AEROPORTO JOPES', W / 2, H / 2 + 1); }, false), emissive: 0xffffff, emissiveIntensity: 0.6 }));
+    sign.position.set(tuC, y + 22, tv + 28.2); scene.add(sign);
+    // control tower (east block)
+    const tx = 4.5 * gd.BLOCK + 110, tz = R.v - 250;
+    scene.add(mesh(new THREE.CylinderGeometry(7, 9, 90, 16), white, tx, y + 45, tz));
+    scene.add(mesh(new THREE.CylinderGeometry(15, 12, 14, 16), new THREE.MeshStandardMaterial({ color: 0x1e3a52, emissive: 0x0e2238, roughness: 0.1, metalness: 0.6 }), tx, y + 97, tz));
+    scene.add(mesh(new THREE.CylinderGeometry(16, 16, 2, 16), M.metalDark, tx, y + 105, tz));
+    scene.add(mesh(new THREE.CylinderGeometry(0.4, 0.4, 16, 6), M.metalDark, tx, y + 114, tz));
+    scene.add(mesh(new THREE.SphereGeometry(1.4, 10, 8), rl, tx, y + 122, tz));
+    // hangar (east block)
+    const hx = 4.5 * gd.BLOCK - 70, hz = R.v - 240;
+    const hang = new THREE.Mesh(new THREE.CylinderGeometry(42, 42, 110, 24, 1, false, 0, Math.PI), new THREE.MeshStandardMaterial({ color: 0x8e99a6, roughness: 0.5, metalness: 0.6 }));
+    hang.rotation.z = Math.PI / 2; hang.rotation.y = Math.PI / 2; hang.position.set(hx, y, hz); scene.add(hang);
+    scene.add(mesh(new THREE.PlaneGeometry(70, 34), new THREE.MeshStandardMaterial({ color: 0x1c2026 }), hx, y + 17, hz + 55.2));
+    // windsock
+    scene.add(mesh(new THREE.CylinderGeometry(0.5, 0.5, 26, 6), M.metalDark, R.u0 + 40, y + 13, R.v + R.w / 2 + 30));
+    const sock = new THREE.Mesh(new THREE.ConeGeometry(3, 14, 10, 1, true), new THREE.MeshStandardMaterial({ color: 0xff6a00, side: THREE.DoubleSide })); sock.rotation.z = Math.PI / 2; sock.position.set(R.u0 + 47, y + 25, R.v + R.w / 2 + 30); scene.add(sock);
+  }
   for (const b of gd.blocks) {
     const u0 = b.u - half, u1 = b.u + half, v0 = b.v - half, v1 = b.v + half;
     slab(roundRect(u0, v0, u1, v1, 18), 5.2, [sidewalk, curb]);
@@ -889,6 +946,13 @@ function buildGround(gd) {
       for (let n = -3; n <= 3; n++) for (const [a, c] of [[-120, -40], [40, 120]]) {
         const ln = new THREE.Mesh(new THREE.PlaneGeometry(c - a, 1.6), paint); ln.rotation.x = -Math.PI / 2; ln.position.set(b.u + (a + c) / 2, 7.2, b.v + n * 44); scene.add(ln);
       }
+    }
+    if (b.kind === 'airport') {
+      // grass infield + concrete apron on the north (−v) half of each airport block
+      slab(roundRect(u0 + inset, v0 + inset, u1 - inset, v1 - inset, 10), 0.6, [grass, curb], 6, 0.3);
+      const apron = new THREE.MeshStandardMaterial({ map: lotT, color: 0xb9bcc0, roughness: 0.9 });
+      const ap = new THREE.Mesh(new THREE.PlaneGeometry(u1 - u0 - 2 * inset - 10, 150), apron); ap.rotation.x = -Math.PI / 2; ap.position.set(b.u, 7.1, v0 + inset + 80); scene.add(ap);
+      if (!airportDone) { airportDone = true; buildAirport(gd.RUNWAY); }
     }
     if (b.kind === 'field') {
       // football pitch: one painted texture (mowing stripes, wear, crisp markings), running track,
