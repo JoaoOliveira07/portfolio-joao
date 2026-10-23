@@ -890,6 +890,40 @@ function buildGround(gd) {
         const ln = new THREE.Mesh(new THREE.PlaneGeometry(c - a, 1.6), paint); ln.rotation.x = -Math.PI / 2; ln.position.set(b.u + (a + c) / 2, 7.2, b.v + n * 44); scene.add(ln);
       }
     }
+    if (b.kind === 'field') {
+      // football pitch: striped grass, white markings, goals, a small stand on the far side
+      const L = 300, Wd = 196, y = 6.1, cu = b.u, cv = b.v + 30;
+      const g1 = new THREE.MeshStandardMaterial({ color: 0x2f6b34, roughness: 0.95 }), g2 = new THREE.MeshStandardMaterial({ color: 0x3a7d3e, roughness: 0.95 });
+      const surround = new THREE.Mesh(new THREE.PlaneGeometry(L + 40, Wd + 36), new THREE.MeshStandardMaterial({ color: 0x2a5e2f, roughness: 1 }));
+      surround.rotation.x = -Math.PI / 2; surround.position.set(cu, y - 0.05, cv); scene.add(surround);
+      const N = 12;
+      for (let k = 0; k < N; k++) { const st = new THREE.Mesh(new THREE.PlaneGeometry(L / N, Wd), k % 2 ? g1 : g2); st.rotation.x = -Math.PI / 2; st.position.set(cu - L / 2 + L / N * (k + 0.5), y, cv); scene.add(st); }
+      const white = new THREE.MeshStandardMaterial({ color: 0xf2f4f2, roughness: 0.6 }), lw = 1.6, ly = y + 0.08;
+      const line = (u0, v0, u1, v1) => { const len = Math.hypot(u1 - u0, v1 - v0); const m = new THREE.Mesh(new THREE.PlaneGeometry(len + lw, lw), white); m.rotation.x = -Math.PI / 2; m.rotation.z = -Math.atan2(v1 - v0, u1 - u0); m.position.set(cu + (u0 + u1) / 2, ly, cv + (v0 + v1) / 2); scene.add(m); };
+      const rect = (u0, v0, u1, v1) => { line(u0, v0, u1, v0); line(u0, v1, u1, v1); line(u0, v0, u0, v1); line(u1, v0, u1, v1); };
+      rect(-L / 2, -Wd / 2, L / 2, Wd / 2); line(0, -Wd / 2, 0, Wd / 2);
+      for (const s of [-1, 1]) { rect(s * L / 2, -58, s * (L / 2 - 48), 58); rect(s * L / 2, -26, s * (L / 2 - 16), 26);
+        const spot = new THREE.Mesh(new THREE.CircleGeometry(1.4, 12), white); spot.rotation.x = -Math.PI / 2; spot.position.set(cu + s * (L / 2 - 34), ly, cv); scene.add(spot);
+        const arc = new THREE.Mesh(new THREE.RingGeometry(26, 26 + lw, 32, 1, s > 0 ? Math.PI * 0.62 : -Math.PI * 0.38, Math.PI * 0.76), white); arc.rotation.x = -Math.PI / 2; arc.position.set(cu + s * (L / 2 - 34), ly, cv); scene.add(arc); }
+      const cc = new THREE.Mesh(new THREE.RingGeometry(28, 28 + lw, 48), white); cc.rotation.x = -Math.PI / 2; cc.position.set(cu, ly, cv); scene.add(cc);
+      // goals: posts + crossbar + a light net box behind
+      const postM = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }), net = new THREE.MeshStandardMaterial({ color: 0xdfe6ee, transparent: true, opacity: 0.25, side: THREE.DoubleSide, depthWrite: false });
+      for (const s of [-1, 1]) { const gx = cu + s * L / 2, gw = 30, gh = 13, gd = 9;
+        for (const z of [-gw / 2, gw / 2]) { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, gh, 8), postM); p.position.set(gx, y + gh / 2, cv + z); scene.add(p); }
+        const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, gw, 8), postM); bar.rotation.x = Math.PI / 2; bar.position.set(gx, y + gh, cv); scene.add(bar);
+        const nb = new THREE.Mesh(new THREE.BoxGeometry(gd, gh, gw), net); nb.position.set(gx + s * gd / 2, y + gh / 2, cv); scene.add(nb); }
+      // stand on the far (−v) side: four stepped rows with a roof
+      const standM = new THREE.MeshStandardMaterial({ color: 0x8a919a, roughness: 0.8 }), seatM = new THREE.MeshStandardMaterial({ color: 0x2a62c9, roughness: 0.6 });
+      const sv = cv - Wd / 2 - 22;
+      for (let k = 0; k < 4; k++) { const st = new THREE.Mesh(new THREE.BoxGeometry(L * 0.7, 4 + k * 4, 9), standM); st.position.set(cu, y + (4 + k * 4) / 2, sv - k * 9); scene.add(st);
+        const se = new THREE.Mesh(new THREE.BoxGeometry(L * 0.7, 1.2, 4), seatM); se.position.set(cu, y + 4 + k * 4 + 0.6, sv - k * 9 + 1.5); scene.add(se); }
+      const roof = new THREE.Mesh(new THREE.BoxGeometry(L * 0.74, 1.5, 44), new THREE.MeshStandardMaterial({ color: 0x3a4048, roughness: 0.5, metalness: 0.4 })); roof.position.set(cu, y + 34, sv - 14); scene.add(roof);
+      for (const x of [-L * 0.34, 0, L * 0.34]) { const c = new THREE.Mesh(new THREE.BoxGeometry(2, 34, 2), M.metalDark); c.position.set(cu + x, y + 17, sv - 34); scene.add(c); }
+      // four floodlights in the corners
+      for (const [du, dv] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) { const lx = cu + du * (L / 2 + 14), lz = cv + dv * (Wd / 2 + 12);
+        const mast = new THREE.Mesh(new THREE.CylinderGeometry(1, 1.4, 70, 8), M.metalDark); mast.position.set(lx, y + 35, lz); scene.add(mast);
+        const lamp = new THREE.Mesh(new THREE.BoxGeometry(10, 6, 3), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff4d6, emissiveIntensity: 1.6 })); lamp.position.set(lx, y + 72, lz); lamp.lookAt(cu, y, cv); scene.add(lamp); }
+    }
     if (b.kind === 'plaza') {
       const ring = new THREE.Mesh(new THREE.RingGeometry(140, 152, 64), new THREE.MeshStandardMaterial({ color: 0x5e5a52, roughness: 0.8 }));
       ring.rotation.x = -Math.PI / 2; ring.position.set(b.u, 7, b.v); scene.add(ring);

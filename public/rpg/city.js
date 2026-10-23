@@ -36,6 +36,7 @@ const ZONE_BLOCKS = {
   about:[2,3], contact:[3,1], stack:[3,3], secret:[5,3], garage:[1,2],
 };
 const PLAZA_BLOCK = [2,2];
+const FIELD_BLOCK = [4,2];   // football pitch (just to look at)
 
 /* ── tiny deterministic RNG so the city looks the same on every load ── */
 function rng(seed) {
@@ -899,7 +900,8 @@ function build({ mapPx, groundEl, worldEl }) {
     const zone = zoneAt[i + ',' + j];
     const isPlaza = i === PLAZA_BLOCK[0] && j === PLAZA_BLOCK[1];
     const r = rng(i * 131 + j * 977 + 7);
-    const kind = zone ? 'zone' : isPlaza ? 'plaza' : ['park', 'lowrise', 'lowrise', 'lot', 'lowrise', 'park'][Math.floor(r() * 6)];
+    const isField = i === FIELD_BLOCK[0] && j === FIELD_BLOCK[1];
+    const kind = zone ? 'zone' : isPlaza ? 'plaza' : isField ? 'field' : ['park', 'lowrise', 'lowrise', 'lot', 'lowrise', 'park'][Math.floor(r() * 6)];
     const design = zone ? DESIGNS[zone](rng(i * 733 + j * 191 + 3)) : null;
     blocks.push({ i, j, c, s, kind, zone, design });
   }
@@ -974,7 +976,7 @@ function build({ mapPx, groundEl, worldEl }) {
     g.push(`<polygon class="g-curb-r" points="${P(u1, v1)} ${P(u1, v0)} ${P(u1, v0, -H)} ${P(u1, v1, -H)}"/>`);
     g.push(`<polygon class="g-block" points="${P(u0, v0)} ${P(u1, v0)} ${P(u1, v1)} ${P(u0, v1)}"/>`);
     const inset = 26;
-    const fill = kind === 'park' ? 'url(#grass)' : 'url(#hatch)';
+    const fill = kind === 'park' || kind === 'field' ? 'url(#grass)' : 'url(#hatch)';
     g.push(`<polygon class="g-inner ${kind === 'park' ? 'g-park' : ''}" points="${P(u0 + inset, v0 + inset)} ${P(u1 - inset, v0 + inset)} ${P(u1 - inset, v1 - inset)} ${P(u0 + inset, v1 - inset)}"/>`);
     g.push(`<polygon fill="${fill}" points="${P(u0 + inset, v0 + inset)} ${P(u1 - inset, v0 + inset)} ${P(u1 - inset, v1 - inset)} ${P(u0 + inset, v1 - inset)}"/>`);
 
