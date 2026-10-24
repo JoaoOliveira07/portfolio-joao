@@ -1943,8 +1943,8 @@ function exitCar() {
       playerPos.x = x; playerPos.y = y;
       drivingCar = null;
       car.speed = 0; car.steer = 0; car.yaw = 0;
+      car.el.classList.remove('driving', 'braking');   // before the redraw: the bike drops its rider
       CITY.setCarHeading(car, car.angle, 0);
-      car.el.classList.remove('driving', 'braking');
       stopEngine();
       playerImgEl.style.display = '';
       document.body.classList.remove('driving');
