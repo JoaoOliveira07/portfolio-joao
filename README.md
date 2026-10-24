@@ -4,7 +4,7 @@ Portfolio profissional de João Paulo Oliveira, Mid-Level Backend Developer espe
 
 ## 🚀 Tecnologias
 
-- **Framework:** Next.js 14 (App Router)
+- **Framework:** Next.js 16 (App Router)
 - **Linguagem:** TypeScript
 - **Estilização:** Tailwind CSS
 - **Animações:** Framer Motion
