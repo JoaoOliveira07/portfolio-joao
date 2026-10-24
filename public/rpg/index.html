@@ -1678,9 +1678,10 @@ const CAR = {
   DRAG: 1.1,          // rolling resistance (per second, proportional)
   COAST: 70,          // constant decel when off the throttle
   WHEELBASE: 62,      // bigger = wider turning circle
-  MAX_STEER: 0.55,    // rad at the front wheels
-  STEER_RATE: 4.5,    // how fast the wheel turns toward the input (rad/s)
-  GRIP_LOSS: 0.35,    // at top speed the max steer shrinks by this fraction
+  MAX_STEER: 0.5,     // rad at the front wheels
+  STEER_RATE: 2.4,    // how fast the wheel turns toward the input (rad/s)
+  GRIP_LOSS: 0.65,    // at top speed the max steer shrinks by this fraction
+  YAW_EASE: 5,        // how fast the body's turn rate follows the wheels (1/s): the car has weight
 };
 const CAR_PAD = 24;      // extra clearance around the car body (iso units)
 let nearBillboard = null;
@@ -1708,10 +1709,12 @@ function updateDriving(dt, dx, dy) {
   car.steer += clamp(ds, -maxStep, maxStep);
   if (!steerIn && Math.abs(car.steer) < 0.02) car.steer = 0;
 
-  // heading changes with distance travelled (bicycle model). +angle = clockwise on screen.
-  // Arcade choice: we use |speed| so D always turns the car right and A left, also in
-  // reverse — a real car would flip, and that felt like a bug when going W↔S.
-  car.angle += (Math.abs(car.speed) / CAR.WHEELBASE) * Math.tan(car.steer) * dt;
+  // heading changes with distance travelled (bicycle model, signed speed: in reverse the nose swings
+  // the other way, like a real car). +angle = clockwise on screen. The turn rate eases toward the
+  // geometric one, so the body has some inertia instead of snapping around.
+  const yawTarget = (car.speed / CAR.WHEELBASE) * Math.tan(car.steer);
+  car.yaw = (car.yaw || 0) + (yawTarget - (car.yaw || 0)) * Math.min(1, CAR.YAW_EASE * dt);
+  car.angle += car.yaw * dt;
 
   const du = Math.cos(car.angle) * car.speed * dt, dv = Math.sin(car.angle) * car.speed * dt;
   const nx = car.x + (du - dv), ny = car.y + (du + dv) / 2;
@@ -1916,7 +1919,7 @@ function stopRotorSound() {
 function enterCar(car) {
   drivingCar = car;
   car.solid = false;
-  car.speed = 0; car.steer = 0;
+  car.speed = 0; car.steer = 0; car.yaw = 0;
   car.angle = car.heading * 2 * Math.PI / 64;
   car.el.classList.add('driving');
   car.el.classList.remove('near-car');
@@ -1939,7 +1942,7 @@ function exitCar() {
     if (!collidesAt(x, y)) {
       playerPos.x = x; playerPos.y = y;
       drivingCar = null;
-      car.speed = 0; car.steer = 0;
+      car.speed = 0; car.steer = 0; car.yaw = 0;
       CITY.setCarHeading(car, car.angle, 0);
       car.el.classList.remove('driving', 'braking');
       stopEngine();

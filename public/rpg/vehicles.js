@@ -727,8 +727,9 @@ function boot() {
     if (!carModels.has(key)) { const m = o.model ? buildRealCar(o.model) : buildCar(o.color, o.special); m.visible = false; scene.add(m); carModels.set(key, m); }
     return carModels.get(key);
   };
+  const HELI_LEN = 135;                       // the EC135 is ~2.7× a car; the airliner (260) is still the biggest thing in the sky
   const heliModel = buildHeli('#FFE600');
-  heliModel.scale.setScalar(0.8);           // smaller than the airliner, bigger than a car
+  heliModel.scale.setScalar(1.3);
   /* the real helicopter: a yellow EC135 (assets/models/heli.glb). Its main and tail rotors get their
      own pivots so they still spin; the pilot figures that came with the model were removed. */
   new GLTFLoader().loadAsync('assets/models/heli.glb').then(g => {
@@ -738,14 +739,13 @@ function boot() {
         const sz = new THREE.Box3().setFromObject(g.scene).getSize(new THREE.Vector3()), f = sz.y / Math.max(sz.x, sz.z);
         if (!best || f < best[0]) best = [f, ax, an]; }
       g.scene.rotation.set(0, 0, 0); g.scene.rotation[best[1]] = best[2]; }
-    const w = normalizeGLB(g.scene, 'heli', { length: 90, rotY: window.HELI_ROTY ?? -Math.PI / 2, env: 1.2 });
+    const w = normalizeGLB(g.scene, 'heli', { length: HELI_LEN, rotY: window.HELI_ROTY ?? -Math.PI / 2, env: 1.2 });
     w.updateMatrixWorld(true);
-    const pivot = name => { let me = null; w.traverse(o => { if (o.isMesh && o.name === name) me = o; });
-      const p = new THREE.Group(); if (!me) return p;
-      p.position.copy(w.worldToLocal(new THREE.Box3().setFromObject(me).getCenter(new THREE.Vector3()))); w.add(p); p.updateMatrixWorld(true); p.attach(me); return p; };
-    const rotor = pivot('Object_70'), tailRotor = pivot('Object_67');
-    heliModel.clear(); heliModel.add(w);
-    heliModel.userData = { rotor, tailRotor, disc: new THREE.Object3D() };
+    // the rotors are skinned: moving the mesh does nothing, the bones must turn (main = local Z, tail = local X)
+    const bone = name => { let b = null; w.traverse(o => { if (o.name === name) b = o; }); return b || new THREE.Object3D(); };
+    const rotor = bone('Rotor_Main_01_29'), tailRotor = bone('Rotor_Rear_02_27');
+    heliModel.clear(); heliModel.add(w); heliModel.scale.setScalar(1);
+    heliModel.userData = { rotor, tailRotor, disc: new THREE.Object3D(), rotorAxis: 'z', tailAxis: 'x', rotor0: rotor.rotation.z, tail0: tailRotor.rotation.x };
     if (lastHeli) drawHeli(lastHeli);
   }).catch(e => console.warn('[heli] modelo não carregou', e));
   const planeModel = buildPlane();
@@ -832,8 +832,9 @@ function boot() {
     m.rotation.z = -Math.min(0.2, sp / 2600);                // nose dips with speed
     const spinning = o.el.classList.contains('spinning');
     const t = performance.now() / 1000;
-    m.userData.rotor.rotation.y = spinning ? -t * 26 : 0.4;
-    m.userData.tailRotor.rotation.z = spinning ? t * 40 : 0;
+    const u = m.userData, ra = u.rotorAxis || 'y', ta = u.tailAxis || 'z';
+    u.rotor.rotation[ra] = (u.rotor0 || 0) + (spinning ? -t * 26 : 0.4);
+    u.tailRotor.rotation[ta] = (u.tail0 || 0) + (spinning ? t * 40 : 0);
     m.userData.disc.visible = spinning;
     draw(m, o.canvas);
   }

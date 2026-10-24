@@ -1219,9 +1219,9 @@ function build({ mapPx, groundEl, worldEl }) {
 
   /* ── helicopter: parked on the HQ helipad (pad centre (8,8) from the tower, roof at h=326) ── */
   const HELI_ROOF_H = 326;
-  const heli = { heli: true, a: 30, b: 30, solid: false, skipDepth: true, cache: {}, color: '#FFE600',
+  const heli = { heli: true, a: 40, b: 40, solid: false, skipDepth: true, cache: {}, color: '#FFE600',
     heading: -1, angle: Math.PI / 4, h: HELI_ROOF_H, state: 'roof', vx: 0, vy: 0, bbox: {}, z: 0 };
-  heli.shadow = addEl(`<svg class="heli-shadow" xmlns="http://www.w3.org/2000/svg" viewBox="-70 -35 140 70" width="140" height="70"><ellipse rx="44" ry="22"/></svg>`, 0, 0, 1);
+  heli.shadow = addEl(`<svg class="heli-shadow" xmlns="http://www.w3.org/2000/svg" viewBox="-105 -52 210 104" width="210" height="104"><ellipse rx="66" ry="33"/></svg>`, 0, 0, 1);
   heli.el = addEl(heliSVG(8, heli.color), 0, 0, 0);
   heli.heading = 8; heli.cache[8] = heli.el.outerHTML;
   function setHeliHeading(o, angle) {
@@ -1241,11 +1241,11 @@ function build({ mapPx, groundEl, worldEl }) {
     o.u = p.u; o.v = p.v; o.x = x; o.y = y; o.h = h;
     o.el.style.left = (x + CAR_VB.x) + 'px';
     o.el.style.top = (y - h + CAR_VB.y) + 'px';
-    o.shadow.style.left = (x - 70) + 'px';
-    o.shadow.style.top = (y - 35) + 'px';
+    o.shadow.style.left = (x - 105) + 'px';
+    o.shadow.style.top = (y - 52) + 'px';
     o.shadow.style.opacity = Math.max(0.12, 0.6 - h / 900);
     o.shadow.style.display = (o.state === 'roof') ? 'none' : '';
-    o.bbox = { x0: x - 60, y0: y - h - 60, x1: x + 60, y1: y - h + 25 };
+    o.bbox = { x0: x - 90, y0: y - h - 90, x1: x + 90, y1: y - h + 38 };
   }
   const pad = S(Z.main.u + 8, Z.main.v + 8);
   heli.pad = { x: pad.x, y: pad.y, h: HELI_ROOF_H };
