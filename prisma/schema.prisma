@@ -111,3 +111,17 @@ model SiteVisit {
   @@index([source, ipHash, createdAt])
   @@map("site_visits")
 }
+
+// Jogadores online no mapa do jogo (presença por polling; linhas velhas são limpas pela própria rota)
+model RpgPlayer {
+  sessionId String   @id @map("session_id")
+  name      String
+  character String
+  x         Float
+  y         Float
+  state     Json
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@index([updatedAt])
+  @@map("rpg_players")
+}

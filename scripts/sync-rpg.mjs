@@ -34,5 +34,6 @@ html = html.replace(anchor, `${anchor}
 html = html.replaceAll('https://jopes.com.br/pt/projects/', '/pt/projects/');
 // curtida + contador de acessos (likes.js fica em public/rpg e não é sobrescrito pela cópia)
 if (!html.includes('likes.js')) html = html.replace('</body>', '<script src="likes.js"></script></body>');
+if (!html.includes('multiplayer.js')) html = html.replace('<script src="likes.js"></script>', '<script src="multiplayer.js"></script><script src="likes.js"></script>');
 writeFileSync(idx, html);
 console.log(`✓ jogo copiado de ${src} para public/rpg`);
