@@ -1559,6 +1559,22 @@ function collidesAt(x, y, pad = FOOT_PAD, npcExtra = 0) {
   return false;
 }
 
+// Driven car: its real footprint (an oriented rectangle that turns with the car) against each object's
+// footprint, instead of a fat circle — so you only stop where you'd actually touch something.
+const CAR_HL = 30, CAR_HW = 14;    // half length / half width of the car body (iso units)
+function carCollidesAt(x, y, ang) {
+  const p = CITY.I(x, y), c = Math.cos(ang), s = Math.sin(ang), ac = Math.abs(c), as = Math.abs(s);
+  const eu = ac * CAR_HL + as * CAR_HW, ev = as * CAR_HL + ac * CAR_HW;    // car extent on the u / v axes
+  for (const o of CITY.objects) {
+    if (!o.solid) continue;
+    const du = o.u - p.u, dv = o.v - p.v;
+    if (Math.abs(du) >= o.a + eu || Math.abs(dv) >= o.b + ev) continue;
+    if (Math.abs(du * c + dv * s) < CAR_HL + o.a * ac + o.b * as && Math.abs(-du * s + dv * c) < CAR_HW + o.a * as + o.b * ac) return true;
+  }
+  for (const npc of NPCS) if (Math.hypot(x - npc.def.pos.x, y - npc.def.pos.y) < NPC_COLLIDE_RADIUS + 24) return true;
+  return false;
+}
+
 let nearBuilding = null;
 // download the garage's 3D models only once the player heads that way (they're ~17 MB)
 let garageSpot = null, garagePreloaded = false;
@@ -1714,13 +1730,14 @@ function updateDriving(dt, dx, dy) {
   // geometric one, so the body has some inertia instead of snapping around.
   const yawTarget = (car.speed / CAR.WHEELBASE) * Math.tan(car.steer);
   car.yaw = (car.yaw || 0) + (yawTarget - (car.yaw || 0)) * Math.min(1, CAR.YAW_EASE * dt);
+  const prevAngle = car.angle;
   car.angle += car.yaw * dt;
 
   const du = Math.cos(car.angle) * car.speed * dt, dv = Math.sin(car.angle) * car.speed * dt;
   const nx = car.x + (du - dv), ny = car.y + (du + dv) / 2;
   const inside = nx > EDGE_MARGIN && nx < MAP_PX - EDGE_MARGIN && ny > EDGE_MARGIN && ny < MAP_PX - EDGE_MARGIN;
   if (car.speed !== 0) {
-    if (inside && !collidesAt(nx, ny, CAR_PAD, 24)) {
+    if (inside && !carCollidesAt(nx, ny, car.angle)) {
       driveDist += Math.hypot(nx - car.x, ny - car.y);
       CITY.moveCar(car, nx, ny);
       if (driveDist > 900 && !extrasDone.has('drive')) {
@@ -1734,6 +1751,7 @@ function updateDriving(dt, dx, dy) {
       // crash: stop dead and bounce back a little
       if (Math.abs(car.speed) > 60 && performance.now() - lastBump > 250) { lastBump = performance.now(); playSfx('bump'); }
       car.speed = -car.speed * 0.25;
+      car.angle = prevAngle; car.yaw = 0;
     }
   }
   car.wheelRot = (car.wheelRot || 0) + car.speed * dt / 5.8; // wheels roll with the distance covered

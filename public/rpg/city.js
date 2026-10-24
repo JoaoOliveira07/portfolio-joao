@@ -21,8 +21,8 @@
 'use strict';
 
 const BLOCK = 520;   // iso units between road centerlines
-const ROAD  = 96;    // road width (iso units)
-const LANE  = 22;    // lane offset from the road centerline
+const ROAD  = 128;   // road width (iso units)
+const LANE  = 30;    // lane offset from the road centerline
 
 const ZONE_COLORS = {
   main:'#FFE600', projects:'#FF3CAC', lab:'#2AFADF',
