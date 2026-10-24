@@ -2812,7 +2812,7 @@ document.getElementById('intro-tour').addEventListener('click', () => { closeInt
    sprites stay as the fallback (no WebGL).
    ════════════════════════════════════════════════ */
 const bustCache = {};
-let CHARS_3D = /[?&]chars=3d\b/.test(location.search);   // opt-in: the pixel-art sprites are the default look
+const CHARS_3D = /[?&]chars=3d\b/.test(location.search);   // opt-in: the pixel-art sprites are the default look
 const SCREEN_DIR = { south: [0, 1], 'south-east': [1, 1], east: [1, 0], 'north-east': [1, -1], north: [0, -1], 'north-west': [-1, -1], west: [-1, 0], 'south-west': [-1, 1] };
 const dirAngle = d => { const [dx, dy] = SCREEN_DIR[d]; return Math.atan2(dy - dx / 2, dy + dx / 2); };
 let chars3d = false, playerCv = null, playerKey = '';
@@ -2831,8 +2831,8 @@ function updateChars3D() {
   playerCv.style.display = visible ? '' : 'none';
   if (visible) {
     playerCv.style.left = playerPos.x + 'px'; playerCv.style.top = playerPos.y + 'px'; playerCv.style.zIndex = playerImgEl.style.zIndex;
-    const frame = moving ? spriteFrame : -1, mine = window.MP_CHAR || 'joao', key = mine + ':' + spriteDir + ':' + frame;
-    if (key !== playerKey) { playerKey = key; blit(playerCv, G.personFrame(mine, dirAngle(spriteDir), frame)); }
+    const frame = moving ? spriteFrame : -1, key = spriteDir + ':' + frame;
+    if (key !== playerKey) { playerKey = key; blit(playerCv, G.personFrame('joao', dirAngle(spriteDir), frame)); }
   }
   // NPCs: turn to face you when you're close
   for (const npc of NPCS) {
@@ -2945,7 +2945,6 @@ function animate() {
   });
 
   updateChars3D();
-  window.MP?.frame(now);   // other online players (multiplayer.js)
   updateZoneHUD();
   drawMinimap();
   debugCoords.textContent = `X: ${Math.round(playerPos.x)}   Y: ${Math.round(playerPos.y)}`;
@@ -2956,7 +2955,6 @@ animate();
 <script type="importmap">{ "imports": { "three": "./assets/vendor/three.module.min.js" } }</script>
 <script type="module" src="vehicles.js?v=38"></script>
 <script type="module" src="world3d.js?v=19"></script>
-<script src="multiplayer.js"></script>
 <script src="likes.js"></script>
 </body>
 </html>
