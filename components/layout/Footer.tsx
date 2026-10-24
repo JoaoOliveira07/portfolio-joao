@@ -1,6 +1,7 @@
 import { Github, Linkedin } from 'lucide-react';
 import Link from 'next/link';
 import { profile } from '@/data/profile';
+import { SiteStats } from './SiteStats';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -22,6 +23,7 @@ export function Footer() {
               <Linkedin className="h-5 w-5" />
             </Link>
           </div>
+          <SiteStats />
         </div>
 
         {/* Columns 2 & 3 - Navigation & Legal */}

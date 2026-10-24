@@ -1,5 +1,6 @@
 // Copia o jogo (JOPES.EXE) do repositório ../jopes-rpg para public/rpg e aplica
 // os ajustes de quando ele roda dentro do portfólio:
+//  • botão de curtir + contador de acessos (public/rpg/likes.js, via /api/site/*)
 //  • botão "← SÉRIO" (volta pro modo sério via /api/mode)
 //  • links "ver no portfólio" relativos ao próprio site
 // O conteúdo (assets/portfolio/data.json) é gerado no build por scripts/generate-rpg-content.ts.
@@ -31,5 +32,7 @@ html = html.replace(anchor, `${anchor}
   <a id="serious-mode-link" class="qa-btn" href="/api/mode?mode=serious" title="Voltar pro portfólio sério" style="text-decoration:none">← Sério</a>
   <i class="qa-sep"></i>`);
 html = html.replaceAll('https://jopes.com.br/pt/projects/', '/pt/projects/');
+// curtida + contador de acessos (likes.js fica em public/rpg e não é sobrescrito pela cópia)
+if (!html.includes('likes.js')) html = html.replace('</body>', '<script src="likes.js"></script></body>');
 writeFileSync(idx, html);
 console.log(`✓ jogo copiado de ${src} para public/rpg`);

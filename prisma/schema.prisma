@@ -91,3 +91,23 @@ model ApiEvent {
   @@index([endpoint])
   @@map("api_events")
 }
+
+// Curtida no site (1 por visitante, alternável) — usada pelo portfólio e pelo jogo
+model SiteLike {
+  id        String   @id @default(cuid())
+  ipHash    String   @unique @map("ip_hash")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("site_likes")
+}
+
+// Acesso ao site (portfólio ou jogo); no máximo 1 por visitante, por origem, por dia
+model SiteVisit {
+  id        String   @id @default(cuid())
+  source    String   // site | rpg
+  ipHash    String   @map("ip_hash")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([source, ipHash, createdAt])
+  @@map("site_visits")
+}
