@@ -413,20 +413,61 @@ function boot() {
     g.updateMatrixWorld(true);
     if (cfg.wheel) {
       const W = new RegExp(cfg.wheel, 'i'), T = new RegExp(cfg.tyre || cfg.wheel, 'i'), S = cfg.static ? new RegExp(cfg.static, 'i') : null;
-      // tyres first, then every other wheel part goes to the tyre it sits inside (keeps cabin logos etc. out)
+      // a part matches by material name or mesh name; tyres first, then every other wheel part goes to the corner it sits in
+      const hit = (R, o) => R.test(o.material.name) || R.test(o.name);
+      const whole = new THREE.Box3().setFromObject(g), ws = whole.getSize(new THREE.Vector3());
+      // some models merge a whole axle (or all four wheels) into one mesh: cut those into one mesh per wheel
+      const splitWheels = () => {
+        const todo = []; g.traverse(o => { if (o.isMesh && hit(W, o)) todo.push(o); });
+        const mid = whole.getCenter(new THREE.Vector3());
+        for (const o of todo) {
+          const sz = new THREE.Box3().setFromObject(o).getSize(new THREE.Vector3());
+          const cutZ = sz.z > ws.z * 0.6, cutX = sz.x > ws.x * 0.55;
+          if (!cutZ && !cutX) continue;
+          const geo = o.geometry, pos = geo.attributes.position, idx = geo.index ? geo.index.array : null, n = idx ? idx.length : pos.count;
+          const buckets = {}, v = new THREE.Vector3(), cen = new THREE.Vector3();
+          for (let t = 0; t < n; t += 3) {
+            cen.set(0, 0, 0);
+            for (let k = 0; k < 3; k++) { v.fromBufferAttribute(pos, idx ? idx[t + k] : t + k).applyMatrix4(o.matrixWorld); cen.add(v); }
+            cen.multiplyScalar(1 / 3);
+            const key = (cutX ? (cen.x > mid.x ? 'F' : 'R') : '') + (cutZ ? (cen.z > mid.z ? '+' : '-') : '');
+            (buckets[key] = buckets[key] || []).push(idx ? idx[t] : t, idx ? idx[t + 1] : t + 1, idx ? idx[t + 2] : t + 2);
+          }
+          for (const tris of Object.values(buckets)) {
+            const ng = new THREE.BufferGeometry();
+            for (const name in geo.attributes) ng.setAttribute(name, geo.attributes[name]);
+            ng.setIndex(tris);
+            const bb = new THREE.Box3(); for (const i of tris) bb.expandByPoint(v.fromBufferAttribute(pos, i));   // computeBoundingBox would ignore the index
+            ng.boundingBox = bb; ng.boundingSphere = bb.getBoundingSphere(new THREE.Sphere());
+            const m = o.isSkinnedMesh ? o : new THREE.Mesh(ng, o.material);
+            m.name = o.name; m.position.copy(o.position); m.quaternion.copy(o.quaternion); m.scale.copy(o.scale); m.matrixAutoUpdate = o.matrixAutoUpdate;
+            o.parent.add(m);
+          }
+          o.parent.remove(o);
+        }
+        g.updateMatrixWorld(true);
+      };
+      splitWheels();
       const tyres = [], parts0 = [];
-      g.traverse(o => { if (o.isMesh && W.test(o.material.name)) (T.test(o.material.name) ? tyres : parts0).push(o); });
-      const corners = {}, centre = o => new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3());
-      const tc = tyres.map(t => { const c = centre(t), k = (c.x > 0 ? 'F' : 'R') + (c.z > 0 ? '+' : '-'); (corners[k] = corners[k] || []).push(t); return [k, c, new THREE.Box3().setFromObject(t).getSize(new THREE.Vector3()).y / 2]; });
+      g.traverse(o => { if (o.isMesh && hit(W, o)) (hit(T, o) ? tyres : parts0).push(o); });
+      const centre = o => new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3());
+      const corners = {};
+      for (const t of tyres) {                         // only things out at a corner of the car are tyres (not seals, hubs on the axis…)
+        const c = centre(t);
+        if (Math.abs(c.x) < ws.x * 0.1 || Math.abs(c.z) < ws.z * 0.2) continue;
+        const k = (c.x > 0 ? 'F' : 'R') + (c.z > 0 ? '+' : '-');
+        (corners[k] = corners[k] || { parts: [], box: new THREE.Box3() }).parts.push(t);
+        corners[k].box.expandByObject(t);
+      }
+      const info = Object.entries(corners).map(([k, c]) => [k, c.box.getCenter(new THREE.Vector3()), c.box.getSize(new THREE.Vector3()).y / 2]);
       for (const o of parts0) { const c = centre(o); let best = null, bd = Infinity;
-        for (const [k, tcen, r] of tc) { const d = c.distanceTo(tcen); if (d < bd && d < r * 1.1) { bd = d; best = k; } }
-        if (best) corners[best].push(o); }
-      for (const [k, parts] of Object.entries(corners)) {
-        const tyre = parts[0];
-        const ctr = new THREE.Box3().setFromObject(tyre).getCenter(new THREE.Vector3());
+        for (const [k, tcen, r] of info) { const d = c.distanceTo(tcen); if (d < bd && d < r * 1.1) { bd = d; best = k; } }
+        if (best) corners[best].parts.push(o); }
+      for (const [k, { parts, box }] of Object.entries(corners)) {
+        const ctr = box.getCenter(new THREE.Vector3());
         const pivot = new THREE.Group(), spin = new THREE.Group();
         pivot.position.copy(ctr); pivot.add(spin); g.add(pivot); pivot.updateMatrixWorld(true);
-        for (const o of parts) (S && S.test(o.material.name) ? pivot : spin).attach(o);
+        for (const o of parts) (S && hit(S, o) ? pivot : spin).attach(o);
         pivot.userData = { spin, front: k[0] === 'F' };
         wheels.push(pivot);
       }
